@@ -1,0 +1,125 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Chewy&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
+    background: rgba(20, 20, 30, 0.55);
+    backdrop-filter: blur(0.1px);
+    -webkit-backdrop-filter: blur(0.1px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:inset 8px 0 8px -6px white,inset -5px 0 8px -5px white;
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    background: linear-gradient(0.25turn, rgb(252, 166, 7), rgb(236, 236, 26), rgb(127, 127, 226), rgb(248, 145, 145));
+    background-size: 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    font-family: "Chewy", system-ui;
+}
+
+a {
+    text-decoration: none;
+}
+
+.logo a {
+    font-size: 3.5rem;
+}
+
+.search-bar {
+    display: flex;
+    flex: 1;
+    max-width: 600px;
+    position: relative;
+    margin-left: 1rem;
+}
+
+.search-bar input {
+    width: 100%;
+}
+
+.search-bar button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: #111;
+    color: #fff;
+    border: none;
+    margin-left: 0.4rem;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #525255;
+}
+
+.search-bar button:hover {
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.search-bar i {
+    font-size: 25px;
+}
+
+.nav-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 25px;
+    list-style: none;
+}
+
+.nav-links li {
+    position: relative;
+}
+
+.nav-links a {
+    display: block;
+    padding: 15px 20px;
+    color: #ffffffcc;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links li a:hover {
+    color: #fff;
+    background-color: #444;
+    border-radius: 5px;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: 150px;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    transform: translateY(10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    z-index: 1000;
+}
+
+.dropdown-menu li a {
+    padding: 10px 20px;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #555;
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}

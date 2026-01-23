@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <main>
+        <section class="details-container profile-details">
+            <div class="img-details profile-img">
+                <img alt="User Default Image" src="{% static 'images/user-default.jpg' %}">
+            </div>
+
+            <div class="info-container">
+                <div class="details">
+                    <h1>{{ profile }}</h1>
+                    {% if profile.professional_artist %}
+                        <h3><strong>Professional Artist</strong></h3>
+                    {% endif %}
+                    <p><strong>Nickname:</strong> {{ profile.username }}</p>
+                    <p><strong>Email:</strong> {{ profile.email }}</p>
+                    <p><strong>Age:</strong> {{ profile.age }}</p>
+                </div>
+            </div>
+            
+        </section>
+    </main>
+
+{% endblock %}

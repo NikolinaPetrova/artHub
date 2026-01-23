@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <main>
+        <section class="artwork-details">
+            <div class="img-details">
+                <img src="/static/images/test-art.png">
+            </div>
+
+            <div class="info-container">
+                <div class="details">
+                    <div class="flex-title">
+                        <h1>Some title</h1>
+                        <div class="buttons">
+                            <button href="#" type="submit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button href="#" type="submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                        </div>
+                    </div>
+                    <p class="description"><strong>Description:</strong> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus corrupti sint est atque alias eum maiores repudiandae quam suscipit, pariatur repellendus nulla aliquam natus consectetur mollitia animi voluptas magnam deleniti.</p>
+                    <p><strong>Type:</strong> Digital</p>
+                    <p><strong>Published:</strong> 20-12-2025</p>
+                </div>
+
+                <div class="comments-section">
+                    <h3>3 Comments</h3>
+
+                    <div class="add-comment">
+                        <div class="avatar">A</div>
+                        <input type="text" placeholder="Add a comment..." />
+                        <button>Post</button>
+                    </div>
+
+                    <div class="comment">
+                        <img src="https://i.pravatar.cc/40?img=3" alt="avatar">
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="name">Mike Smith</span>
+                                <span class="time">1 hour ago</span>
+                            </div>
+                            <p>Beautiful artwork!</p>
+                            <div class="comment-actions">
+                                <span>Reply</span>
+                                <span>Like</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment">
+                        <img src="https://i.pravatar.cc/40?img=5" alt="avatar">
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="name">Anna Petrova</span>
+                                <span class="time">2 hours ago</span>
+                            </div>
+                            <p>Amazing! The details and colors are stunning.</p>
+                            <div class="comment-actions">
+                                <span>Reply</span>
+                                <span>Like</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment">
+                        <img src="https://i.pravatar.cc/40?img=8" alt="avatar">
+                        <div class="comment-body">
+                            <div class="comment-header">
+                                <span class="name">Ivan Dimitrov</span>
+                                <span class="time">5 hours ago</span>
+                            </div>
+                            <p>Great work, keep it up!</p>
+                            <div class="comment-actions">
+                                <span>Reply</span>
+                                <span>Like</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+        </section>
+    </main>
+
+{% endblock %}

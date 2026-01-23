@@ -1,0 +1,91 @@
+.artwork-edit,
+.artwork-create,
+.profile-create {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem 1rem;
+}
+
+#edit-page,
+#create-page {
+    width: 100%;
+    max-width: 500px;
+    padding: 3rem;
+    background: rgba(20, 20, 30, 0.55);
+    backdrop-filter: blur(0.1px);
+    -webkit-backdrop-filter: blur(0.1px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:inset 8px 0 8px -6px white,inset -5px 0 8px -5px white;
+    box-sizing: initial;
+
+}
+
+#edit-page h1,
+#create-page h1 {
+    margin-bottom: 2.5rem;
+    font-size: 2.2rem;
+    text-align: center;
+}
+
+#edit-page > div:not(.buttons),
+#create-page > div:not(.buttons) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+label {
+    font-size: 0.9rem;
+    color: #bbb;
+}
+
+input,
+textarea,
+select {
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.6rem;
+    border: 1px solid #333;
+    background-color: #111;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 5rem;
+    margin-top: 1rem;
+}
+
+.checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #525255;
+}
+
+.checkbox label {
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+textarea {
+    min-height: 120px;
+    resize: both;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #dbdbe6;
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.3);
+}
+
+
+
+

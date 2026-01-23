@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    <main class="dashboard">
+        <!--
+        <div class="no-artworks">
+            <h1>There are currently no artworks available.</h1>
+        </div>
+        -->
+
+        <section class="artworks-container">
+                <div class="wrap-image">
+                    <a href="#"><img class="art-image" src="/static/images/test-art.png">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+
+                <div class="wrap-image">
+                    <a href="#"><img class="art-image" src="/static/images/test-art2.avif">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+
+                <div class="wrap-image">
+                    <a href="#"><img class="art-image" src="/static/images/test-art3.jpg">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+
+                <div class="wrap-image">
+                    <a href="#"><img class="art-image" src="/static/images/test-art4.jpg">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+        </section>
+    </main>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtHub</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="navigation">
+            <div class="logo">
+                <a href="{% url 'home' %}">ArtHub</a>
+            </div>
+
+            <form action="#" method="get" class="search-form">
+                <div class="search-bar">
+                    <input type="search" name="q" placeholder="Search artworks by title or tag..." value="{{ request.GET.q }}">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </form>
+
+            {% if has_profile %}
+            <ul class="nav-links">
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="#">Create Art</a></li>
+                <li class="dropdown"><a href="#">Profile</a>
+                <ul class="dropdown-menu">
+                    <li><a href="{% url 'profile-details' %}">Details</a></li>
+                    <li><a href="{% url 'edit-profile' %}">Edit</a></li>
+                    <li><a href="{% url 'profile-delete' %}">Delete</a></li>
+                </ul>
+                </li>
+            </ul>
+            {% else %}
+                <ul class="nav-links">
+                    <li><a href="{% url 'create-profile' %}">Create Profile</a></li>
+                </ul>
+            {% endif %}
+        </header>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+        <p>©2025 ArtHub Project. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
