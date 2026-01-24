@@ -1,37 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
+
     <main class="dashboard">
-        <!--
-        <div class="no-artworks">
-            <h1>There are currently no artworks available.</h1>
-        </div>
-        -->
-
-        <section class="artworks-container">
-                <div class="wrap-image">
-                    <a href="#"><img class="art-image" src="/static/images/test-art.png">
-                        <p class="overlay">More Info</p>
-                    </a>
-                </div>
-
-                <div class="wrap-image">
-                    <a href="#"><img class="art-image" src="/static/images/test-art2.avif">
-                        <p class="overlay">More Info</p>
-                    </a>
-                </div>
-
-                <div class="wrap-image">
-                    <a href="#"><img class="art-image" src="/static/images/test-art3.jpg">
-                        <p class="overlay">More Info</p>
-                    </a>
-                </div>
-
-                <div class="wrap-image">
-                    <a href="#"><img class="art-image" src="/static/images/test-art4.jpg">
-                        <p class="overlay">More Info</p>
-                    </a>
-                </div>
-        </section>
+        {% if not artwork_list %}
+            <div class="no-artworks">
+                {% if request.GET.q %}
+                    <h1>No artworks match your search criteria.</h1>
+                {% else %}
+                    <h1>There are currently no artworks available.</h1>
+                {% endif %}
+            </div>
+        {% else %}
+            {% if request.GET.q %}
+                <h2>Artworks matching...</h2>
+            {% endif %}
+                <section class="artworks-container">
+                    {% for artwork in artwork_list %}
+                        <div class="wrap-image">
+                            <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                                <p class="overlay">More Info</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </section>
+        {% endif %}
     </main>
 
 {% endblock %}

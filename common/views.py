@@ -23,3 +23,14 @@ class Custom404View(TemplateView):
     def render_to_response(self, context, **response_kwargs):
         response_kwargs['status'] = 404
         return super().render_to_response(context, **response_kwargs)
+
+class SearchArtworksView(ListView):
+    model = Artwork
+    template_name = 'artwork/gallery.html'
+    context_object_name = 'artwork_list'
+
+    def get_queryset(self):
+        query = self.request.GET.get('q', '')
+        if query:
+            return Artwork.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
+        return Artwork.objects.all()

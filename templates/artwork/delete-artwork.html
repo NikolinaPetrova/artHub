@@ -2,11 +2,14 @@
 {% block content %}
 
         <main class="delete-page">
+        <form method="post">
+            {% csrf_token %}
             <h1>Are you sure you want to delete this artwork?</h1>
             <div class="buttons">
-                <button type="Submit">Yes</button>
-                <button type="Submit">No</button>
+                <button type="Submit" name="confirm" value="yes">Yes</button>
+                <button type="Submit" name="confirm" value="no">No</button>
             </div>
+        </form>
         </main>
 
 {% endblock %}

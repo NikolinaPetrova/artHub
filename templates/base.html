@@ -15,7 +15,7 @@
                 <a href="{% url 'home' %}">ArtHub</a>
             </div>
 
-            <form action="#" method="get" class="search-form">
+            <form action="{% url 'search-artworks' %}" method="get" class="search-form">
                 <div class="search-bar">
                     <input type="search" name="q" placeholder="Search artworks by title or tag..." value="{{ request.GET.q }}">
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
@@ -25,7 +25,7 @@
             {% if has_profile %}
             <ul class="nav-links">
                 <li><a href="{% url 'gallery' %}">Gallery</a></li>
-                <li><a href="#">Create Art</a></li>
+                <li><a href="{% url 'create-artwork' %}">Create Art</a></li>
                 <li class="dropdown"><a href="#">Profile</a>
                 <ul class="dropdown-menu">
                     <li><a href="{% url 'profile-details' %}">Details</a></li>

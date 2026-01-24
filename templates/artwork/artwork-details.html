@@ -1,84 +1,154 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load tag_filters %}
 {% block content %}
 
     <main>
         <section class="artwork-details">
             <div class="img-details">
-                <img src="/static/images/test-art.png">
+                <img src="{{ artwork.image_url }}">
             </div>
 
             <div class="info-container">
                 <div class="details">
+                    <form method="post" action="{% url 'artwork-like' artwork.pk %}">
+                        {% csrf_token %}
+                        <span class="likes-count">{{ artwork.likes.count }}</span>
+                        <button type="submit" class="like-btn {% if user_like %}liked{% endif %}">
+                            <i class="fa-solid fa-heart" title="Like"></i>
+                        </button>
+                    </form>
                     <div class="flex-title">
-                        <h1>Some title</h1>
+                        <h1>{{ artwork.title|capfirst }}</h1>
                         <div class="buttons">
-                            <button href="#" type="submit"><i class="fa-solid fa-pen-to-square"></i></button>
-                            <button href="#" type="submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                            <a href="{% url 'edit-artwork' artwork.pk %}"><i class="fa-solid fa-pen-to-square" title="Edit"></i></a>
+                            <a href="{% url 'delete-artwork' artwork.pk %}"><i class="fa-solid fa-trash-arrow-up" title="Delete"></i></a>
                         </div>
                     </div>
-                    <p class="description"><strong>Description:</strong> Lorem ipsum dolor, sit amet consectetur adipisicing elit. Delectus corrupti sint est atque alias eum maiores repudiandae quam suscipit, pariatur repellendus nulla aliquam natus consectetur mollitia animi voluptas magnam deleniti.</p>
-                    <p><strong>Type:</strong> Digital</p>
-                    <p><strong>Published:</strong> 20-12-2025</p>
+                    <p class="description"><strong>Description:</strong> {{ artwork.description }}</p>
+                    <p><strong>Type:</strong> {{ artwork.type }}</p>
+                    <p><strong>Published:</strong> {{ artwork.created_at }}</p>
+                    {% with artwork.tags.all as tags %}
+                        {% if tags.count %}
+                            <p>
+                                {% for tag in tags %}
+                                    {% if tag.name %}
+                                        #{{ tag.name }}{% if not forloop.last %} {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </p>
+                        {% endif %}
+                    {% endwith %}
                 </div>
 
                 <div class="comments-section">
-                    <h3>3 Comments</h3>
+                    <h3>{{ artwork.comments.count }} Comments</h3>
 
                     <div class="add-comment">
-                        <div class="avatar">A</div>
-                        <input type="text" placeholder="Add a comment..." />
-                        <button>Post</button>
+                        <div class="avatar">{{ artwork.profile.first_name|slice:":1" }}</div>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ comment_form.content }}
+                            <button type="submit" name="comment_submit">Post</button>
+                        </form>
                     </div>
+                    {% for comment in comments %}
+                        <div class="comment">
+                            <img src="{% static "images/user-default.jpg" %}" alt="avatar">
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <span class="name">{{ comment.author }}</span>
+                                    <span class="time">{{ comment.created_at|timesince }} ago</span>
+                                </div>
+                                <p>{{ comment.content }}</p>
 
-                    <div class="comment">
-                        <img src="https://i.pravatar.cc/40?img=3" alt="avatar">
-                        <div class="comment-body">
-                            <div class="comment-header">
-                                <span class="name">Mike Smith</span>
-                                <span class="time">1 hour ago</span>
-                            </div>
-                            <p>Beautiful artwork!</p>
-                            <div class="comment-actions">
-                                <span>Reply</span>
-                                <span>Like</span>
+                                <div class="comment-actions">
+                                    <button type="button" class="action-btn reply-toggle">Reply</button>
+                                    <button type="button" class="action-btn edit-toggle">Edit</button>
+
+                                    <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-btn delete-button">Delete</button>
+                                    </form>
+
+                                    <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px">
+                                        {% csrf_token %}
+                                        {{ reply_form.content }}
+                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <button type="submit" name="reply_submit">Post</button>
+                                    </form>
+
+                                    <form method="post"
+                                          action="{% url 'edit-comment' comment.id %}"
+                                          class="inline-form edit-form"
+                                          style="display:none; margin-top:5px">
+                                        {% csrf_token %}
+                                        <input type="text" name="content" value="{{ comment.content }}">
+                                        <button type="submit" class="save-button">Save</button>
+                                    </form>
+                                </div>
+
+                                {% for reply in comment.replies.all %}
+                                    <div class="comment-body" style="margin-left:20px; margin-top:10px; max-width: 97%">
+                                        <div class="comment-header">
+                                            <p><strong>{{ reply.author }}</strong></p>
+                                            <span class="time">{{ reply.created_at|timesince }} ago</span>
+                                        </div>
+                                        <p>{{ reply.content }}</p>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
-                    </div>
-
-                    <div class="comment">
-                        <img src="https://i.pravatar.cc/40?img=5" alt="avatar">
-                        <div class="comment-body">
-                            <div class="comment-header">
-                                <span class="name">Anna Petrova</span>
-                                <span class="time">2 hours ago</span>
-                            </div>
-                            <p>Amazing! The details and colors are stunning.</p>
-                            <div class="comment-actions">
-                                <span>Reply</span>
-                                <span>Like</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="comment">
-                        <img src="https://i.pravatar.cc/40?img=8" alt="avatar">
-                        <div class="comment-body">
-                            <div class="comment-header">
-                                <span class="name">Ivan Dimitrov</span>
-                                <span class="time">5 hours ago</span>
-                            </div>
-                            <p>Great work, keep it up!</p>
-                            <div class="comment-actions">
-                                <span>Reply</span>
-                                <span>Like</span>
-                            </div>
-                        </div>
-                    </div>
+                    {% empty %}
+                        <p>No comments yet.</p>
+                    {% endfor %}
                 </div>
 
             </div>
-            
+
         </section>
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.reply-toggle, .edit-toggle').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const actions = button.closest('.comment-actions');
+                    const isReply = button.classList.contains('reply-toggle');
+                    const form = actions.querySelector(
+                        isReply ? '.reply-form' : '.edit-form'
+                    );
+
+                    actions.querySelectorAll('.action-btn').forEach(btn => {
+                        btn.style.display = 'none';
+                    });
+
+                    form.style.display = 'flex';
+
+                    const input = form.querySelector('input, textarea');
+                    if (input) input.focus();
+                });
+            });
+
+            document.addEventListener('click', () => {
+                document.querySelectorAll('.comment-actions').forEach(actions => {
+
+                    actions.querySelectorAll('.inline-form').forEach(form => {
+                        form.style.display = 'none';
+                    });
+
+                    actions.querySelectorAll('.action-btn').forEach(btn => {
+                        btn.style.display = 'inline-block';
+                    });
+                });
+            });
+
+            document.querySelectorAll('.inline-form').forEach(form => {
+                form.addEventListener('click', e => e.stopPropagation());
+            });
+        });
+
+
+    </script>
 
 {% endblock %}

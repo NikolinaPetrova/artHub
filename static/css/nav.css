@@ -33,6 +33,12 @@ a {
     font-size: 3.5rem;
 }
 
+.search-form {
+    display: flex;
+    flex: 1;
+    max-width: 600px;
+}
+
 .search-bar {
     display: flex;
     flex: 1;
