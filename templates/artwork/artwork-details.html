@@ -28,15 +28,13 @@
                     <p class="description"><strong>Description:</strong> {{ artwork.description }}</p>
                     <p><strong>Type:</strong> {{ artwork.type }}</p>
                     <p><strong>Published:</strong> {{ artwork.created_at }}</p>
-                    {% with artwork.tags.all as tags %}
-                        {% if tags.count %}
-                            <p>
-                                {% for tag in tags %}
-                                    {% if tag.name %}
-                                        #{{ tag.name }}{% if not forloop.last %} {% endif %}
-                                    {% endif %}
+                    {% with artwork.tags.all|tags_list as tags %}
+                        {% if tags %}
+                            <div class="buttons tags">
+                                {% for tag_name in tags %}
+                                    <a href="{% url 'search-artworks' %}?q={{ tag_name }}" class="tag">{{ tag_name }}</a>
                                 {% endfor %}
-                            </p>
+                            </div>
                         {% endif %}
                     {% endwith %}
                 </div>

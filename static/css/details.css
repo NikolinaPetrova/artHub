@@ -306,3 +306,9 @@
 .like-btn.liked {
     color: red;
 }
+
+.tags {
+    padding-top: 1rem;
+    justify-content: initial;
+    gap: 1rem;
+}

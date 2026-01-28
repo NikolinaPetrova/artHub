@@ -1,5 +1,8 @@
+import re
 from django import forms
 from artworks.models import Artwork, Tag
+
+TAG_REGEX = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
 
 
 class BaseArtworkForm(forms.ModelForm):
@@ -31,6 +34,8 @@ class BaseArtworkForm(forms.ModelForm):
         artwork.tags.clear()
 
         for name in tag_names:
+            if not TAG_REGEX.fullmatch(name):
+                raise forms.ValidationError(f'Invalid tag: "{name}"')
             tag, _ = Tag.objects.get_or_create(name=name)
             artwork.tags.add(tag)
 
