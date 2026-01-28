@@ -1,4 +1,6 @@
 from django import forms
+
+from common.mixins import DisabledFormFieldsMixin
 from profiles.models import Profile
 
 
@@ -48,5 +50,5 @@ class EditProfileForm(BaseProfileForm):
     class Meta(BaseProfileForm.Meta):
         exclude = ['professional_artist']
 
-class DeleteProfileForm(BaseProfileForm):
+class DeleteProfileForm(DisabledFormFieldsMixin, BaseProfileForm):
     ...

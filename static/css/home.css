@@ -43,7 +43,6 @@ footer {
 }
 
 .main-no-profile,
-.delete-page,
 .error-page {
     display: flex;
     flex-direction: column;

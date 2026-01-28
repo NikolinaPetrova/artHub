@@ -1,6 +1,5 @@
-.artwork-edit,
-.artwork-create,
-.profile-create {
+.artwork-form,
+.profile-form {
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -9,13 +8,13 @@
 }
 
 #edit-page,
-#create-page {
+#create-page,
+#delete-page {
     width: 100%;
     max-width: 500px;
     padding: 3rem;
     background: rgba(20, 20, 30, 0.55);
     backdrop-filter: blur(0.1px);
-    -webkit-backdrop-filter: blur(0.1px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow:inset 8px 0 8px -6px white,inset -5px 0 8px -5px white;
     box-sizing: initial;
@@ -23,14 +22,16 @@
 }
 
 #edit-page h1,
-#create-page h1 {
+#create-page h1,
+#delete-page h1 {
     margin-bottom: 2.5rem;
     font-size: 2.2rem;
     text-align: center;
 }
 
 #edit-page > div:not(.buttons),
-#create-page > div:not(.buttons) {
+#create-page > div:not(.buttons),
+#delete-page > div:not(.buttons) {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -86,6 +87,10 @@ select:focus {
     box-shadow: 0 0 0 2px rgba(79,70,229,0.3);
 }
 
+#delete-page h4 {
+    padding-bottom: 1rem;
+    text-align: center;
+}
 
 
 

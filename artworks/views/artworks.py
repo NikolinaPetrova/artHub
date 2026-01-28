@@ -2,7 +2,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from artworks.forms import CreateArtworkForm, EditArtworkForm, CreateCommentForm, ReplyForm, CommentEditForm
+from artworks.forms import CreateArtworkForm, EditArtworkForm, CreateCommentForm, ReplyForm, CommentEditForm, \
+    DeleteArtworkForm
 from artworks.models import Artwork, Comment
 from common.utils import get_profile
 
@@ -76,7 +77,13 @@ class EditArtworkView(UpdateView):
 
 class DeleteArtworkView(DeleteView):
     model = Artwork
+    form_class = DeleteArtworkForm
     template_name = 'artwork/delete-artwork.html'
+
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        return form_class(instance=self.get_object(), **self.get_form_kwargs())
 
     def post(self, request, *args, **kwargs):
         choice = request.POST.get('confirm')
