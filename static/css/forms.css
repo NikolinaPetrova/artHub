@@ -13,12 +13,9 @@
     width: 100%;
     max-width: 500px;
     padding: 3rem;
-    background: rgba(20, 20, 30, 0.55);
-    backdrop-filter: blur(0.1px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow:inset 8px 0 8px -6px white,inset -5px 0 8px -5px white;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
     box-sizing: initial;
-
 }
 
 #edit-page h1,
@@ -49,7 +46,7 @@ select {
     padding: 0.7rem 0.9rem;
     border-radius: 0.6rem;
     border: 1px solid #333;
-    background-color: #111;
+    background-color: transparent;
     color: #fff;
     font-size: 1rem;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;

@@ -21,6 +21,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    backdrop-filter: brightness(160%);
 }
 
 body > * {
@@ -35,9 +36,7 @@ html, button {
 
 footer {
     text-align: center;
-    background: rgba(20, 20, 30, 0.55);
-    backdrop-filter: blur(0.1px);
-    -webkit-backdrop-filter: blur(0.1px);
+    background: rgba(0, 0, 0, 0.4);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.5rem;
 }
