@@ -308,6 +308,7 @@
 }
 
 .tags {
+    flex-wrap: wrap;
     padding-top: 1rem;
     justify-content: initial;
     gap: 1rem;

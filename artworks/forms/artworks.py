@@ -23,20 +23,33 @@ class BaseArtworkForm(forms.ModelForm):
         model = Artwork
         fields = ['title', 'description', 'image_url', 'type', 'tags']
 
+    def clean_tags(self):
+        tags_string = self.cleaned_data.get('tags', '')
+
+        if not tags_string:
+            return ''
+
+        tag_names = [tag.strip().lower() for tag in tags_string.split(',') if tag.strip()]
+
+        for name in tag_names:
+            if name == '':
+                continue
+
+            if not TAG_REGEX.fullmatch(name):
+                raise forms.ValidationError(f'Invalid tag: "{name}"')
+
+        return tag_names
+
     def save(self, commit=True):
         artwork = super().save(commit=False)
 
         if commit:
             artwork.save()
 
-        tags_string = self.cleaned_data.get('tags', '')
-        tag_names = [tag.strip().lower() for tag in tags_string.split(',')]
-
+        tag_names = self.cleaned_data.get('tags', [])
         artwork.tags.clear()
 
         for name in tag_names:
-            if not TAG_REGEX.fullmatch(name):
-                raise forms.ValidationError(f'Invalid tag: "{name}"')
             tag, _ = Tag.objects.get_or_create(name=name)
             artwork.tags.add(tag)
 
