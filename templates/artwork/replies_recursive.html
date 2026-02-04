@@ -1,0 +1,21 @@
+{% for reply in replies %}
+    <div class="comment-body" style="margin-left:20px; margin-top:10px; max-width: 97%">
+        <div class="comment-header">
+            <p><strong>{{ reply.author }}</strong></p>
+            <span class="time">{{ reply.created_at|timesince }} ago</span>
+        </div>
+        <p>{{ reply.content }}</p>
+        <button type="button" class="action-btn reply-toggle">Reply</button>
+        <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px">
+            {% csrf_token %}
+            {{ reply_form.content }}
+            <input type="hidden" name="comment_id" value="{{ reply.comment.id }}">
+            <input type="hidden" name="parent_id" value="{{ reply.id }}">
+            <button type="submit" name="reply_submit">Post</button>
+        </form>
+
+        {% if reply.child_replies.exists %}
+            {% include "artwork/replies_recursive.html" with replies=reply.child_replies.all %}
+        {% endif %}
+    </div>
+{% endfor %}

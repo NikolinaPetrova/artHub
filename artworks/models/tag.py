@@ -5,7 +5,6 @@ class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        blank=True,
     )
 
     def __str__(self):

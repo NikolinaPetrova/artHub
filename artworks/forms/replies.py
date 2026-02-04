@@ -3,6 +3,13 @@ from artworks.models import Reply
 
 
 class ReplyForm(forms.ModelForm):
+
+    parent = forms.ModelChoiceField(
+        queryset=Reply.objects.all(),
+        required=False,
+        widget=forms.HiddenInput
+    )
+
     class Meta:
         model = Reply
         fields = ['content']

@@ -1,21 +1,21 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from artworks.forms import CreateArtworkForm, EditArtworkForm, CreateCommentForm, ReplyForm, CommentEditForm, \
     DeleteArtworkForm
-from artworks.models import Artwork, Comment
-from common.utils import get_profile
+from artworks.models import Artwork, Comment, Reply
 
 
-class CreateArtworkView(CreateView):
+class CreateArtworkView(LoginRequiredMixin, CreateView):
     model = Artwork
     form_class = CreateArtworkForm
     template_name = 'artwork/create-artwork.html'
     success_url = reverse_lazy('gallery')
 
     def form_valid(self, form):
-        form.instance.profile = get_profile()
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
 class ArtworkDetailsView(DetailView):
@@ -26,48 +26,54 @@ class ArtworkDetailsView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         artwork = self.get_object()
-        profile = get_profile()
+        user = self.request.user
 
-        context['has_profile'] = profile
         context['comment_form'] = kwargs.get('comment_form', CreateCommentForm())
         context['reply_form'] = kwargs.get('reply_form', ReplyForm())
         context['edit_form'] = CommentEditForm()
-        context['user_like'] = artwork.likes.filter(profile=profile).exists()
+        context['user_like'] = artwork.likes.filter(user=user).exists() if user.is_authenticated else False
         context['comments'] = artwork.comments.prefetch_related('replies')
         return context
 
     def post(self, request, *args, **kwargs):
         artwork = self.get_object()
-        profile = get_profile()
+        user = request.user
+
+        if not user.is_authenticated:
+            return redirect('login')
 
         if 'comment_submit' in request.POST:
             form = CreateCommentForm(request.POST)
             if form.is_valid():
                 comment = form.save(commit=False)
-                comment.author = profile
+                comment.user = user
                 comment.artwork = artwork
                 comment.save()
                 return redirect('artwork-details', pk=artwork.pk)
             else:
-                return self.get_context_data(comment_form=form)
+                context = self.get_context_data(comment_form=form)
+                return self.render_to_response(context)
 
         elif 'reply_submit' in request.POST:
             comment_id = request.POST.get('comment_id')
+            parent_id = request.POST.get('parent_id')
             comment = Comment.objects.get(pk=comment_id)
             form = ReplyForm(request.POST)
             if form.is_valid():
                 reply = form.save(commit=False)
                 reply.comment = comment
+                reply.parent = Reply.objects.get(pk=parent_id) if parent_id else None
                 reply.artwork = artwork
-                reply.author = profile
+                reply.user = user
                 reply.save()
                 return redirect('artwork-details', pk=artwork.pk)
             else:
-                return self.get_context_data(reply_form=form)
+                context = self.get_context_data(reply_form=form)
+                return self.render_to_response(context)
 
         return self.render_to_response(self.get_context_data())
 
-class EditArtworkView(UpdateView):
+class EditArtworkView(LoginRequiredMixin, UpdateView):
     model = Artwork
     template_name = 'artwork/edit-artwork.html'
     form_class = EditArtworkForm
@@ -75,7 +81,10 @@ class EditArtworkView(UpdateView):
     def get_success_url(self):
         return reverse('artwork-details', kwargs={'pk': self.object.pk})
 
-class DeleteArtworkView(DeleteView):
+    def get_queryset(self):
+        return Artwork.objects.filter(user=self.request.user)
+
+class DeleteArtworkView(LoginRequiredMixin, DeleteView):
     model = Artwork
     form_class = DeleteArtworkForm
     template_name = 'artwork/delete-artwork.html'
@@ -93,3 +102,6 @@ class DeleteArtworkView(DeleteView):
             return HttpResponseRedirect(reverse_lazy('gallery'))
         else:
             return HttpResponseRedirect(reverse_lazy('artwork-details', kwargs={'pk': artwork.pk}))
+
+    def get_queryset(self):
+        return Artwork.objects.filter(user=self.request.user)

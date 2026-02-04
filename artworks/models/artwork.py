@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import MinLengthValidator
 from django.db import models
 from artworks.choices import ArtworkTypeChoices
@@ -17,8 +18,8 @@ class Artwork(models.Model):
         choices=ArtworkTypeChoices.choices,
     )
 
-    profile = models.ForeignKey(
-        'profiles.Profile',
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='artworks',
     )

@@ -23,9 +23,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 PROJECT_APPS = [
+    'accounts',
     'artworks',
-    'profiles',
-    'common'
+    'albums',
+    'common',
 ]
 
 
@@ -61,7 +62,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'common.context_processors.profile',
             ],
         },
     },
@@ -123,3 +123,5 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
+
+AUTH_USER_MODEL = 'accounts.ArtHubUser'

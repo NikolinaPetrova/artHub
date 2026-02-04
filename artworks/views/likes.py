@@ -1,15 +1,15 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from artworks.models import Artwork, ArtworkLike
-from common.utils import get_profile
 
 
-class ArtworkLikeView(View):
+class ArtworkLikeView(LoginRequiredMixin, View):
     def post(self, request, pk):
         artwork = get_object_or_404(Artwork, pk=pk)
-        profile = get_profile()
+        user = self.request.user
 
-        like, created = ArtworkLike.objects.get_or_create(artwork=artwork, profile=profile)
+        like, created = ArtworkLike.objects.get_or_create(artwork=artwork, user=user)
 
         if not created:
             like.delete()

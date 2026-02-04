@@ -20,10 +20,12 @@
                     </form>
                     <div class="flex-title">
                         <h1>{{ artwork.title|capfirst }}</h1>
-                        <div class="buttons">
-                            <a href="{% url 'edit-artwork' artwork.pk %}"><i class="fa-solid fa-pen-to-square" title="Edit"></i></a>
-                            <a href="{% url 'delete-artwork' artwork.pk %}"><i class="fa-solid fa-trash-arrow-up" title="Delete"></i></a>
-                        </div>
+                        {% if request.user.is_authenticated and artwork.user == request.user %}
+                            <div class="buttons">
+                                <a href="{% url 'edit-artwork' artwork.pk %}"><i class="fa-solid fa-pen-to-square" title="Edit"></i></a>
+                                <a href="{% url 'delete-artwork' artwork.pk %}"><i class="fa-solid fa-trash-arrow-up" title="Delete"></i></a>
+                            </div>
+                        {% endif %}
                     </div>
                     <p class="description"><strong>Description:</strong> {{ artwork.description }}</p>
                     <p><strong>Type:</strong> {{ artwork.type }}</p>
@@ -62,17 +64,19 @@
 
                                 <div class="comment-actions">
                                     <button type="button" class="action-btn reply-toggle">Reply</button>
-                                    <button type="button" class="action-btn edit-toggle">Edit</button>
+                                    {% if request.user.is_authenticated and comment.user == request.user %}
+                                        <button type="button" class="action-btn edit-toggle">Edit</button>
 
-                                    <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
-                                        {% csrf_token %}
-                                        <button type="submit" class="action-btn delete-button">Delete</button>
-                                    </form>
-
+                                        <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="action-btn delete-button">Delete</button>
+                                        </form>
+                                    {% endif %}
                                     <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px">
                                         {% csrf_token %}
                                         {{ reply_form.content }}
                                         <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                        <input type="hidden" name="parent_id" value="">
                                         <button type="submit" name="reply_submit">Post</button>
                                     </form>
 
@@ -86,15 +90,7 @@
                                     </form>
                                 </div>
 
-                                {% for reply in comment.replies.all %}
-                                    <div class="comment-body" style="margin-left:20px; margin-top:10px; max-width: 97%">
-                                        <div class="comment-header">
-                                            <p><strong>{{ reply.author }}</strong></p>
-                                            <span class="time">{{ reply.created_at|timesince }} ago</span>
-                                        </div>
-                                        <p>{{ reply.content }}</p>
-                                    </div>
-                                {% endfor %}
+                                {% include "artwork/replies_recursive.html" with replies=comment.top_level_replies %}
                             </div>
                         </div>
                     {% empty %}
@@ -111,42 +107,37 @@
             document.querySelectorAll('.reply-toggle, .edit-toggle').forEach(button => {
                 button.addEventListener('click', (e) => {
                     e.stopPropagation();
+
                     const actions = button.closest('.comment-actions');
                     const isReply = button.classList.contains('reply-toggle');
-                    const form = actions.querySelector(
-                        isReply ? '.reply-form' : '.edit-form'
-                    );
+                    const form = actions.querySelector(isReply ? '.reply-form' : '.edit-form');
 
-                    actions.querySelectorAll('.action-btn').forEach(btn => {
-                        btn.style.display = 'none';
-                    });
-
+                    actions.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'none');
                     form.style.display = 'flex';
 
                     const input = form.querySelector('input, textarea');
                     if (input) input.focus();
+
+                    if (isReply) {
+                        const parentInput = form.querySelector('input[name="parent_id"]');
+                        if (button.dataset.parent) {
+                            parentInput.value = button.dataset.parent;
+                        } else {
+                            parentInput.value = '';
+                        }
+                    }
                 });
             });
-
             document.addEventListener('click', () => {
                 document.querySelectorAll('.comment-actions').forEach(actions => {
-
-                    actions.querySelectorAll('.inline-form').forEach(form => {
-                        form.style.display = 'none';
-                    });
-
-                    actions.querySelectorAll('.action-btn').forEach(btn => {
-                        btn.style.display = 'inline-block';
-                    });
+                    actions.querySelectorAll('.inline-form').forEach(form => form.style.display = 'none');
+                    actions.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'inline-block');
                 });
             });
-
             document.querySelectorAll('.inline-form').forEach(form => {
                 form.addEventListener('click', e => e.stopPropagation());
             });
         });
-
-
     </script>
 
 {% endblock %}

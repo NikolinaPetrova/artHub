@@ -22,7 +22,7 @@
                 </div>
             </form>
 
-            {% if has_profile %}
+            {% if request.user.is_authenticated %}
             <ul class="nav-links">
                 <li><a href="{% url 'gallery' %}">Gallery</a></li>
                 <li><a href="{% url 'create-artwork' %}">Create Art</a></li>

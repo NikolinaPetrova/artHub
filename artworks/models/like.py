@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 class ArtworkLike(models.Model):
@@ -7,8 +8,8 @@ class ArtworkLike(models.Model):
         related_name='likes',
     )
 
-    profile = models.ForeignKey(
-        'profiles.Profile',
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name='likes',
     )
@@ -16,7 +17,7 @@ class ArtworkLike(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
-        unique_together = ('artwork', 'profile')
+        unique_together = ('artwork', 'user')
 
     def __str__(self):
-        return f"{self.artwork} liked by {self.profile}"
+        return f"{self.artwork} liked by {self.user}"
