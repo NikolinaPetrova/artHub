@@ -45,7 +45,7 @@
                     <h3>{{ artwork.comments.count }} Comments</h3>
 
                     <div class="add-comment">
-                        <div class="avatar">{{ artwork.profile.first_name|slice:":1" }}</div>
+                        <div class="avatar">{{ artwork.user.username|slice:":1" }}</div>
                         <form method="post">
                             {% csrf_token %}
                             {{ comment_form.content }}
@@ -57,15 +57,20 @@
                             <img src="{% static "images/user-default.jpg" %}" alt="avatar">
                             <div class="comment-body">
                                 <div class="comment-header">
-                                    <span class="name">{{ comment.author }}</span>
+                                    <span class="name">{{ comment.user }}</span>
                                     <span class="time">{{ comment.created_at|timesince }} ago</span>
                                 </div>
                                 <p>{{ comment.content }}</p>
 
                                 <div class="comment-actions">
-                                    <button type="button" class="action-btn reply-toggle">Reply</button>
+                                    <button type="button" class="action-btn reply-toggle" data-parent="{{ comment.id }}">Reply</button>
                                     {% if request.user.is_authenticated and comment.user == request.user %}
-                                        <button type="button" class="action-btn edit-toggle">Edit</button>
+                                        <button
+                                                type="button"
+                                                class="action-btn edit-toggle"
+                                                data-comment="{{ comment.id }}"
+                                                data-content="{{ comment.content }}">Edit
+                                        </button>
 
                                         <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
                                             {% csrf_token %}
@@ -75,21 +80,20 @@
                                     <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px">
                                         {% csrf_token %}
                                         {{ reply_form.content }}
-                                        <input type="hidden" name="comment_id" value="{{ comment.id }}">
                                         <input type="hidden" name="parent_id" value="">
+                                        <input type="hidden" name="comment_id" value="">
                                         <button type="submit" name="reply_submit">Post</button>
                                     </form>
 
                                     <form method="post"
-                                          action="{% url 'edit-comment' comment.id %}"
                                           class="inline-form edit-form"
                                           style="display:none; margin-top:5px">
                                         {% csrf_token %}
-                                        <input type="text" name="content" value="{{ comment.content }}">
-                                        <button type="submit" class="save-button">Save</button>
+                                        <input type="text" name="content" value="">
+                                        <input type="hidden" name="comment_id" value="}">
+                                        <button type="submit" class="save-button" name="edit_submit">Save</button>
                                     </form>
                                 </div>
-
                                 {% include "artwork/replies_recursive.html" with replies=comment.top_level_replies %}
                             </div>
                         </div>
@@ -109,22 +113,30 @@
                     e.stopPropagation();
 
                     const actions = button.closest('.comment-actions');
-                    const isReply = button.classList.contains('reply-toggle');
-                    const form = actions.querySelector(isReply ? '.reply-form' : '.edit-form');
-
                     actions.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'none');
-                    form.style.display = 'flex';
 
-                    const input = form.querySelector('input, textarea');
-                    if (input) input.focus();
+                    if (button.classList.contains('edit-toggle')) {
+                        const form = actions.querySelector('.edit-form');
+                        const contentInput = form.querySelector('input[name="content"]');
+                        const commentIdInput = form.querySelector('input[name="comment_id"]');
 
-                    if (isReply) {
-                        const parentInput = form.querySelector('input[name="parent_id"]');
-                        if (button.dataset.parent) {
-                            parentInput.value = button.dataset.parent;
-                        } else {
-                            parentInput.value = '';
-                        }
+                        form.style.display = 'flex';
+                        form.style.gap = '10px';
+                        contentInput.value = button.dataset.content;
+                        commentIdInput.value = button.dataset.comment;
+                        contentInput.focus();
+
+                    } else if (button.classList.contains('reply-toggle')) {
+                        const form = actions.querySelector('.reply-form');
+                        const parentIdInput = form.querySelector('input[name="parent_id"]');
+                        const commentIdInput = form.querySelector('input[name="comment_id"]');
+                        const contentInput = form.querySelector('input[name="content"]');
+
+                        form.style.display = 'flex';
+                        parentIdInput.value = button.dataset.parent;
+                        commentIdInput.value = '';
+                        contentInput.value = '';
+                        contentInput.focus();
                     }
                 });
             });

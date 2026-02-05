@@ -10,13 +10,12 @@
 
             <div class="info-container">
                 <div class="details">
-                    <h1>{{ profile }}</h1>
-                    {% if profile.professional_artist %}
+                    <h1>{{ user }}</h1>
+                    {% if user.professional_artist %}
                         <h3><strong>Professional Artist</strong></h3>
                     {% endif %}
-                    <p><strong>Nickname:</strong> {{ profile.username }}</p>
-                    <p><strong>Email:</strong> {{ profile.email }}</p>
-                    <p><strong>Age:</strong> {{ profile.age }}</p>
+                    <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
                 </div>
             </div>
             

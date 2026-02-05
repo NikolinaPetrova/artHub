@@ -20,11 +20,29 @@ class Comment(models.Model):
         related_name='comments',
     )
 
+    parent = models.ForeignKey(
+        'self',
+        on_delete=models.CASCADE,
+        related_name='child_replies',
+        null=True,
+        blank=True,
+    )
+
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
+    class Meta:
+        ordering = ('created_at',)
+
     @property
-    def top_level_replies(self):
-        return self.replies.filter(parent__isnull=True)
+    def top_level(self):
+        parent = self
+        visited = set()
+        while parent.parent:
+            if parent.id in visited:
+                break
+            visited.add(parent.id)
+            parent = parent.parent
+        return parent
 
     def __str__(self):
         return f"Comment by {self.user.username}"

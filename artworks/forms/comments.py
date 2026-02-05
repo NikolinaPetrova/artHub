@@ -22,3 +22,13 @@ class CommentEditForm(BaseCommentForm):
                 attrs={'class': 'comment-input'}
             )
         }
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['content']
+        widgets = {
+            'content': forms.TextInput(attrs={
+                'placeholder': 'Reply to a comment...',
+            }),
+        }

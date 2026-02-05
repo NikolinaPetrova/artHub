@@ -1,5 +1,7 @@
 import os
 from pathlib import Path
+
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -125,3 +127,5 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'accounts.ArtHubUser'
+LOGIN_REDIRECT_URL = reverse_lazy('gallery')
+LOGOUT_REDIRECT_URL = reverse_lazy('home')

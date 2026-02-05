@@ -1,11 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from artworks.forms import CreateArtworkForm, EditArtworkForm, CreateCommentForm, ReplyForm, CommentEditForm, \
-    DeleteArtworkForm
-from artworks.models import Artwork, Comment, Reply
+from artworks.forms import CreateArtworkForm, EditArtworkForm, CreateCommentForm, CommentEditForm, DeleteArtworkForm, \
+    ReplyForm
+from artworks.models import Artwork, Comment
 
 
 class CreateArtworkView(LoginRequiredMixin, CreateView):
@@ -32,11 +32,12 @@ class ArtworkDetailsView(DetailView):
         context['reply_form'] = kwargs.get('reply_form', ReplyForm())
         context['edit_form'] = CommentEditForm()
         context['user_like'] = artwork.likes.filter(user=user).exists() if user.is_authenticated else False
-        context['comments'] = artwork.comments.prefetch_related('replies')
+        context['comments'] = artwork.comments.filter(parent__isnull=True).prefetch_related('child_replies')
         return context
 
     def post(self, request, *args, **kwargs):
-        artwork = self.get_object()
+        self.object = self.get_object()
+        artwork = self.object
         user = request.user
 
         if not user.is_authenticated:
@@ -48,6 +49,7 @@ class ArtworkDetailsView(DetailView):
                 comment = form.save(commit=False)
                 comment.user = user
                 comment.artwork = artwork
+                comment.parent = None
                 comment.save()
                 return redirect('artwork-details', pk=artwork.pk)
             else:
@@ -55,21 +57,30 @@ class ArtworkDetailsView(DetailView):
                 return self.render_to_response(context)
 
         elif 'reply_submit' in request.POST:
-            comment_id = request.POST.get('comment_id')
-            parent_id = request.POST.get('parent_id')
-            comment = Comment.objects.get(pk=comment_id)
             form = ReplyForm(request.POST)
+            parent_id = request.POST.get('parent_id')
+            parent_reply = get_object_or_404(Comment, pk=parent_id) if parent_id else None
+
             if form.is_valid():
                 reply = form.save(commit=False)
-                reply.comment = comment
-                reply.parent = Reply.objects.get(pk=parent_id) if parent_id else None
-                reply.artwork = artwork
                 reply.user = user
+                reply.artwork = artwork
+                reply.parent = parent_reply
                 reply.save()
                 return redirect('artwork-details', pk=artwork.pk)
             else:
                 context = self.get_context_data(reply_form=form)
                 return self.render_to_response(context)
+
+        elif 'edit_submit' in request.POST:
+            comment_id = request.POST.get('comment_id')
+            comment = get_object_or_404(Comment, pk=comment_id)
+            form = CommentEditForm(request.POST, instance=comment)
+
+            if form.is_valid():
+                form.save()
+
+            return redirect('artwork-details', pk=artwork.pk)
 
         return self.render_to_response(self.get_context_data())
 

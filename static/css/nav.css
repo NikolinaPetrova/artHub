@@ -112,16 +112,24 @@ a {
     z-index: 1000;
 }
 
-.dropdown-menu li a {
+.dropdown-menu li a,
+.dropdown-menu li button {
     padding: 10px 20px;
+    font-size: 16px;
 }
 
-.dropdown-menu li a:hover {
+.dropdown-menu li a:hover,
+.dropdown-menu li button:hover{
     background-color: #171616;
 }
 
-.dropdown:hover .dropdown-menu {
+.dropdown:hover .dropdown-menu{
     display: block;
     opacity: 1;
     transform: translateY(0);
+}
+
+.dropdown-menu li button {
+    background: none;
+    border: none;
 }

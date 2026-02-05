@@ -28,15 +28,22 @@
                 <li><a href="{% url 'create-artwork' %}">Create Art</a></li>
                 <li class="dropdown"><a href="#">Profile</a>
                 <ul class="dropdown-menu">
-                    <li><a href="{% url 'profile-details' %}">Details</a></li>
-                    <li><a href="{% url 'edit-profile' %}">Edit</a></li>
-                    <li><a href="{% url 'profile-delete' %}">Delete</a></li>
+                    <li><a href="{% url 'profile-details' request.user.pk %}">Details</a></li>
+                    <li><a href="{% url 'edit-profile' request.user.pk %}">Edit</a></li>
+                    <li><a href="{% url 'delete-profile' request.user.pk %}">Delete</a></li>
+                    <li>
+                        <form method="post" action="{% url 'logout' %}">
+                            {% csrf_token %}
+                            <button class="logout-btn">Log Out</button>
+                        </form>
+                    </li>
                 </ul>
                 </li>
             </ul>
             {% else %}
                 <ul class="nav-links">
-                    <li><a href="{% url 'create-profile' %}">Create Profile</a></li>
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'register' %}">Register</a></li>
                 </ul>
             {% endif %}
         </header>

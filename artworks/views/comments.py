@@ -6,19 +6,6 @@ from artworks.forms import CommentEditForm
 from artworks.models import Comment
 
 
-@login_required
-def delete_comment(request, pk):
-    if request.method == "POST":
-        comment = get_object_or_404(Comment, pk=pk)
-
-        if comment.user != request.user:
-            return HttpResponseForbidden('You cannot delete this comment.')
-
-        comment.delete()
-
-    return redirect('artwork-details', pk=comment.artwork.pk)
-
-
 class CommentEditView(View):
     def post(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
@@ -32,3 +19,15 @@ class CommentEditView(View):
             form.save()
 
         return redirect('artwork-details', pk=comment.artwork.pk)
+
+@login_required
+def delete_comment(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+
+    if comment.user != request.user:
+        return HttpResponseForbidden('You cannot delete this comment.')
+
+    if request.method == 'POST':
+        comment.delete()
+
+    return redirect('artwork-details', pk=comment.artwork.pk)

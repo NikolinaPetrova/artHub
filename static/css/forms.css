@@ -89,5 +89,25 @@ select:focus {
     text-align: center;
 }
 
+.login-buttons {
+   display: flex;
+    flex-direction: column;
+}
 
+.login-buttons a {
+    all: unset;
+    cursor: pointer;
+}
 
+.login-buttons a:hover {
+    color: #1f56b3;
+    background-color: unset;
+}
+
+.profile-form .confirm-btn {
+    padding-top: 1rem;
+}
+
+select option {
+    background-color: #111111;
+}
