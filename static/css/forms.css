@@ -42,7 +42,8 @@ label {
 
 input,
 textarea,
-select {
+select,
+fieldset {
     padding: 0.7rem 0.9rem;
     border-radius: 0.6rem;
     border: 1px solid #333;
@@ -110,4 +111,21 @@ select:focus {
 
 select option {
     background-color: #111111;
+}
+
+.album-container form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.album-container button {
+    font-size: 17px;
+}
+
+.album-container .overlay button,
+.album-overlay form button {
+    border: none;
+    cursor: pointer;
 }

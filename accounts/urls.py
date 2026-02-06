@@ -12,5 +12,4 @@ urlpatterns = [
         path('edit/', views.UserUpdateView.as_view(), name='edit-profile'),
         path('delete/', views.UserDeleteView.as_view(), name='delete-profile'),
     ]))
-
 ]

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+    <main class="album-container">
+        <form method="post">
+            {{ form }}
+            {% csrf_token %}
+            <button type="submit" class="save-button">Save</button>
+        </form>
+        <section class="artworks-container">
+            {% for artwork in album.artworks.all %}
+                <div class="wrap-image">
+                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                        <form method="post" class="overlay">
+                            {% csrf_token %}
+                            <input type="hidden" name="remove_artwork" value="{{ artwork.pk }}">
+                            <button type="submit" class="overlay">Remove from album</button>
+                        </form>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}

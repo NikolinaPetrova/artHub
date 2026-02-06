@@ -4,21 +4,60 @@
 
     <main>
         <section class="details-container profile-details">
-            <div class="img-details profile-img">
-                <img alt="User Default Image" src="{% static 'images/user-default.jpg' %}">
-            </div>
+                <div class="profile-wrap">
+                    <div class="profile-img">
+                        <img alt="User Default Image" src="{% static 'images/user-default.jpg' %}">
+                    </div>
 
-            <div class="info-container">
-                <div class="details">
-                    <h1>{{ user }}</h1>
-                    {% if user.professional_artist %}
-                        <h3><strong>Professional Artist</strong></h3>
-                    {% endif %}
-                    <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <div class="info-container">
+                        <div class="details">
+                            <h1>{{ user }}</h1>
+                            {% if user.professional_artist %}
+                                <h3><strong>Professional Artist</strong></h3>
+                            {% endif %}
+                            <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+                            <p><strong>Email:</strong> {{ user.email }}</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            
+
+                <div class="create-album">
+                    <form method="post" action="{% url 'album-create' %}">
+                        {{ album_form }}
+                        {% csrf_token %}
+                        <button type="submit">Create</button>
+                    </form>
+                </div>
+
+                <div class="albums-list">
+                    {% for album in album_list %}
+                        <div class="album-card">
+
+                            {% if album.artworks.last %}
+                                <div class="album-bg" style="background-image: url('{{ album.artworks.last.image_url }}');"></div>
+                            {% else %}
+                                <div class="album-bg fallback">
+                                    <i class="fa-regular fa-image"></i>
+                                </div>
+                            {% endif %}
+
+                            <div class="album-info">
+                                <h3>{{ album.name }}</h3>
+                                <p>{{ album.artworks.count }} artworks</p>
+                            </div>
+
+                            <div class="album-overlay">
+                                <a href="{% url 'album-details' album.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
+                                <a href="{% url 'edit-album' album.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <form method="post" action="{% url 'album-delete' album.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                                </form>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
         </section>
     </main>
 

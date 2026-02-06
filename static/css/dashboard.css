@@ -10,6 +10,7 @@
 
 .no-artworks h1 {
     font-size: 50px;
+    padding-bottom: 1rem;
 }
 
 .artworks-container {

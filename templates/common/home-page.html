@@ -1,9 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <main class="main-no-profile">
-        <h1>Art Showcase</h1>
-        <h2>Digital, traditional & visual — all in one place</h2>
-    </main>
+    <main class="dashboard">
+        {% if not artwork_list %}
+            <div class="no-artworks">
+                {% if request.GET.q %}
+                    <h1>No artworks match your search criteria.</h1>
+                {% else %}
+                    <h1>There are currently no artworks available.</h1>
+                {% endif %}
+            </div>
+        {% else %}
+            {% if request.GET.q %}
+                <h2>Artworks matching...</h2>
+            {% endif %}
+                <section class="artworks-container">
+                    {% for artwork in artwork_list %}
+                        <div class="wrap-image">
+                            <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                                <p class="overlay">More Info</p>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </section>
+        {% endif %}
 
 {% endblock %}

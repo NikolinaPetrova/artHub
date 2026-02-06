@@ -22,11 +22,12 @@
                         <h1>{{ artwork.title|capfirst }}</h1>
                         {% if request.user.is_authenticated and artwork.user == request.user %}
                             <div class="buttons">
-                                <a href="{% url 'edit-artwork' artwork.pk %}"><i class="fa-solid fa-pen-to-square" title="Edit"></i></a>
-                                <a href="{% url 'delete-artwork' artwork.pk %}"><i class="fa-solid fa-trash-arrow-up" title="Delete"></i></a>
+                                <a href="{% url 'edit-artwork' artwork.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="{% url 'delete-artwork' artwork.pk %}" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></a>
                             </div>
                         {% endif %}
                     </div>
+                    <a href="#"><strong>By {{ artwork.user }}</strong></a>
                     <p class="description"><strong>Description:</strong> {{ artwork.description }}</p>
                     <p><strong>Type:</strong> {{ artwork.type }}</p>
                     <p><strong>Published:</strong> {{ artwork.created_at }}</p>

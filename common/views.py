@@ -3,7 +3,8 @@ from django.views.generic import TemplateView, ListView
 from artworks.models import Artwork
 
 
-class HomePageView(TemplateView):
+class HomePageView(ListView):
+    model = Artwork
     template_name = 'common/home-page.html'
 
 class Custom404View(TemplateView):

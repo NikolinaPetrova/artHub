@@ -14,9 +14,17 @@ class CreateArtworkView(LoginRequiredMixin, CreateView):
     template_name = 'artwork/create-artwork.html'
     success_url = reverse_lazy('gallery')
 
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['albums'].queryset = self.request.user.albums.all()
+        return form
+
     def form_valid(self, form):
         form.instance.user = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        self.object.albums.set(form.cleaned_data['albums'])
+        return response
+
 
 class ArtworkDetailsView(DetailView):
     model = Artwork
@@ -88,6 +96,18 @@ class EditArtworkView(LoginRequiredMixin, UpdateView):
     model = Artwork
     template_name = 'artwork/edit-artwork.html'
     form_class = EditArtworkForm
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['albums'].queryset = self.request.user.albums.all()
+        form.fields['albums'].initial = self.object.albums.all()
+        return form
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        selected_albums = form.cleaned_data['albums']
+        self.object.albums.set(selected_albums)
+        return response
 
     def get_success_url(self):
         return reverse('artwork-details', kwargs={'pk': self.object.pk})

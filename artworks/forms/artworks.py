@@ -1,5 +1,6 @@
 import re
 from django import forms
+from albums.models import Album
 from artworks.models import Artwork, Tag
 from common.mixins import DisabledFormFieldsMixin
 
@@ -13,6 +14,12 @@ class BaseArtworkForm(forms.ModelForm):
             self.initial['tags'] = ', '.join(
                 tag.name for tag in self.instance.tags.all()
             )
+
+    albums = forms.ModelMultipleChoiceField(
+        queryset=Album.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+    )
 
     tags = forms.CharField(
         required=False,

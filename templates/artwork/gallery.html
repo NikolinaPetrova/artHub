@@ -7,7 +7,8 @@
                 {% if request.GET.q %}
                     <h1>No artworks match your search criteria.</h1>
                 {% else %}
-                    <h1>There are currently no artworks available.</h1>
+                    <h1>Bring your gallery to life</h1>
+                    <a href="{% url 'create-artwork' %}" class="btn-create">Create Artwork</a>
                 {% endif %}
             </div>
         {% else %}
