@@ -91,9 +91,8 @@
 .buttons button:first-child:hover,
 .buttons button:last-child:hover,
 .buttons a:hover {
-    background-color: #e0d9de;
+    background-color: #1f56b3;
     transform: translateY(-2px);
-    color: black;
 }
 
 .buttons button:last-child {
