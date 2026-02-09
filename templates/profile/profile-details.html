@@ -20,7 +20,7 @@
                         </div>
                     </div>
                 </div>
-
+                {% if request.user.pk == user.pk %}
                 <div class="create-album">
                     <form method="post" action="{% url 'album-create' %}">
                         {{ album_form }}
@@ -28,6 +28,7 @@
                         <button type="submit">Create</button>
                     </form>
                 </div>
+                {% endif %}
 
                 <div class="albums-list">
                     {% for album in album_list %}
@@ -48,11 +49,13 @@
 
                             <div class="album-overlay">
                                 <a href="{% url 'album-details' album.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
+                                {% if request.user.pk == user.pk %}
                                 <a href="{% url 'edit-album' album.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
                                 <form method="post" action="{% url 'album-delete' album.pk %}">
                                     {% csrf_token %}
                                     <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
                                 </form>
+                                {% endif %}
                             </div>
 
                         </div>

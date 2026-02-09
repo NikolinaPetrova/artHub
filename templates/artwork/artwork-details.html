@@ -27,7 +27,7 @@
                             </div>
                         {% endif %}
                     </div>
-                    <a href="#"><strong>By {{ artwork.user }}</strong></a>
+                    <a href="{% url 'profile-details' artwork.user.pk %}"><strong>By {{ artwork.user }}</strong></a>
                     <p class="description"><strong>Description:</strong> {{ artwork.description }}</p>
                     <p><strong>Type:</strong> {{ artwork.type }}</p>
                     <p><strong>Published:</strong> {{ artwork.created_at }}</p>
