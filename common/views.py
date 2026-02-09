@@ -1,3 +1,4 @@
+import re
 from django.db.models import Q
 from django.views.generic import TemplateView, ListView
 from artworks.models import Artwork
@@ -22,6 +23,16 @@ class SearchArtworksView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q', '')
         queryset = Artwork.objects.prefetch_related('tags')
-        if query:
-            return queryset.filter(Q(title__icontains=query) | Q(tags__name__icontains=query)).distinct()
-        return queryset
+
+        if not query:
+            return queryset
+
+        search_words = re.findall(r'\w+', query)
+
+        q_object = Q()
+
+        for word in search_words:
+            q_object |= Q(title__icontains=word)
+            q_object |= Q(tags__name__icontains=word)
+
+        return queryset.filter(q_object).distinct()
