@@ -15,5 +15,9 @@ class Album(models.Model):
     )
     updated_at = models.DateTimeField(auto_now=True, editable=False)
 
+    class Meta:
+        unique_together = ('owner', 'name')
+        ordering = ['-updated_at']
+
     def __str__(self):
         return self.name

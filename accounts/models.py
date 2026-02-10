@@ -2,9 +2,15 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class ArtHubUser(AbstractUser):
+    email = models.EmailField(
+        unique=True,
+        blank=False,
+        null=False,
+        verbose_name="Email Address"
+    )
+
     professional_artist = models.BooleanField(
         default=False,
-        help_text="Check if you create art professionally."
     )
 
     def save(self, *args, **kwargs):

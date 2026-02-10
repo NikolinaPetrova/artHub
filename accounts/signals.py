@@ -8,7 +8,7 @@ UserModel = settings.AUTH_USER_MODEL
 
 @receiver(post_save, sender=UserModel)
 def create_default_album(sender, instance, created, **kwargs):
-    if created:
+    if created and not Album.objects.filter(owner=instance, name='Default Album').exists():
         Album.objects.create(
             owner=instance,
             name='Default Album'

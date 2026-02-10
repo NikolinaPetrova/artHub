@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import ArtHubUserCreationForm, ArtHubUserUpdateForm
 from albums.forms import AlbumCreateForm
-from albums.models import Album
 
 UserModel = get_user_model()
 
@@ -15,9 +15,18 @@ class RegisterView(CreateView):
     template_name = 'registration/register.html'
     success_url = reverse_lazy('home')
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(self.success_url)
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
-        user = form.save()
-        login(self.request, user)
+        try:
+            user = form.save()
+            login(self.request, user)
+        except IntegrityError:
+            form.add_error(None, 'This user already exists. Please use another email or username.')
+            return self.form_invalid(form)
         return redirect(self.success_url)
 
 

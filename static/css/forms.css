@@ -129,3 +129,7 @@ select option {
     border: none;
     cursor: pointer;
 }
+
+.errorlist li {
+    color: #d36666;
+}
