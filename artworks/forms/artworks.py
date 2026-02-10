@@ -34,18 +34,21 @@ class BaseArtworkForm(forms.ModelForm):
         tags_string = self.cleaned_data.get('tags', '')
 
         if not tags_string:
-            return ''
+            return []
 
         tag_names = [tag.strip().lower() for tag in tags_string.split(',') if tag.strip()]
 
         for name in tag_names:
-            if name == '':
-                continue
-
+            if len(name) > 20:
+                raise forms.ValidationError(f'Tag name is too long: "{name}"')
             if not TAG_REGEX.fullmatch(name):
                 raise forms.ValidationError(f'Invalid tag: "{name}"')
 
-        return tag_names
+        return list(set(tag_names))
+
+    def clean_title(self):
+        title = self.cleaned_data['title'].strip()
+        return title
 
     def save(self, commit=True):
         artwork = super().save(commit=False)

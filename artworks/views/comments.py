@@ -23,8 +23,9 @@ class CommentEditView(View):
 @login_required
 def delete_comment(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
+    artwork_owner = comment.artwork.user
 
-    if comment.user != request.user:
+    if comment.user != request.user and artwork_owner != request.user:
         return HttpResponseForbidden('You cannot delete this comment.')
 
     if request.method == 'POST':

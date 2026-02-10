@@ -3,8 +3,6 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from albums.forms import AlbumCreateForm, AlbumEditForm
 from albums.models import Album
-from artworks.models import Artwork
-
 
 class AlbumCreateView(CreateView):
     model = Album

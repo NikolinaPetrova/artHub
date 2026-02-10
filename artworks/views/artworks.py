@@ -31,16 +31,29 @@ class ArtworkDetailsView(DetailView):
     template_name = 'artwork/artwork-details.html'
     context_object_name = 'artwork'
 
+    def get_queryset(self):
+        return (
+            Artwork.objects
+            .select_related('user')
+            .prefetch_related(
+                'tags',
+                'albums',
+                'likes',
+                'comments__user',
+                'comments__child_replies__user',
+            )
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        artwork = self.get_object()
+        artwork = self.object
         user = self.request.user
 
         context['comment_form'] = kwargs.get('comment_form', CreateCommentForm())
         context['reply_form'] = kwargs.get('reply_form', ReplyForm())
         context['edit_form'] = CommentEditForm()
-        context['user_like'] = artwork.likes.filter(user=user).exists() if user.is_authenticated else False
-        context['comments'] = artwork.comments.filter(parent__isnull=True).prefetch_related('child_replies')
+        context['user_like'] = any(l.user_id == user.id for l in artwork.likes.all()) if user.is_authenticated else False
+        context['comments'] = artwork.comments.filter(parent__isnull=True)
         return context
 
     def post(self, request, *args, **kwargs):

@@ -8,6 +8,9 @@ class HomePageView(ListView):
     model = Artwork
     template_name = 'common/home-page.html'
 
+    def get_queryset(self):
+        return Artwork.objects.select_related('user').prefetch_related('tags')
+
 class Custom404View(TemplateView):
     template_name = '404.html'
 
@@ -21,8 +24,8 @@ class SearchArtworksView(ListView):
     context_object_name = 'artwork_list'
 
     def get_queryset(self):
-        query = self.request.GET.get('q', '')
-        queryset = Artwork.objects.prefetch_related('tags')
+        query = self.request.GET.get('q', '').strip()
+        queryset = Artwork.objects.select_related('user').prefetch_related('tags')
 
         if not query:
             return queryset

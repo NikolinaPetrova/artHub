@@ -3,6 +3,7 @@ from artworks.models import Comment
 
 
 class BaseCommentForm(forms.ModelForm):
+
     class Meta:
         model = Comment
         fields = ['content']
@@ -11,6 +12,10 @@ class BaseCommentForm(forms.ModelForm):
                 'placeholder': 'Add a comment...',
             }),
         }
+
+    def clean_content(self):
+        content = self.cleaned_data['content'].strip()
+        return content
 
 class CreateCommentForm(BaseCommentForm):
     ...
