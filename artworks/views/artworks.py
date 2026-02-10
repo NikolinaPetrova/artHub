@@ -22,7 +22,7 @@ class CreateArtworkView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         response = super().form_valid(form)
-        self.object.albums.set(form.cleaned_data['albums'])
+        self.object.albums.set(form.cleaned_data['albums'].filter(owner=self.request.user))
         return response
 
 
@@ -67,7 +67,7 @@ class ArtworkDetailsView(DetailView):
         elif 'reply_submit' in request.POST:
             form = ReplyForm(request.POST)
             parent_id = request.POST.get('parent_id')
-            parent_reply = get_object_or_404(Comment, pk=parent_id) if parent_id else None
+            parent_reply = get_object_or_404(Comment, pk=parent_id, artwork=artwork) if parent_id else None
 
             if form.is_valid():
                 reply = form.save(commit=False)
@@ -82,7 +82,7 @@ class ArtworkDetailsView(DetailView):
 
         elif 'edit_submit' in request.POST:
             comment_id = request.POST.get('comment_id')
-            comment = get_object_or_404(Comment, pk=comment_id)
+            comment = get_object_or_404(Comment, pk=comment_id, artwork=artwork)
             form = CommentEditForm(request.POST, instance=comment)
 
             if form.is_valid():
@@ -105,7 +105,7 @@ class EditArtworkView(LoginRequiredMixin, UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        selected_albums = form.cleaned_data['albums']
+        selected_albums = form.cleaned_data['albums'].filter(owner=self.request.user)
         self.object.albums.set(selected_albums)
         return response
 

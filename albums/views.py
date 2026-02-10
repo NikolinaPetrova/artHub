@@ -9,6 +9,12 @@ from artworks.models import Artwork
 class AlbumCreateView(CreateView):
     model = Album
     form_class = AlbumCreateForm
+    template_name = 'profile/profile-details.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['album_form'] = kwargs.get('album_form', self.get_form())
+        return context
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
@@ -27,12 +33,15 @@ class AlbumEditView(UpdateView):
     form_class = AlbumEditForm
     template_name = 'albums/edit-album.html'
 
+    def get_queryset(self):
+        return Album.objects.filter(owner=self.request.user)
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
 
         if 'remove_artwork' in request.POST:
             artwork_pk = request.POST.get('remove_artwork')
-            artwork = get_object_or_404(Artwork, pk=artwork_pk)
+            artwork = get_object_or_404(self.object.artworks, pk=artwork_pk)
             self.object.artworks.remove(artwork)
             return redirect('edit-album', pk=self.object.pk)
 

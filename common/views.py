@@ -9,7 +9,7 @@ class HomePageView(ListView):
     template_name = 'common/home-page.html'
 
 class Custom404View(TemplateView):
-    template_name = 'common/404.html'
+    template_name = '404.html'
 
     def render_to_response(self, context, **response_kwargs):
         response_kwargs['status'] = 404
