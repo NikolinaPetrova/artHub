@@ -133,6 +133,11 @@ class DeleteArtworkView(LoginRequiredMixin, DeleteView):
     form_class = DeleteArtworkForm
     template_name = 'artwork/delete-artwork.html'
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
     def get_form(self, form_class=None):
         if form_class is None:
             form_class = self.get_form_class()

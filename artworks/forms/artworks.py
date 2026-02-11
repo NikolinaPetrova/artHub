@@ -9,7 +9,12 @@ TAG_REGEX = re.compile(r'^[a-z0-9]+([ -][a-z0-9]+)*$')
 
 class BaseArtworkForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
+
+        if user:
+            self.fields['albums'].queryset = self.instance.albums.filter(owner=user)
+
         if self.instance.pk:
             self.initial['tags'] = ', '.join(
                 tag.name for tag in self.instance.tags.all()
@@ -62,6 +67,8 @@ class BaseArtworkForm(forms.ModelForm):
         for name in tag_names:
             tag, _ = Tag.objects.get_or_create(name=name)
             artwork.tags.add(tag)
+
+        artwork.albums.set(self.cleaned_data.get('albums', []))
 
         return artwork
 

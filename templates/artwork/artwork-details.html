@@ -46,7 +46,7 @@
                     <h3>{{ artwork.comments.count }} Comments</h3>
 
                     <div class="add-comment">
-                        <div class="avatar">{{ artwork.user.username|slice:":1" }}</div>
+                        <div class="avatar">{{ request.user.username|slice:":1" }}</div>
                         <form method="post">
                             {% csrf_token %}
                             {{ comment_form.content }}

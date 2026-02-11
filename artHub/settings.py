@@ -129,3 +129,4 @@ STATICFILES_DIRS = [
 AUTH_USER_MODEL = 'accounts.ArtHubUser'
 LOGIN_REDIRECT_URL = reverse_lazy('gallery')
 LOGOUT_REDIRECT_URL = reverse_lazy('home')
+LOGIN_URL = reverse_lazy('login')
