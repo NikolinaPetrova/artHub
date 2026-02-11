@@ -1,7 +1,9 @@
 from django.conf import settings
 from django.db import models
+from artworks.mixins import CreatedAtMixin
 
-class ArtworkLike(models.Model):
+
+class ArtworkLike(CreatedAtMixin):
     artwork = models.ForeignKey(
         'artworks.Artwork',
         on_delete=models.CASCADE,
@@ -13,8 +15,6 @@ class ArtworkLike(models.Model):
         on_delete=models.CASCADE,
         related_name='likes',
     )
-
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         unique_together = ('artwork', 'user')

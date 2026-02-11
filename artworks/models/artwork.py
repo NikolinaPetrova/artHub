@@ -2,9 +2,10 @@ from django.conf import settings
 from django.core.validators import MinLengthValidator
 from django.db import models
 from artworks.choices import ArtworkTypeChoices
+from artworks.mixins import CreatedAtMixin
 
 
-class Artwork(models.Model):
+class Artwork(CreatedAtMixin):
     title = models.CharField(
         max_length=200,
         validators=[MinLengthValidator(3)],
@@ -12,7 +13,6 @@ class Artwork(models.Model):
     )
     description = models.TextField(blank=True, null=True)
     image_url = models.URLField()
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
     type = models.CharField(
         max_length=20,
         choices=ArtworkTypeChoices.choices,

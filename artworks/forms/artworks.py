@@ -4,7 +4,7 @@ from albums.models import Album
 from artworks.models import Artwork, Tag
 from common.mixins import DisabledFormFieldsMixin
 
-TAG_REGEX = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
+TAG_REGEX = re.compile(r'^[a-z0-9]+([ -][a-z0-9]+)*$')
 
 
 class BaseArtworkForm(forms.ModelForm):
@@ -23,7 +23,7 @@ class BaseArtworkForm(forms.ModelForm):
 
     tags = forms.CharField(
         required=False,
-        help_text='Enter comma-separated tags',
+        help_text="Enter comma-separated tags (lowercase letters and numbers). Multi-word tags can use a space or a hyphen (-).",
     )
 
     class Meta:

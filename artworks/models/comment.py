@@ -2,8 +2,10 @@ from django.conf import settings
 from django.core.validators import MinLengthValidator
 from django.db import models
 
+from artworks.mixins import CreatedAtMixin
 
-class Comment(models.Model):
+
+class Comment(CreatedAtMixin):
     content = models.TextField(
         validators=[MinLengthValidator(2)]
     )
@@ -27,8 +29,6 @@ class Comment(models.Model):
         null=True,
         blank=True,
     )
-
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     class Meta:
         ordering = ('created_at',)
