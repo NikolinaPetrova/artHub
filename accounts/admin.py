@@ -1,3 +1,6 @@
 from django.contrib import admin
+from accounts.models import ArtHubUser
 
-# Register your models here.
+@admin.register(ArtHubUser)
+class ArtHubAdmin(admin.ModelAdmin):
+    ...
