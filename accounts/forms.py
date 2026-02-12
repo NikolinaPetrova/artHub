@@ -12,7 +12,7 @@ class ArtHubUserCreationForm(UserCreationForm):
     username = forms.CharField(
         max_length=30,
         validators=[MinLengthValidator(3)],
-        help_text='Choose a username using letters, numbers, - or _.'
+        help_text='Choose a username using lowercase letters, numbers, - or _.'
     )
 
     first_name = forms.CharField(

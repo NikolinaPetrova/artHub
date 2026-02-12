@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from albums.forms import AlbumCreateForm, AlbumEditForm
 from albums.models import Album

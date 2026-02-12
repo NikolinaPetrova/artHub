@@ -17,12 +17,13 @@
                 <section class="artworks-container">
                     {% for artwork in artwork_list %}
                         <div class="wrap-image">
-                            <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                            <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" alt="" src="{{ artwork.image_url }}">
                                 <p class="overlay">More Info</p>
                             </a>
                         </div>
                     {% endfor %}
                 </section>
         {% endif %}
+    </main>
 
 {% endblock %}
