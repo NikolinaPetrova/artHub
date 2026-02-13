@@ -35,7 +35,7 @@
                         {% if tags %}
                             <div class="buttons tags">
                                 {% for tag_name in tags %}
-                                    <a href="{% url 'search-artworks' %}?q={{ tag_name }}" class="tag">{{ tag_name }}</a>
+                                    <a href="{% url 'home' %}?q={{ tag_name }}" class="tag">{{ tag_name }}</a>
                                 {% endfor %}
                             </div>
                         {% endif %}

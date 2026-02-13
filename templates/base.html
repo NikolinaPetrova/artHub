@@ -15,7 +15,7 @@
                 <a href="{% url 'home' %}">ArtHub</a>
             </div>
 
-            <form action="{% url 'search-artworks' %}" method="get" class="search-form">
+            <form action="{% url 'home' %}" method="get" class="search-form">
                 <div class="search-bar">
                     <input type="search" name="q" placeholder="Search artworks by title or tag..." value="{{ request.GET.q }}">
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
