@@ -15,7 +15,7 @@
                     data-comment="{{ reply.id }}"
                     data-content="{{ reply.content }}">Edit</button>
         {% endif %}
-        {% if request.user.is_authenticated and comment.user == request.user or artwork.user == request.user %}
+        {% if request.user.is_authenticated and reply.user == request.user or artwork.user == request.user %}
             <form method="post" action="{% url 'delete-comment' reply.pk %}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="action-btn delete-button">Delete</button>

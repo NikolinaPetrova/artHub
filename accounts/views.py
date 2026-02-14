@@ -21,13 +21,12 @@ class RegisterView(CreateView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        try:
-            user = form.save()
-            login(self.request, user)
-        except IntegrityError:
-            form.add_error(None, 'This user already exists. Please use another email or username.')
-            return self.form_invalid(form)
-        return redirect(self.success_url)
+        response = super().form_valid(form)
+
+        if response.status_code in [301, 302]:
+            login(self.request, self.object)
+
+        return response
 
 
 class UserDetailView(DetailView):

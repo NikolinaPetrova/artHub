@@ -8,18 +8,6 @@ TAG_REGEX = re.compile(r'^[a-z0-9]+([ -][a-z0-9]+)*$')
 
 
 class BaseArtworkForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super().__init__(*args, **kwargs)
-
-        if user:
-            self.fields['albums'].queryset = self.instance.albums.filter(owner=user)
-
-        if self.instance.pk:
-            self.initial['tags'] = ', '.join(
-                tag.name for tag in self.instance.tags.all()
-            )
-
     albums = forms.ModelMultipleChoiceField(
         queryset=Album.objects.all(),
         required=False,
@@ -34,6 +22,21 @@ class BaseArtworkForm(forms.ModelForm):
     class Meta:
         model = Artwork
         fields = ['title', 'description', 'image_url', 'type', 'tags']
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if self.user:
+            self.fields['albums'].queryset = Album.objects.filter(owner=self.user)
+
+        if self.instance.pk and self.user:
+            self.fields['albums'].initial = self.instance.albums.filter(owner=self.user)
+
+        if self.instance.pk:
+            self.initial['tags'] = ', '.join(
+                tag.name for tag in self.instance.tags.all()
+            )
 
     def clean_tags(self):
         tags_string = self.cleaned_data.get('tags', '')
@@ -58,6 +61,9 @@ class BaseArtworkForm(forms.ModelForm):
     def save(self, commit=True):
         artwork = super().save(commit=False)
 
+        if self.user and not artwork.pk:
+            artwork.user = self.user
+
         if commit:
             artwork.save()
 
@@ -68,7 +74,8 @@ class BaseArtworkForm(forms.ModelForm):
             tag, _ = Tag.objects.get_or_create(name=name)
             artwork.tags.add(tag)
 
-        artwork.albums.set(self.cleaned_data.get('albums', []))
+        if 'albums' in self.cleaned_data:
+            artwork.albums.set(self.cleaned_data['albums'])
 
         return artwork
 
