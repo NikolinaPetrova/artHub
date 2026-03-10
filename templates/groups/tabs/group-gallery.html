@@ -1,0 +1,18 @@
+<main class="dashboard">
+    {% if not group_artworks %}
+        <div class="no-artworks">
+            <h2>Nothing here yet. Start the group’s creative journey!</h2>
+            <a href="{% url 'group-artwork-submit' group.slug %}" class="btn-create">Upload</a>
+        </div>
+    {% else %}
+        <section class="artworks-container">
+            {% for artwork in group_artworks %}
+                <div class="wrap-image">
+                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+</main>

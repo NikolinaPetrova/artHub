@@ -1,0 +1,32 @@
+{% load static %}
+<div class="profile-content">
+    <h3>Description</h3>
+    <div class="profile-description">
+         <p>{{ group.description }}</p>
+    </div>
+
+    <div class="group-admin">
+        <h3>Group Admin</h3>
+        <a href="{% url 'profile-details' group.owner.pk %}" class="user-container">
+            <img src="{{ group.owner.avatar.url }}">
+            <p>{{ group.owner }}</p>
+        </a>
+    </div>
+
+    <div>
+        <h3>Group Members</h3>
+        <div class="group-members">
+        {% for member in members %}
+            <a href="{% url 'profile-details' member.user.pk %}" class="user-container">
+                {% if member.user.avatar %}
+                    <img src="{{ member.user.avatar.url }}">
+                {% else %}
+                    <img src="{% static 'images/user-default.jpg' %}">
+                {% endif %}
+                <p>{{ member.user.username }}</p>
+            </a>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+</div>

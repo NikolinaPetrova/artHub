@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model, logout, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import ArtHubUserCreationForm, ArtHubUserUpdateForm
 from albums.forms import AlbumCreateForm
+from groups.choices import StatusChoices
+from groups.models import Group, GroupSubmission
 
 UserModel = get_user_model()
 
@@ -38,7 +39,13 @@ class UserDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['album_list'] = self.object.albums.all()
         context['album_form'] = AlbumCreateForm
-        context['albums'] = self.object.albums.all()
+        context['artwork_list'] = self.object.artworks.all()
+        context['group_list'] = self.object.owned_groups.all()
+        context['group_member'] = Group.objects.filter(members__user=self.object).distinct()
+        context['group_submissions'] = GroupSubmission.objects.filter(
+            group__owner=self.object,
+            status=StatusChoices.PENDING
+        )
         return context
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):

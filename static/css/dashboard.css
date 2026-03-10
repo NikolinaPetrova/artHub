@@ -55,7 +55,7 @@
     width: 100%;
     border-radius: 1rem;
     background-color: rgba(0,0,0,0.4);
-    color: #fff;
+    color: var(--font-color);
     font-size: 18px;
     display: flex;
     align-items: center;

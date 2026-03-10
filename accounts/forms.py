@@ -74,7 +74,7 @@ class ArtHubUserCreationForm(UserCreationForm):
 class BaseArtHubUserForm(forms.ModelForm):
     class Meta:
         model = UserModel
-        fields = ['first_name', 'last_name', 'email', 'professional_artist']
+        fields = ['first_name', 'last_name', 'email', 'professional_artist', 'avatar', 'banner', 'background']
 
 
 class ArtHubUserUpdateForm(BaseArtHubUserForm):

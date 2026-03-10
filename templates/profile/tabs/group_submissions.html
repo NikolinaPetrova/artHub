@@ -1,0 +1,22 @@
+<div class="submissions">
+    {% if not group_submissions %}
+        <h3>You don’t have any submissions yet.</h3>
+    {% endif %}
+    {% for submission in group_submissions.all %}
+        <div class="submissions-container">
+            <div class="content">
+                <a href="{% url 'artwork-details' submission.artwork.pk %}"><img src="{{ submission.artwork.image_url }}" alt="{{ submission.artwork.title }}"></a>
+                <p>{{ submission.artwork.title }} by <strong>{{ submission.submitted_by.username }}</strong></p>
+                <p>Status: {{ submission.status }}</p>
+            </div>
+            <div class="buttons">
+                <form method="post" action="{% url 'submission-moderate' submission.pk %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="submission_id" value="{{ submission.pk }}">
+                    <button type="submit" name="action" value="approve">Approve</button>
+                    <button type="submit" name="action" value="reject">Reject</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>

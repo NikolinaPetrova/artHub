@@ -3,65 +3,83 @@
 {% block content %}
 
     <main>
-        <section class="details-container profile-details">
+        <section class="profile-details">
                 <div class="profile-wrap">
-                    <div class="profile-img">
-                        <img alt="User Default Image" src="{% static 'images/user-default.jpg' %}">
-                    </div>
-
-                    <div class="info-container">
-                        <div class="details">
-                            <h1>{{ user }}</h1>
-                            {% if user.professional_artist %}
-                                <h3><strong>Professional Artist</strong></h3>
-                            {% endif %}
-                            <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-                            <p><strong>Email:</strong> {{ user.email }}</p>
-                        </div>
-                    </div>
-                </div>
-                {% if request.user.pk == user.pk %}
-                <div class="create-album">
-                    <form method="post" action="{% url 'album-create' %}">
-                        {{ album_form }}
-                        {% csrf_token %}
-                        <button type="submit">Create</button>
-                    </form>
-                </div>
-                {% endif %}
-
-                <div class="albums-list">
-                    {% for album in album_list %}
-                        <div class="album-card">
-
-                            {% if album.artworks.last %}
-                                <div class="album-bg" style="background-image: url('{{ album.artworks.last.image_url }}');"></div>
+                    <div class="profile-banner">
+                            <div class="banner">
+                            {% if user.banner %}
+                                <img src="{{ user.banner.url }}" alt="{{ user }}">
                             {% else %}
-                                <div class="album-bg fallback">
-                                    <i class="fa-regular fa-image"></i>
-                                </div>
+                                <img src="{% static 'images/default-banner.jpg' %}" alt="{{ user }}">
                             {% endif %}
-
-                            <div class="album-info">
-                                <h3>{{ album.name }}</h3>
-                                <p>{{ album.artworks.count }} artworks</p>
                             </div>
+                    </div>
 
-                            <div class="album-overlay">
-                                <a href="{% url 'album-details' album.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
-                                {% if request.user.pk == user.pk %}
-                                <a href="{% url 'edit-album' album.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <form method="post" action="{% url 'album-delete' album.pk %}">
-                                    {% csrf_token %}
-                                    <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
-                                </form>
-                                {% endif %}
-                            </div>
+                    <div class="profile-img">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}">
+                        {% else %}
+                            <img alt="User Default Image" src="{% static 'images/user-default.jpg' %}">
+                        {% endif %}
+                    </div>
 
+                    <div class="profile-username">
+                        <p>{{ user }}</p>
+                        {% if user.professional_artist %}
+                            <p class="pro"><strong>PRO</strong></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-nav">
+                        <ul class="nav-links">
+                            <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
+                            <li><a href="#" onclick="showTab('albums'); return false;">Albums</a></li>
+                            {% if request.user.pk == user.pk %}
+                                <li><a href="#" onclick="showTab('groups'); return false;">Groups</a></li>
+                                <li><a href="#" onclick="showTab('submissions')">Submissions</a></li>
+                            {% endif %}
+                            <li><a href="#" onclick="showTab('about'); return false;">About</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="profile-info about-bg">
+
+                    <div id="gallery" class="tab">
+                        {% include "profile/tabs/profile-gallery.html" %}
+                    </div>
+
+                    <div id="albums" class="tab" style="display: none">
+                        {% include 'profile/tabs/profile-albums.html' %}
+                    </div>
+
+                    <div id="about" class="tab" style="display: none">
+                        {% include 'profile/tabs/profile-info.html' %}
+                    </div>
+                    {% if request.user.pk == user.pk %}
+                    <div id="groups" class="tab about-bg" style="display: none">
+                        {% include 'profile/tabs/profile-groups.html' %}
+                    </div>
+                    {% endif %}
+                    {% if request.user.pk == user.pk %}
+                        <div id="submissions" class="tab about-bg" style="display: none">
+                            {% include 'profile/tabs/group_submissions.html' %}
                         </div>
-                    {% endfor %}
+                    {% endif %}
                 </div>
         </section>
     </main>
+    <script>
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll(".tab");
+
+            tabs.forEach(tab => {
+                tab.style.display = "none";
+            });
+
+            const activeTab = document.getElementById(tabId);
+            activeTab.style.display = "block";
+        }
+    </script>
 
 {% endblock %}

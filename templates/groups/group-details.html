@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <main>
+        <section class="profile-details">
+                <div class="profile-wrap">
+                    <div class="profile-banner">
+                        <div class="banner">
+                        {% if group.banner %}
+                            <img src="{{ group.banner.url }}" alt="{{ group }}">
+                        {% else %}
+                            <img src="{% static 'images/default-banner.jpg' %}" alt="{{ user }}">
+                        {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="group-header">
+                        {% if group.avatar %}
+                            <img src="{{ group.avatar.url }}">
+                        {% endif %}
+                        <h3>{{ group.name }}</h3>
+
+                    </div>
+
+                    <div class="group-nav">
+                        <div class="nav-container">
+
+                            <ul class="nav-left">
+                                <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
+                                <li><a href="#" onclick="showTab('posts'); return false;">Posts</a></li>
+                                <li><a href="#" onclick="showTab('about'); return false;">About</a></li>
+                            </ul>
+
+                            <ul class="nav-right">
+                                {% if group.owner.pk == request.user.pk %}
+                                    <li><a href="{% url 'group-edit' group.slug %}"><i class="fa-solid fa-pen-to-square"></i></a></li>
+                                    <button type="button" id="delete-btn">
+                                        <i class="fa-solid fa-trash-arrow-up"></i>
+                                    </button>
+
+                                    <form method="post" action="{% url 'group-delete' group.slug %}" class="delete-group-form" style="display:none;">
+                                        {% csrf_token %}
+                                    </form>
+
+                                    <div id="delete-modal" class="modal">
+                                        <div class="modal-content">
+                                            <h2>Delete Group: "{{ group.name }}"</h2>
+                                            <p>This action cannot be undone. Are you sure you want to delete it?</p>
+                                            <button id="confirm-delete" class="btn btn-danger">Yes, Delete</button>
+                                            <button id="cancel-delete" class="btn btn-secondary">Cancel</button>
+                                        </div>
+                                    </div>
+
+                                {% endif %}
+                                {% if group.owner.pk != request.user.pk %}
+                                    <form method="post" action="{% url 'join-group' group.slug %}">
+                                        {% csrf_token %}
+                                        <button class="join-btn">
+                                            {% if joined_to_group %}Leave{% else %}Join{% endif %}
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-info about-bg">
+
+                    <div id="gallery" class="tab">
+                        {% include "groups/tabs/group-gallery.html" %}
+                    </div>
+
+                    <div id="posts" class="tab" style="display: none">
+                        {% include 'groups/tabs/group-posts.html' %}
+                    </div>
+
+                    <div id="about" class="tab" style="display: none">
+                        {% include 'groups/tabs/group-about.html' %}
+                    </div>
+                </div>
+        </section>
+    </main>
+    <script>
+        function showTab(tabId) {
+            const tabs = document.querySelectorAll(".tab");
+
+            tabs.forEach(tab => {
+                tab.style.display = "none";
+            });
+
+            const activeTab = document.getElementById(tabId);
+            activeTab.style.display = "block";
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteBtn = document.getElementById('delete-btn');
+            const modal = document.getElementById('delete-modal');
+            const confirmBtn = document.getElementById('confirm-delete');
+            const cancelBtn = document.getElementById('cancel-delete');
+            const form = document.querySelector('.delete-group-form');
+
+            deleteBtn.addEventListener('click', () => modal.style.display = 'block');
+            cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+            confirmBtn.addEventListener('click', () => form.submit());
+        });
+    </script>
+
+{% endblock %}

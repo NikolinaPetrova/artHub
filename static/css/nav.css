@@ -5,7 +5,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 10px 30px;
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--main-color);
 }
 
 .logo {
@@ -51,7 +51,7 @@ a {
 .search-bar button {
     transition: background-color 0.3s ease, transform 0.2s ease;
     background-color: transparent;
-    color: #fff;
+    color: var(--font-color);
     border: none;
     margin-left: 0.4rem;
     position: absolute;
@@ -61,7 +61,7 @@ a {
 }
 
 .search-bar button:hover {
-    color: #fff;
+    color: var(--font-color);
     transform: translateY(-2px);
 }
 

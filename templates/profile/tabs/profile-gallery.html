@@ -1,0 +1,18 @@
+<main class="dashboard">
+    {% if not artwork_list %}
+        <div class="no-artworks">
+            <h1>Bring your gallery to life</h1>
+            <a href="{% url 'create-artwork' %}" class="btn-create">Create Artwork</a>
+        </div>
+    {% else %}
+        <section class="artworks-container">
+            {% for artwork in artwork_list %}
+                <div class="wrap-image">
+                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    {% endif %}
+</main>

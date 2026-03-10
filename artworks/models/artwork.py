@@ -30,5 +30,11 @@ class Artwork(CreatedAtMixin):
         blank=True,
     )
 
+    groups = models.ManyToManyField(
+        'groups.Group',
+        related_name='artworks',
+        blank=True,
+    )
+
     def __str__(self):
         return self.title

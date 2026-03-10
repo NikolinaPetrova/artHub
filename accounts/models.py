@@ -13,6 +13,24 @@ class ArtHubUser(AbstractUser):
         default=False,
     )
 
+    avatar = models.ImageField(
+        upload_to='user-avatars/',
+        blank=True,
+        null=True,
+    )
+
+    banner = models.ImageField(
+        upload_to='user-banners/',
+        blank=True,
+        null=True,
+    )
+
+    background = models.ImageField(
+        upload_to='user-backgrounds/',
+        blank=True,
+        null=True,
+    )
+
     def save(self, *args, **kwargs):
         if self.first_name:
             self.first_name = self.first_name.strip().capitalize()

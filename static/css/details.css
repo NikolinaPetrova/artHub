@@ -22,13 +22,54 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
+.about-bg {
+    background: var(--main-color);
+}
+
 .info-container {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
     gap: 1.5rem;
     min-width: 700px;
+}
+
+.profile-content {
+    margin: 4rem auto 0 auto;
+    max-width: 700px;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    text-align: center;
+}
+
+.profile-content .username {
+    display: flex;
+    gap: 0.5rem;
+
+    p {
+        font-size: 1.4rem;
+    }
+
+    .pro {
+        color: #d36666;
+        font-size: 1rem;
+        font-weight: bolder;
+    }
+}
+
+.name-email {
+    display: flex;
+    gap: 1rem;
 }
 
 .details {
@@ -45,17 +86,17 @@
 .details .description {
     font-size: 1.1rem;
     line-height: 1.7;
-    color: #ccc;
+    color: var(--font-color);
 }
 
 .details p {
     font-size: 1rem;
     margin: 0;
-    color: #aaa;
+    color: var(--font-color);
 }
 
 .details strong {
-    color: #fff;
+    color: var(--font-color);
 }
 
 .buttons {
@@ -91,7 +132,7 @@
 .buttons button:first-child:hover,
 .buttons button:last-child:hover,
 .buttons a:hover {
-    background-color: #1f56b3;
+    background-color: var(--hover-color);
     transform: translateY(-2px);
 }
 
@@ -103,29 +144,83 @@
     padding: 0.7rem 2rem;
 }
 
+.profile-wrap {
+    position: relative;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.profile-banner .banner img {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 1;
+}
+
 .profile-img {
-    max-width: 250px;
+    position: absolute;
+    top: 45%;
+    left: 5%;
+    transform: translateX(-50%);
+    z-index: 2;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 4px solid white;
+    overflow: hidden;
+    background-color: #fff;
 }
 
 .profile-img img {
-    max-width: 250px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
-.profile-wrap {
+.profile-wrap .profile-username {
+    position: absolute;
     display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
+    gap: 0.3rem;
+    top: 55%;
+    left: 12%;
+    margin-top: 70px;
+    transform: translateX(-50%);
+    font-size: 2rem;
+    color: #ffffff;
+    font-weight: bold;
+    z-index: 1;
+
+    .pro {
+        color: #d36666;
+        font-size: 1rem;
+    }
+}
+
+.profile-nav {
+    width: 100%;
+}
+
+.profile-nav .nav-links {
+    display: flex;
+    justify-content: flex-start;
+    font-size: initial;
+    padding: 0 1rem;
+    background-color: var(--secondary-color);
+}
+
+.tab {
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 .profile-details {
-    max-width: 700px;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-}
-
-.profile-details .info-container {
-    min-width: 300px
 }
 
 .create-album form {
@@ -331,15 +426,14 @@
 
 .albums-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 16px;
     padding: 16px;
 }
 
 .album-card {
     position: relative;
-    height: 220px;
-    border-radius: 12px;
+    height: 320px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -431,4 +525,89 @@
 
 .album-container h1 {
     text-align: center;
+}
+
+.group-header {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    font-weight: bolder;
+    z-index: 1;
+
+    img {
+        max-width: 100px;
+    }
+}
+
+.group-nav {
+    background: var(--secondary-color);
+    padding: 1rem 3rem;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-left,
+.nav-right {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-left a,
+.nav-right a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+
+    &:hover {
+        color: var(--hover-color);
+    }
+}
+
+.join-btn {
+    background-color: #4884e8;
+    padding: 0.3rem 1rem;
+    border: none;
+}
+
+.join-btn:hover {
+    background-color: var(--hover-color);
+}
+
+.albums-list .empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    min-height: 200px;
+    text-align: center;
+}
+
+.user-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    margin-top: 1rem;
+    width: 200px;
+    background-color: var(--secondary-color);
+    border-radius: 0.3rem;
+    color: var(--font-color);
+    img {
+        max-width: 50px;
+    }
+}
+
+.group-members {
+    display: flex;
+    gap: 2rem;
 }
