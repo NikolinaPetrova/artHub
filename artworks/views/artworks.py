@@ -5,9 +5,10 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
-from artworks.forms import CreateArtworkForm, EditArtworkForm, CreateCommentForm, CommentEditForm, DeleteArtworkForm, \
-    ReplyForm
-from artworks.models import Artwork, Comment
+from artworks.forms import CreateArtworkForm, EditArtworkForm, DeleteArtworkForm
+from artworks.models import Artwork
+from interactions.forms.comment_form import CreateCommentForm, ReplyForm, CommentEditForm
+from interactions.models import Comment
 
 
 class CreateArtworkView(LoginRequiredMixin, CreateView):

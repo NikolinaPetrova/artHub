@@ -2,8 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
-from artworks.forms import CommentEditForm
-from artworks.models import Comment
+from interactions.forms.comment_form import CommentEditForm
+from interactions.models import Comment
 
 
 class CommentEditView(View):

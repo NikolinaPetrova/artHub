@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.validators import MinLengthValidator
 from django.db import models
 from artworks.choices import ArtworkTypeChoices
-from artworks.mixins import CreatedAtMixin
+from common.mixins import CreatedAtMixin
 
 
 class Artwork(CreatedAtMixin):

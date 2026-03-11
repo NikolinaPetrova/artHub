@@ -10,6 +10,7 @@ urlpatterns = [
     path('artwork/', include('artworks.urls')),
     path('album/', include('albums.urls')),
     path('groups/', include('groups.urls')),
+    path('interactions/', include('interactions.urls')),
 ]
 
 if settings.DEBUG:

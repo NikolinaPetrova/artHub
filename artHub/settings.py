@@ -30,6 +30,7 @@ PROJECT_APPS = [
     'albums',
     'common',
     'groups',
+    'interactions',
 ]
 
 

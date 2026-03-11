@@ -14,5 +14,8 @@ class GroupFolder(models.Model):
 
     description = models.TextField(blank=True, null=True)
 
+    class Meta:
+        unique_together = ('group', 'name')
+
     def __str__(self):
         return self.name

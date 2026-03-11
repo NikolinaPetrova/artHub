@@ -7,8 +7,8 @@
                 <div class="profile-wrap">
                     <div class="profile-banner">
                             <div class="banner">
-                            {% if user.banner %}
-                                <img src="{{ user.banner.url }}" alt="{{ user }}">
+                            {% if user.profile.banner %}
+                                <img src="{{ user.profile.banner.url }}" alt="{{ user }}">
                             {% else %}
                                 <img src="{% static 'images/default-banner.jpg' %}" alt="{{ user }}">
                             {% endif %}
@@ -16,8 +16,8 @@
                     </div>
 
                     <div class="profile-img">
-                        {% if user.avatar %}
-                            <img src="{{ user.avatar.url }}">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}">
                         {% else %}
                             <img alt="User Default Image" src="{% static 'images/user-default.jpg' %}">
                         {% endif %}
@@ -25,7 +25,7 @@
 
                     <div class="profile-username">
                         <p>{{ user }}</p>
-                        {% if user.professional_artist %}
+                        {% if user.profile.professional_artist %}
                             <p class="pro"><strong>PRO</strong></p>
                         {% endif %}
                     </div>

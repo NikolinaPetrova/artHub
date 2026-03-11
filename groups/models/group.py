@@ -14,7 +14,6 @@ class Group(SlugMixin):
 
     avatar = models.ImageField(upload_to='group_avatars/', blank=True, null=True)
     banner = models.ImageField(upload_to="group_banners/", blank=True, null=True)
-    background = models.ImageField(upload_to="groups_backgrounds/", blank=True, null=True)
     join_policy = models.CharField(
         max_length=20,
         choices=JoinPolicy.choices,

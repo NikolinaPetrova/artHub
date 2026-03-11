@@ -1,9 +1,9 @@
 from django.conf import settings
 from django.db import models
-from artworks.mixins import CreatedAtMixin
+from common.mixins import CreatedAtMixin
 
 
-class ArtworkLike(CreatedAtMixin):
+class Like(CreatedAtMixin):
     artwork = models.ForeignKey(
         'artworks.Artwork',
         on_delete=models.CASCADE,

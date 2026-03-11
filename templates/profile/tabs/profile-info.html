@@ -1,7 +1,7 @@
 <div class="profile-content">
     <div class="username">
         <p>{{ user }}</p>
-        {% if user.professional_artist %}
+        {% if user.profile.professional_artist %}
             <p class="pro">PRO</p>
         {% endif %}
     </div>
@@ -11,7 +11,10 @@
     </div>
 
     <div class="profile-description">
-        <p>Thank you so much for stopping by! I’ve always had a deep love for arts & crafts, and while my career as a chemical engineer in IT tech has kept me immersed in logic and systems, discovering digital AI art felt like a dream come true—it’s where creativity meets endless possibilities! I pour my heart into each piece, and I truly hope you enjoy what you see. Your visit means a lot, and I appreciate every bit of support. Feel free to explore, and I’d love to hear your thoughts! 💕</p>
+        <h3>Description</h3>
+        {% if user.profile.description %}
+            <p>{{ user.profile.description }}</p>
+        {% endif %}
     </div>
 
     <div class="group-admin">
@@ -81,5 +84,4 @@
             {% endfor %}
         </div>
     </div>
-</div>
 </div>

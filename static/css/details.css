@@ -212,6 +212,12 @@
     background-color: var(--secondary-color);
 }
 
+.profile-description {
+    h3 {
+        padding-bottom: 1rem;
+    }
+}
+
 .tab {
     min-height: calc(100vh - 100px);
     padding: 20px;

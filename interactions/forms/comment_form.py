@@ -1,5 +1,5 @@
 from django import forms
-from artworks.models import Comment
+from interactions.models import Comment
 
 
 class BaseCommentForm(forms.ModelForm):

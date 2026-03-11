@@ -27,10 +27,7 @@ class ArtHubUserCreationForm(UserCreationForm):
         required=True,
         widget=forms.EmailInput(attrs={'placeholder': 'Email'})
     )
-    professional_artist = forms.BooleanField(
-        required=False,
-        help_text='Are you a professional artist?'
-    )
+
     class Meta(UserCreationForm.Meta):
         model = UserModel
         fields = (
@@ -40,7 +37,6 @@ class ArtHubUserCreationForm(UserCreationForm):
             'email',
             'first_name',
             'last_name',
-            'professional_artist'
         )
 
     def __init__(self, *args, **kwargs):
@@ -72,9 +68,50 @@ class ArtHubUserCreationForm(UserCreationForm):
 
 
 class BaseArtHubUserForm(forms.ModelForm):
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'placeholder': 'Description',
+            'rows': 4,
+            'cols': 40,
+        }),
+        required=False
+    )
+    professional_artist = forms.BooleanField(required=False)
+    avatar = forms.ImageField(required=False)
+    banner = forms.ImageField(required=False)
+
     class Meta:
         model = UserModel
-        fields = ['first_name', 'last_name', 'email', 'professional_artist', 'avatar', 'banner', 'background']
+        fields = ['first_name', 'last_name', 'email',]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if self.instance.pk and hasattr(self.instance, 'profile'):
+                profile = self.instance.profile
+                self.fields['description'].initial = profile.description
+                self.fields['professional_artist'].initial = profile.professional_artist
+                self.fields['avatar'].initial = profile.avatar
+                self.fields['banner'].initial = profile.banner
+
+    def save(self, commit=True):
+        user = super().save(commit)
+        profile = getattr(user, 'profile', None)
+        if profile:
+            profile.description = self.cleaned_data.get('description', profile.description)
+            profile.professional_artist = self.cleaned_data.get('professional_artist', profile.professional_artist)
+            avatar = self.cleaned_data.get('avatar')
+            if avatar:
+                profile.avatar = avatar
+
+            banner = self.cleaned_data.get('banner')
+            if banner:
+                profile.banner = banner
+
+            if commit:
+                profile.save()
+        return user
+
 
 
 class ArtHubUserUpdateForm(BaseArtHubUserForm):

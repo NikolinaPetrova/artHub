@@ -24,3 +24,14 @@ class SlugMixin(models.Model):
         if not self.slug and hasattr(self, 'name'):
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
+
+from django.db import models
+
+class CreatedAtMixin(models.Model):
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        editable=False,
+    )
+
+    class Meta:
+        abstract = True
