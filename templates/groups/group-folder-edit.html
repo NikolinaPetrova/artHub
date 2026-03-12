@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+    <main class="album-container">
+        <div class="artwork-form folder-form-edit">
+            <form method="post" enctype="multipart/form-data">
+                <div id="create-page">
+                    <h1>Edit Folder</h1>
+                    {{ form }}
+                    {% csrf_token %}
+                    <div class="buttons">
+                        <button class='form-button' type="submit">Edit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <section class="artworks-container">
+            {% for artwork in folder.artworks.all %}
+                <div class="wrap-image">
+                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                        <form method="post" class="overlay">
+                            {% csrf_token %}
+                            <input type="hidden" name="remove_artwork_from_folder" value="{{ artwork.pk }}">
+                            <button type="submit" class="overlay">Remove from folder</button>
+                        </form>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+{% endblock %}

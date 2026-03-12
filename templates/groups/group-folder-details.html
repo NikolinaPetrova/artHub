@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <main class="album-container">
+        <h1>{{ folder.name }}</h1>
+        <p>{{ folder.description }}</p>
+        <section class="artworks-container">
+            {% for artwork in folder.artworks.all %}
+                <div class="wrap-image">
+                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                        <p class="overlay">More Info</p>
+                    </a>
+                </div>
+            {% endfor %}
+        </section>
+    </main>
+
+
+{% endblock %}

@@ -14,6 +14,12 @@ class GroupFolder(models.Model):
 
     description = models.TextField(blank=True, null=True)
 
+    artworks = models.ManyToManyField(
+        'artworks.Artwork',
+        related_name='group_folders',
+        blank=True
+    )
+
     class Meta:
         unique_together = ('group', 'name')
 

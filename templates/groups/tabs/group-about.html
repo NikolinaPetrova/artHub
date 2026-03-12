@@ -8,7 +8,11 @@
     <div class="group-admin">
         <h3>Group Admin</h3>
         <a href="{% url 'profile-details' group.owner.pk %}" class="user-container">
-            <img src="{{ group.owner.profile.avatar.url }}">
+            {% if group.owner.profile.avatar %}
+                <img src="{{ group.owner.profile.avatar.url }}">
+            {% else %}
+                <img src="{% static 'images/user-default.jpg' %}">
+            {% endif %}
             <p>{{ group.owner }}</p>
         </a>
     </div>

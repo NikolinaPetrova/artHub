@@ -33,9 +33,15 @@
                             </ul>
 
                             <ul class="nav-right">
+                                {% if joined_to_group %}
+                                    <li class="add-button-wrapper">
+                                        <a href="{% url 'group-artwork-submit' group.slug %}" class="add-artwork-btn" title="Add Artwork"><i class="fa-solid fa-plus"></i></a>
+                                    </li>
+                                {% endif %}
+
                                 {% if group.owner.pk == request.user.pk %}
-                                    <li><a href="{% url 'group-edit' group.slug %}"><i class="fa-solid fa-pen-to-square"></i></a></li>
-                                    <button type="button" id="delete-btn">
+                                    <li><a href="{% url 'group-edit' group.slug %}" title="Edit Group"><i class="fa-solid fa-pen-to-square"></i></a></li>
+                                    <button type="button" id="delete-btn" title="Delete Group">
                                         <i class="fa-solid fa-trash-arrow-up"></i>
                                     </button>
 
@@ -80,6 +86,7 @@
                     <div id="about" class="tab" style="display: none">
                         {% include 'groups/tabs/group-about.html' %}
                     </div>
+
                 </div>
         </section>
     </main>

@@ -215,3 +215,26 @@ select option {
         color: var(--hover-color);
     }
 }
+
+.add-folder i {
+    font-weight: bolder;
+    font-size: 2rem;
+    color: var(--font-color);
+}
+
+.create-folder-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.create-folder-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+.folder-form-edit {
+    min-height: initial;
+}

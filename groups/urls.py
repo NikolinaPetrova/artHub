@@ -10,5 +10,13 @@ urlpatterns = [
         path('edit/', views.EditGroupView.as_view(), name='group-edit'),
         path('delete/', views.DeleteGroupView.as_view(), name='group-delete'),
         path('submit/', views.GroupArtworkSubmitView.as_view(), name='group-artwork-submit'),
+        path('move-artwork/', views.MoveArtworkToFolderView.as_view(), name='group-artwork-move'),
+        path('folder/create/', views.GroupFolderCreateView.as_view(), name='group-folder-create'),
+        path('folder/<int:pk>/', include([
+            path('edit/', views.GroupFolderEditView.as_view(), name='group-folder-edit'),
+            path('details/', views.GroupFolderDetailView.as_view(), name='group-folder-details'),
+            path('delete/', views.GroupFolderDeleteView.as_view(), name='group-folder-delete'),
+        ]))
+
     ]))
 ]

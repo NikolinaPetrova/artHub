@@ -1,4 +1,69 @@
 <main class="dashboard">
+    <div class="folders-container">
+        {% if request.user.pk == group.owner.pk %}
+            <div class="albums-list">
+                <div class="album-card">
+                    <div class="album-bg fallback">
+                        <i class="fa-regular fa-image"></i>
+                    </div>
+                    <div class="album-info">
+                        <h3>Add Folder</h3>
+                    </div>
+                    <div class="album-overlay add-folder">
+                        <a href="#" id="add-folder-btn"><i class="fa-solid fa-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="folder-modal" class="modal">
+                <div class="modal-content create-folder-container">
+                    <h2>Create Folder</h2>
+
+                    <form method="post" class="create-folder-form" action="{% url 'group-folder-create' group.slug %}">
+                        {% csrf_token %}
+                        {{ form }}
+                        <div class="modal-buttons buttons">
+                            <button type="submit" class="btn-create">Create</button>
+                            <button type="button" id="cancel-folder" class="btn btn-secondary">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="albums-list">
+            {% for folder in folders %}
+                <div class="album-card" data-folder-id="{{ folder.id }}">
+
+                    {% if folder.artworks.last %}
+                        <div class="album-bg" style="background-image: url('{{ folder.artworks.last.image_url }}');"></div>
+                    {% else %}
+                        <div class="album-bg fallback">
+                            <i class="fa-regular fa-image"></i>
+                        </div>
+                    {% endif %}
+
+                    <div class="album-info">
+                        <h3>{{ folder.name }}</h3>
+                        <p>{{ folder.artworks.count }} artworks</p>
+                    </div>
+
+                    <div class="album-overlay">
+                        <a href="{% url 'group-folder-details' group.slug folder.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
+                        {% if request.user.pk == group.owner.pk %}
+                        <a href="{% url 'group-folder-edit' group.slug folder.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <form method="post" action="{% url 'group-folder-delete' group.slug folder.pk %}">
+                            {% csrf_token %}
+                            <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
     {% if not group_artworks %}
         <div class="no-artworks">
             <h2>Nothing here yet. Start the group’s creative journey!</h2>
@@ -8,7 +73,7 @@
         <section class="artworks-container">
             {% for artwork in group_artworks %}
                 <div class="wrap-image">
-                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
+                    <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}" data-art-id="{{ artwork.id }}">
                         <p class="overlay">More Info</p>
                     </a>
                 </div>
@@ -16,3 +81,73 @@
         </section>
     {% endif %}
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addFolderBtn = document.getElementById('add-folder-btn');
+        const modal = document.getElementById('folder-modal');
+        const cancelBtn = document.getElementById('cancel-folder');
+
+        addFolderBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            modal.style.display = 'block';
+        });
+
+        cancelBtn.addEventListener('click', function () {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+    });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const draggables = document.querySelectorAll('.art-image');
+        const folders = document.querySelectorAll('.album-card');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', e => {
+                e.dataTransfer.setData('art-id', draggable.dataset.artId);
+            });
+        });
+
+        folders.forEach(folder => {
+            folder.addEventListener('dragover', e => e.preventDefault());
+
+            folder.addEventListener('drop', e => {
+                e.preventDefault();
+                const artId = e.dataTransfer.getData('art-id');
+                const folderId = folder.dataset.folderId;
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{% url 'group-artwork-move' group.slug %}";
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = 'csrfmiddlewaretoken';
+                csrfInput.value = '{{ csrf_token }}';
+                form.appendChild(csrfInput);
+
+                const artInput = document.createElement('input');
+                artInput.type = 'hidden';
+                artInput.name = 'art_id';
+                artInput.value = artId;
+                form.appendChild(artInput);
+
+                const folderInput = document.createElement('input');
+                folderInput.type = 'hidden';
+                folderInput.name = 'folder_id';
+                folderInput.value = folderId;
+                form.appendChild(folderInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+        });
+    });
+</script>

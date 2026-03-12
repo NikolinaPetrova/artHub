@@ -31,7 +31,7 @@ class GroupSubmission(models.Model):
     status = models.CharField(
         max_length=20,
         choices=StatusChoices.choices,
-        default='pending'
+        default=StatusChoices.PENDING,
     )
 
     submitted_at = models.DateTimeField(auto_now_add=True)
@@ -43,9 +43,6 @@ class GroupSubmission(models.Model):
         blank=True,
         related_name='reviewed_group_submissions'
     )
-
-    class Meta:
-        unique_together = ('group', 'artwork')
 
     def __str__(self):
         return f"{self.artwork} submission to {self.group} ({self.status})"

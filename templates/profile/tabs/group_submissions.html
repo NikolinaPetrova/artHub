@@ -8,6 +8,7 @@
                 <a href="{% url 'artwork-details' submission.artwork.pk %}"><img src="{{ submission.artwork.image_url }}" alt="{{ submission.artwork.title }}"></a>
                 <p>{{ submission.artwork.title }} by <strong>{{ submission.submitted_by.username }}</strong></p>
                 <p>Status: {{ submission.status }}</p>
+                <p>For Folder: {{ submission.folder }}</p>
             </div>
             <div class="buttons">
                 <form method="post" action="{% url 'submission-moderate' submission.pk %}">
