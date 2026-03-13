@@ -52,7 +52,7 @@ class GroupDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['members'] = self.object.members.all()
+        context['members'] = self.object.members.exclude(user=self.object.owner).select_related('user')
         context['group_artworks'] = self.object.artworks.all()
         context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
         context['folders'] = self.object.folders.all()

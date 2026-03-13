@@ -47,7 +47,7 @@
 
                     <div class="add-comment">
                         <div class="avatar">{{ request.user.username|slice:":1" }}</div>
-                        <form method="post">
+                        <form method="post" action="{% url 'add-comment' artwork.pk %}">
                             {% csrf_token %}
                             {{ comment_form.content }}
                             <button type="submit" name="comment_submit">Post</button>
@@ -66,6 +66,7 @@
                                 <div class="comment-actions">
                                     <button type="button" class="action-btn reply-toggle" data-parent="{{ comment.id }}">Reply</button>
                                     {% if request.user.is_authenticated and comment.user == request.user %}
+                                        <form method="post" action="{% url 'edit-comment' comment.pk %}"></form>
                                         <button
                                                 type="button"
                                                 class="action-btn edit-toggle"
@@ -79,7 +80,12 @@
                                             <button type="submit" class="action-btn delete-button">Delete</button>
                                         </form>
                                     {% endif %}
-                                    <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px">
+                                    <form
+                                            method="post"
+                                            class="inline-form reply-form"
+                                            style="display:none; margin-top:5px"
+                                            action="{% url 'reply-comment' comment.pk %}"
+                                    >
                                         {% csrf_token %}
                                         {{ reply_form.content }}
                                         <input type="hidden" name="parent_id" value="">
@@ -87,7 +93,7 @@
                                         <button type="submit" name="reply_submit">Post</button>
                                     </form>
 
-                                    <form method="post"
+                                    <form method="post" action="{% url 'edit-comment' comment.pk %}"
                                           class="inline-form edit-form"
                                           style="display:none; margin-top:5px">
                                         {% csrf_token %}

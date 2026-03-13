@@ -46,86 +46,12 @@ class ArtworkDetailsView(DetailView):
         artwork = self.object
         user = self.request.user
 
-        context.setdefault('comment_form', CreateCommentForm())
-        context.setdefault('reply_form', ReplyForm())
-        context.setdefault('edit_form', CommentEditForm())
-
-        context['user_like'] = (
-            artwork.likes.filter(user=user).exists()
-            if user.is_authenticated else False
-        )
-
+        context['comment_form'] = CreateCommentForm()
+        context['reply_form'] = ReplyForm(initial={'artwork': artwork.pk})
+        context['edit_form'] = CommentEditForm()
+        context['user_like'] = artwork.likes.filter(user=user).exists() if user.is_authenticated else False
         context['comments'] = artwork.comments.filter(parent__isnull=True)
         return context
-
-    @method_decorator(login_required)
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        if 'comment_submit' in request.POST:
-            return self.handle_comment()
-
-        if 'reply_submit' in request.POST:
-            return self.handle_reply()
-
-        if 'edit_submit' in request.POST:
-            return self.handle_edit()
-
-        return redirect('artwork-details', pk=self.object.pk)
-
-
-    def handle_comment(self):
-        form = CreateCommentForm(self.request.POST)
-
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.user = self.request.user
-            comment.artwork = self.object
-            comment.save()
-
-            return redirect('artwork-details', pk=self.object.pk)
-        return self.render_to_response(self.get_context_data(comment_form=form))
-
-    def handle_reply(self):
-        form = ReplyForm(self.request.POST)
-        parent_id = self.request.POST.get('parent_id')
-        parent = get_object_or_404(
-            Comment,
-            pk=parent_id,
-            artwork=self.object,
-        )
-
-        if form.is_valid():
-            reply = form.save(commit=False)
-            reply.user = self.request.user
-            reply.artwork = self.object
-            reply.parent = parent
-            reply.save()
-
-            return redirect('artwork-details', pk=self.object.pk)
-
-        return self.render_to_response(
-            self.get_context_data(reply_form=form)
-        )
-
-    def handle_edit(self):
-        comment_id = self.request.POST.get('comment_id')
-        comment = get_object_or_404(
-            Comment,
-            pk=comment_id,
-            artwork=self.object,
-            user=self.request.user
-        )
-
-        form = CommentEditForm(
-            self.request.POST,
-            instance=comment,
-        )
-
-        if form.is_valid():
-            form.save()
-
-        return redirect('artwork-details', pk=self.object.pk)
 
 class EditArtworkView(LoginRequiredMixin, UpdateView):
     model = Artwork

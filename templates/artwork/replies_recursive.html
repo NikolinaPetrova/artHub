@@ -7,13 +7,13 @@
     <p>{{ reply.content }}</p>
     <div class="comment-actions">
         <button type="button" class="action-btn reply-toggle" data-parent="{{ reply.id }}">Reply</button>
-
         {% if request.user.is_authenticated and reply.user == request.user %}
-            <button
+                <button
                     type="button"
                     class="action-btn edit-toggle"
                     data-comment="{{ reply.id }}"
-                    data-content="{{ reply.content }}">Edit</button>
+                    data-content="{{ reply.content }}">Edit
+                </button>
         {% endif %}
         {% if request.user.is_authenticated and reply.user == request.user or artwork.user == request.user %}
             <form method="post" action="{% url 'delete-comment' reply.pk %}" style="display:inline;">
@@ -22,7 +22,7 @@
             </form>
         {% endif %}
 
-        <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px;">
+        <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px;" action="{% url 'reply-comment' reply.pk %}">
             {% csrf_token %}
             {{ reply_form.content }}
             <input type="hidden" name="parent_id" value="{{ reply.id }}">
@@ -31,7 +31,7 @@
         </form>
 
         {% if request.user.is_authenticated and reply.user == request.user %}
-        <form method="post" class="inline-form edit-form" style="display:none; margin-top:5px;">
+        <form method="post" class="inline-form edit-form" style="display:none; margin-top:5px;" action="{% url 'edit-comment' reply.pk %}">
             {% csrf_token %}
             <input type="text" name="content" value="{{ reply.content }}">
             <input type="hidden" name="comment_id" value="{{ reply.id }}">

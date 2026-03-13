@@ -1,10 +1,35 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
-from interactions.forms.comment_form import CommentEditForm
+from artworks.models import Artwork
+from interactions.forms.comment_form import CommentEditForm, CreateCommentForm, ReplyForm
 from interactions.models import Comment
 
+class AddArtworkCommentView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        artwork = get_object_or_404(Artwork, pk=pk)
+        form = CreateCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.user = request.user
+            comment.artwork = artwork
+            comment.save()
+        return redirect('artwork-details', pk=artwork.pk)
+
+
+class ReplyArtworkCommentView(LoginRequiredMixin, View):
+    def post(self, request, pk):
+        parent = get_object_or_404(Comment, pk=pk)
+        form = ReplyForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.user = request.user
+            reply.artwork = parent.artwork
+            reply.parent = parent
+            reply.save()
+        return redirect('artwork-details', pk=parent.artwork.pk)
 
 class CommentEditView(View):
     def post(self, request, pk):
