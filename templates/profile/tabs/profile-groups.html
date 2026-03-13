@@ -1,3 +1,4 @@
+<h3>Group Owned</h3>
 <div class="albums-list">
     {% for group in group_list %}
         <div class="album-card">
@@ -30,6 +31,38 @@
         <div class="empty">
             <h3>Add some groups</h3>
             <a href="{% url 'create-group' %}" class="btn-create">Create a Group</a>
+        </div>
+    {% endfor %}
+</div>
+
+<h3>Group Joined</h3>
+<div class="albums-list">
+    {% for group in group_member %}
+        <div class="album-card">
+
+            {% if group.banner %}
+                <div class="album-bg" style="background-image: url('{{ group.banner.url }}');"></div>
+            {% else %}
+                <div class="album-bg fallback">
+                    <i class="fa-regular fa-image"></i>
+                </div>
+            {% endif %}
+
+            <div class="album-info">
+                <h3>{{ group.name }}</h3>
+                <p>{{ group.members.count }} members</p>
+            </div>
+
+            <div class="album-overlay">
+                <a href="{% url 'group-details' group.slug %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
+                {% if request.user.pk == group.owner.pk %}
+                <a href="{% url 'group-edit' group.slug %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                </form>
+                {% endif %}
+            </div>
         </div>
     {% endfor %}
 </div>

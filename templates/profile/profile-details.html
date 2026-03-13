@@ -53,11 +53,10 @@
                     <div id="about" class="tab" style="display: none">
                         {% include 'profile/tabs/profile-info.html' %}
                     </div>
-                    {% if request.user.pk == user.pk %}
+
                     <div id="groups" class="tab about-bg" style="display: none">
                         {% include 'profile/tabs/profile-groups.html' %}
                     </div>
-                    {% endif %}
                 </div>
         </section>
     </main>

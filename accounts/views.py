@@ -40,7 +40,9 @@ class UserDetailView(DetailView):
         context['album_form'] = AlbumCreateForm
         context['artwork_list'] = self.object.artworks.all()
         context['group_list'] = self.object.owned_groups.all()
-        context['group_member'] = Group.objects.filter(members__user=self.object).distinct()
+        context['group_member'] = Group.objects.filter(
+            members__user=self.object
+        ).exclude(owner=self.object).distinct()
         return context
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
