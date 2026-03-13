@@ -1,0 +1,87 @@
+{% load static %}
+
+<table class="members-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Professional</th>
+            <th>Role</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for member in group_members.all %}
+        <tr>
+            <td class="user-cell">
+                <a href="{% url 'profile-details' member.user.pk %}">
+                    {% if member.user.profile.avatar %}
+                        <img class="avatar" src="{{ member.user.profile.avatar.url }}">
+                    {% else %}
+                        <img class="avatar" src="{% static 'images/user-default.jpg' %}">
+                    {% endif %}
+                    {{ member.user.username }}
+                </a>
+            </td>
+
+            <td>{{ member.user.first_name }} {{ member.user.last_name }}</td>
+            <td>{{ member.user.email }}</td>
+
+            <td>
+                {% if member.user.profile.professional_artist %}
+                    Yes
+                {% else %}
+                    No
+                {% endif %}
+            </td>
+
+            <td>{{ member.role }}</td>
+            {% if request.user.pk == group.owner.pk %}
+            <td class="actions-cell">
+                <div class="dropdown">
+                    <i class="fa-solid fa-ellipsis-vertical dropdown-toggle"></i>
+
+                    <div class="dropdown-menu-members">
+                        <a href="{% url 'change-member-role' group.slug member.pk %}">
+                            <button type="submit" name="action" value="change">Change Role</button>
+                        </a>
+                        <form method="post" action="{% url 'group-member-delete' group.slug member.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="remove">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggles = document.querySelectorAll(".dropdown-toggle");
+        toggles.forEach(toggle => {
+            toggle.addEventListener("click", function () {
+                const dropdown = this.parentElement;
+                document.querySelectorAll(".dropdown").forEach(d => {
+                    if (d !== dropdown) {
+                        d.classList.remove("active");
+                    }
+                });
+                dropdown.classList.toggle("active");
+            });
+        });
+
+        document.addEventListener("click", function(e){
+            if(!e.target.closest(".dropdown")){
+                document.querySelectorAll(".dropdown").forEach(d=>{
+                    d.classList.remove("active");
+                });
+            }
+        });
+
+    });
+</script>

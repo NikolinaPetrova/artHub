@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+    <main class="album-container">
+        <div class="artwork-form folder-form-edit">
+            <form method="post" enctype="multipart/form-data">
+                <div id="create-page">
+                    <h1>Edit Member Role</h1>
+                    {{ form }}
+                    {% csrf_token %}
+                    <div class="buttons">
+                        <button class='form-button' type="submit">Edit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock %}

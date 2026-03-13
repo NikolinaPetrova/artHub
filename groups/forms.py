@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from groups.models import Group, GroupSubmission, GroupFolder
+from groups.models import Group, GroupSubmission, GroupFolder, GroupMember
 
 
 class BaseGroupForm(forms.ModelForm):
@@ -52,3 +52,7 @@ class GroupFolderForm(forms.ModelForm):
             }),
         }
 
+class GroupMemberForm(forms.ModelForm):
+    class Meta:
+        model = GroupMember
+        fields = ['role']

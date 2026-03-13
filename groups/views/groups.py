@@ -57,6 +57,7 @@ class GroupDetailView(DetailView):
         context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
         context['folders'] = self.object.folders.all()
         context['form'] = GroupFolderForm()
+        context['group_members'] = GroupMember.objects.filter(group=self.object)
         return context
 
 

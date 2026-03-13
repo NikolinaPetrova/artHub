@@ -29,6 +29,7 @@
                             <ul class="nav-left">
                                 <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
                                 <li><a href="#" onclick="showTab('posts'); return false;">Posts</a></li>
+                                <li><a href="#" onclick="showTab('members'); return false;">Members</a></li>
                                 <li><a href="#" onclick="showTab('about'); return false;">About</a></li>
                             </ul>
 
@@ -87,6 +88,10 @@
                         {% include 'groups/tabs/group-about.html' %}
                     </div>
 
+                    <div id="members" class="tab" style="display: none">
+                        {% include 'groups/tabs/group_members-list.html' %}
+                    </div>
+
                 </div>
         </section>
     </main>
@@ -100,6 +105,10 @@
 
             const activeTab = document.getElementById(tabId);
             activeTab.style.display = "block";
+
+            const url = new URL(window.location);
+            url.searchParams.set("tab", tabId);
+            window.history.replaceState({}, "", url);
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -112,6 +121,11 @@
             deleteBtn.addEventListener('click', () => modal.style.display = 'block');
             cancelBtn.addEventListener('click', () => modal.style.display = 'none');
             confirmBtn.addEventListener('click', () => form.submit());
+
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get("tab") || "gallery";
+
+            showTab(tab);
         });
     </script>
 
