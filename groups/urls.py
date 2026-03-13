@@ -6,6 +6,7 @@ urlpatterns = [
     path('submission/<int:pk>/moderate/', views.SubmissionModerationView.as_view(), name='submission-moderate'),
     path('<slug:slug>/', include([
         path('join/', views.ToggleGroupMembershipView.as_view(), name='join-group'),
+        path('join-request/<int:pk>/moderate/', views.JoinRequestModerationView.as_view(), name='join-request-moderate'),
         path('details/', views.GroupDetailView.as_view(), name='group-details'),
         path('edit/', views.EditGroupView.as_view(), name='group-edit'),
         path('delete/', views.DeleteGroupView.as_view(), name='group-delete'),

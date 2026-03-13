@@ -1,0 +1,30 @@
+{% load static %}
+
+<div class="submissions">
+    {% if not join_requests %}
+        <h3>There is no requests yet.</h3>
+    {% endif %}
+    {% for current_request in join_requests %}
+        <div class="submissions-container">
+            <div class="content">
+                <a href="{% url 'profile-details' current_request.user.pk %}">
+                    {% if current_request.user.profile.avatar %}
+                        <img class="avatar" src="{{ current_request.user.profile.avatar.url }}">
+                    {% else %}
+                        <img class="avatar" src="{% static 'images/user-default.jpg' %}">
+                    {% endif %}
+                    {{ current_request.user.username }}
+                </a>
+                <p>Status: {{ current_request.status }}</p>
+                <p>For Group: {{ current_request.group }}</p>
+            </div>
+            <div class="buttons">
+                <form method="post" action="{% url 'join-request-moderate' group.slug current_request.pk %}">
+                    {% csrf_token %}
+                    <button type="submit" name="action" value="approve">Approve</button>
+                    <button type="submit" name="action" value="reject">Reject</button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+</div>

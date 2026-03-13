@@ -30,6 +30,14 @@
                                 <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
                                 <li><a href="#" onclick="showTab('posts'); return false;">Posts</a></li>
                                 <li><a href="#" onclick="showTab('members'); return false;">Members</a></li>
+                                {% if request.user.pk == group.owner.pk %}
+                                    <li><a href="#" onclick="showTab('joinRequests'); return false">
+                                        Join Requests {% if join_requests %} <strong class="notification">({{ join_requests.count }})</strong> {% endif %}
+                                    </a></li>
+                                    <li><a href="#" onclick="showTab('submissions')">
+                                        Submissions {% if submissions_pending_count %} <strong class="notification">({{ submissions_pending_count }})</strong> {% endif %}
+                                    </a></li>
+                                {% endif %}
                                 <li><a href="#" onclick="showTab('about'); return false;">About</a></li>
                             </ul>
 
@@ -63,9 +71,13 @@
                                 {% if group.owner.pk != request.user.pk %}
                                     <form method="post" action="{% url 'join-group' group.slug %}">
                                         {% csrf_token %}
-                                        <button class="join-btn">
-                                            {% if joined_to_group %}Leave{% else %}Join{% endif %}
-                                        </button>
+                                        {% if join_request_pending %}
+                                            <button class="join-btn" disabled>Waiting for approval</button>
+                                        {% else %}
+                                            <button class="join-btn">
+                                                {% if joined_to_group %}Leave{% else %}Join{% endif %}
+                                            </button>
+                                        {% endif %}
                                     </form>
                                 {% endif %}
                             </ul>
@@ -73,6 +85,14 @@
                         </div>
                     </div>
                 </div>
+
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="message {{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
                 <div class="profile-info about-bg">
 
@@ -90,6 +110,14 @@
 
                     <div id="members" class="tab" style="display: none">
                         {% include 'groups/tabs/group_members-list.html' %}
+                    </div>
+
+                    <div id="joinRequests" class="tab" style="display: none">
+                        {% include 'groups/tabs/group_join_requests.html' %}
+                    </div>
+
+                    <div id="submissions" class="tab" style="display: none">
+                        {% include 'groups/tabs/group_submissions.html' %}
                     </div>
 
                 </div>

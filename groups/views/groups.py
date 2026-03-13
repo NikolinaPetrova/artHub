@@ -1,9 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, DeleteView
-from groups.choices import RoleChoices
+from groups.choices import RoleChoices, StatusChoices
 from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm, GroupSubmissionForm
-from groups.models import Group, GroupMember, GroupFolder
+from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission
 
 
 class CreateGroupView(LoginRequiredMixin, CreateView):
@@ -58,6 +58,19 @@ class GroupDetailView(DetailView):
         context['folders'] = self.object.folders.all()
         context['form'] = GroupFolderForm()
         context['group_members'] = GroupMember.objects.filter(group=self.object)
+        context['join_requests'] = GroupJoinRequest.objects.filter(status=StatusChoices.PENDING)
+        context['join_request_pending'] = GroupJoinRequest.objects.filter(
+            group=self.object,
+            user=self.request.user,
+            status='pending'
+        ).first()
+
+        context['group_submissions'] = GroupSubmission.objects.filter(
+            group__owner=self.object.owner,
+            status=StatusChoices.PENDING
+        )
+
+        context['submissions_pending_count'] = GroupSubmission.objects.filter(status=StatusChoices.PENDING).count()
         return context
 
 

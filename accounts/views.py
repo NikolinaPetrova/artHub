@@ -6,8 +6,7 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import ArtHubUserCreationForm, ArtHubUserUpdateForm
 from albums.forms import AlbumCreateForm
-from groups.choices import StatusChoices
-from groups.models import Group, GroupSubmission
+from groups.models import Group
 
 UserModel = get_user_model()
 
@@ -42,10 +41,6 @@ class UserDetailView(DetailView):
         context['artwork_list'] = self.object.artworks.all()
         context['group_list'] = self.object.owned_groups.all()
         context['group_member'] = Group.objects.filter(members__user=self.object).distinct()
-        context['group_submissions'] = GroupSubmission.objects.filter(
-            group__owner=self.object,
-            status=StatusChoices.PENDING
-        )
         return context
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):

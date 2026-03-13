@@ -40,7 +40,7 @@ class GroupArtworkSubmitView(LoginRequiredMixin, UserPassesTestMixin, CreateView
 
 class GroupSubmissionModerationView(UserPassesTestMixin, ListView):
     model = GroupSubmission
-    template_name = 'profile/tabs/group_submissions.html'
+    template_name = 'groups/tabs/group_submissions.html'
     context_object_name = 'submissions'
 
     def test_func(self):

@@ -716,3 +716,10 @@
     background-color: var(--secondary-color);
 }
 
+.notification {
+    color: #d36666;
+}
+
+.messages {
+    text-align: center;
+}
