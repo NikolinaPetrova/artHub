@@ -1,8 +1,10 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django.views import View
+from django.views.generic import DeleteView
+
 from artworks.models import Artwork
 from groups.models import Post
 from interactions.forms.comment_form import CommentEditForm, CreateCommentForm, ReplyForm
@@ -63,17 +65,34 @@ class CommentEditView(View):
         if form.is_valid():
             form.save()
 
-        return redirect('artwork-details', pk=comment.artwork.pk)
+        if comment.artwork:
+            return redirect('artwork-details', pk=comment.artwork.pk)
+        elif comment.post:
+            return redirect('post-details', slug=comment.post.group.slug, pk=comment.post.pk)
+        else:
+            return redirect('home')
 
-@login_required
-def delete_comment(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    artwork_owner = comment.artwork.user
+class CommentDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
+    model = Comment
 
-    if comment.user != request.user and artwork_owner != request.user:
-        return HttpResponseForbidden('You cannot delete this comment.')
+    def test_func(self):
+        comment = self.get_object()
+        if comment.user == self.request.user:
+            return True
+        if comment.artwork and comment.artwork.user == self.request.user:
+            return True
+        if comment.post and comment.post.author == self.request.user:
+            return True
+        return False
 
-    if request.method == 'POST':
-        comment.delete()
+    def handle_no_permission(self):
+        return redirect('home')
 
-    return redirect('artwork-details', pk=comment.artwork.pk)
+    def get_success_url(self):
+        comment = self.object
+        if comment.artwork:
+            return reverse('artwork-details', kwargs={'pk': comment.artwork.pk})
+        elif comment.post:
+            return reverse('post-details', kwargs={'slug': comment.post.group.slug, 'pk': comment.post.pk})
+        else:
+            return reverse('home')
