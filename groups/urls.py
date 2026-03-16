@@ -21,6 +21,9 @@ urlpatterns = [
         path('member/<int:pk>/', include([
             path('edit/', views.ChangeMemberRoleView.as_view(), name='change-member-role'),
             path('delete/', views.GroupMemberDeleteView.as_view(), name='group-member-delete'),
-        ]))
+        ])),
+
+        path('post/create/', views.PostCreateView.as_view(), name='post-create'),
+
     ]))
 ]

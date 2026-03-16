@@ -1,0 +1,115 @@
+{% load static %}
+
+<div class="comments-section">
+    <h3>{{ artwork.comments.count }} Comments</h3>
+
+    <div class="add-comment">
+        <div class="avatar">{{ request.user.username|slice:":1" }}</div>
+        <form method="post" action="{% url 'add-comment' artwork.pk %}">
+            {% csrf_token %}
+            {{ comment_form.content }}
+            <button type="submit" name="comment_submit">Post</button>
+        </form>
+    </div>
+    {% for comment in comments %}
+        <div class="comment">
+            <img src="{% static "images/user-default.jpg" %}" alt="avatar">
+            <div class="comment-body">
+                <div class="comment-header">
+                    <span class="name">{{ comment.user }}</span>
+                    <span class="time">{{ comment.created_at|timesince }} ago</span>
+                </div>
+                <p>{{ comment.content }}</p>
+
+                <div class="comment-actions">
+                    <button type="button" class="action-btn reply-toggle" data-parent="{{ comment.id }}">Reply</button>
+                    {% if request.user.is_authenticated and comment.user == request.user %}
+                        <form method="post" action="{% url 'edit-comment' comment.pk %}"></form>
+                        <button
+                                type="button"
+                                class="action-btn edit-toggle"
+                                data-comment="{{ comment.id }}"
+                                data-content="{{ comment.content }}">Edit
+                        </button>
+                    {% endif %}
+                    {% if request.user.is_authenticated and comment.user == request.user or artwork.user == request.user %}
+                        <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="action-btn delete-button">Delete</button>
+                        </form>
+                    {% endif %}
+                    <form
+                            method="post"
+                            class="inline-form reply-form"
+                            style="display:none; margin-top:5px"
+                            action="{% url 'reply-comment' comment.pk %}"
+                    >
+                        {% csrf_token %}
+                        {{ reply_form.content }}
+                        <input type="hidden" name="parent_id" value="">
+                        <input type="hidden" name="comment_id" value="">
+                        <button type="submit" name="reply_submit">Post</button>
+                    </form>
+
+                    <form method="post" action="{% url 'edit-comment' comment.pk %}"
+                          class="inline-form edit-form"
+                          style="display:none; margin-top:5px">
+                        {% csrf_token %}
+                        <input type="text" name="content" value="">
+                        <input type="hidden" name="comment_id" value="}">
+                        <button type="submit" class="save-button" name="edit_submit">Save</button>
+                    </form>
+                </div>
+                {% include "comment/replies_recursive.html" with replies=comment.top_level_replies %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.reply-toggle, .edit-toggle').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.stopPropagation();
+
+                const actions = button.closest('.comment-actions');
+                actions.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'none');
+
+                if (button.classList.contains('edit-toggle')) {
+                    const form = actions.querySelector('.edit-form');
+                    const contentInput = form.querySelector('input[name="content"]');
+                    const commentIdInput = form.querySelector('input[name="comment_id"]');
+
+                    form.style.display = 'flex';
+                    form.style.gap = '10px';
+                    contentInput.value = button.dataset.content;
+                    commentIdInput.value = button.dataset.comment;
+                    contentInput.focus();
+
+                } else if (button.classList.contains('reply-toggle')) {
+                    const form = actions.querySelector('.reply-form');
+                    const parentIdInput = form.querySelector('input[name="parent_id"]');
+                    const commentIdInput = form.querySelector('input[name="comment_id"]');
+                    const contentInput = form.querySelector('input[name="content"]');
+
+                    form.style.display = 'flex';
+                    parentIdInput.value = button.dataset.parent;
+                    commentIdInput.value = '';
+                    contentInput.value = '';
+                    contentInput.focus();
+                }
+            });
+        });
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.comment-actions').forEach(actions => {
+                actions.querySelectorAll('.inline-form').forEach(form => form.style.display = 'none');
+                actions.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'inline-block');
+            });
+        });
+        document.querySelectorAll('.inline-form').forEach(form => {
+            form.addEventListener('click', e => e.stopPropagation());
+        });
+    });
+</script>

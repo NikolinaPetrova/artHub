@@ -41,7 +41,7 @@
     </div>
 
     {% if reply.child_replies.exists %}
-        {% include "artwork/replies_recursive.html" with comment=reply level=level|default:0|add:"20" %}
+        {% include "comment/replies_recursive.html" with comment=reply level=level|default:0|add:"20" %}
     {% endif %}
 </div>
 {% endfor %}

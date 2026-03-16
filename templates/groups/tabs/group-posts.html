@@ -1,1 +1,13 @@
-<h1>Make the first post</h1>
+{% load static %}
+<div class="profile-content">
+    <div class="profile-description">
+         <a href="#" class="user-container">
+            {% if post.author.profile.avatar %}
+                <img src="{{ post.author.profile.avatar.url }}">
+            {% else %}
+                <img src="{% static 'images/user-default.jpg' %}">
+            {% endif %}
+            <p>{{ post.author }}</p>
+        </a>
+    </div>
+</div>
