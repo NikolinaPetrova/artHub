@@ -14,5 +14,10 @@
             <p>{{ post.content|truncatechars:100 }}</p>
         </div>
         <a href="{% url 'post-details' group.slug post.pk %}">See Details..</a>
+    {% empty %}
+        <div style="text-align: center">
+            <h3 style="margin-bottom: 1.5rem;">This group doesn’t have any posts yet. Be the first to share something!</h3>
+            <a href="{% url 'post-create' group.slug %}" class="btn-create" style="width: fit-content">Add Post</a>
+        </div>
     {% endfor %}
 </div>

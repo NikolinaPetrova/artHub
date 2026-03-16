@@ -24,7 +24,10 @@
                         {% if request.user.is_authenticated and post.author == request.user %}
                             <div class="buttons">
                                 <a href="{% url 'post-edit' post.group.slug post.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a href="#" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></a>
+                                <form method="post" action="{% url 'post-delete' post.group.slug post.pk %}">
+                                    {% csrf_token %}
+                                    <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                                </form>
                             </div>
                         {% endif %}
                     </div>

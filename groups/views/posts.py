@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, DetailView, UpdateView
+from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from groups.forms.post import PostCreateForm, PostUpdateForm
 from groups.models import Post, Group
 from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
@@ -72,5 +72,16 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         post = self.get_object()
         return reverse('post-details', kwargs={'slug': post.group.slug, 'pk': post.pk})
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Post
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user or self.request.user == post.group.owner
+
+    def get_success_url(self):
+        return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']})
+
 
 
