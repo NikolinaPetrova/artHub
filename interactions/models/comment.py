@@ -19,6 +19,16 @@ class Comment(CreatedAtMixin):
         'artworks.Artwork',
         on_delete=models.CASCADE,
         related_name='comments',
+        null=True,
+        blank=True,
+    )
+
+    post = models.ForeignKey(
+        'groups.Post',
+        on_delete=models.CASCADE,
+        related_name='comments',
+        null=True,
+        blank=True,
     )
 
     parent = models.ForeignKey(
