@@ -3,7 +3,8 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, DeleteView
 from groups.choices import RoleChoices, StatusChoices
 from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm
-from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission
+from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission, Post
+from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
 
 
 class CreateGroupView(LoginRequiredMixin, CreateView):
@@ -58,6 +59,8 @@ class GroupDetailView(DetailView):
         context['form'] = GroupFolderForm()
         context['group_members'] = GroupMember.objects.filter(group=self.object)
         context['join_requests'] = GroupJoinRequest.objects.filter(group=self.object, status=StatusChoices.PENDING)
+        context['posts'] = Post.objects.filter(group=self.object)
+
         if self.request.user.is_authenticated:
             context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
             context['join_request_pending'] = GroupJoinRequest.objects.filter(

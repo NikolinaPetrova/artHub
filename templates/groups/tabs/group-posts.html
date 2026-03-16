@@ -1,13 +1,18 @@
 {% load static %}
 <div class="profile-content">
-    <div class="profile-description">
-         <a href="#" class="user-container">
-            {% if post.author.profile.avatar %}
-                <img src="{{ post.author.profile.avatar.url }}">
-            {% else %}
-                <img src="{% static 'images/user-default.jpg' %}">
-            {% endif %}
-            <p>{{ post.author }}</p>
-        </a>
-    </div>
+    {% for post in posts %}
+        <div class="profile-description">
+             <a href="{% url 'profile-details' post.author.pk %}" class="post-container">
+                {% if post.author.profile.avatar %}
+                    <img src="{{ post.author.profile.avatar.url }}">
+                {% else %}
+                    <img src="{% static 'images/user-default.jpg' %}">
+                {% endif %}
+                <p>{{ post.author }}</p>
+            </a>
+            <p>{{ post.title }}</p>
+            <p>{{ post.content|truncatechars:100 }}</p>
+        </div>
+        <a href="{% url 'post-details' group.slug post.pk %}">See Details..</a>
+    {% endfor %}
 </div>

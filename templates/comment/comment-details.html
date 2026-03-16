@@ -1,11 +1,11 @@
 {% load static %}
 
 <div class="comments-section">
-    <h3>{{ artwork.comments.count }} Comments</h3>
+    <h3>{{ object.comments.count }} Comments</h3>
 
     <div class="add-comment">
         <div class="avatar">{{ request.user.username|slice:":1" }}</div>
-        <form method="post" action="{% url 'add-comment' artwork.pk %}">
+        <form method="post" action="{% url 'add-comment' model_type object.pk %}">
             {% csrf_token %}
             {{ comment_form.content }}
             <button type="submit" name="comment_submit">Post</button>

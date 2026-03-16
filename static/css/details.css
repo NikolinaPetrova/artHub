@@ -737,3 +737,10 @@
 .messages {
     text-align: center;
 }
+
+.post-container {
+    img {
+        max-width: 50px;
+        border-radius: 50%;
+    }
+}

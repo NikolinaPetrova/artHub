@@ -4,32 +4,52 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from artworks.models import Artwork
+from groups.models import Post
 from interactions.forms.comment_form import CommentEditForm, CreateCommentForm, ReplyForm
 from interactions.models import Comment
 
-class AddArtworkCommentView(LoginRequiredMixin, View):
-    def post(self, request, pk):
-        artwork = get_object_or_404(Artwork, pk=pk)
+
+class AddCommentView(LoginRequiredMixin, View):
+    MODEL_MAP = {
+        'artwork': Artwork,
+        'post': Post,
+    }
+
+    def post(self, request, model_type, pk):
+        model = self.MODEL_MAP.get(model_type)
+
+        if not model:
+            return redirect('home')
+
+        obj = get_object_or_404(model, pk=pk)
         form = CreateCommentForm(request.POST)
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.user = request.user
-            comment.artwork = artwork
+
+            if model_type == 'artwork':
+                comment.artwork = obj
+            elif model_type == 'post':
+                comment.post = obj
+
             comment.save()
-        return redirect('artwork-details', pk=artwork.pk)
 
+        return redirect(request.META.get('HTTP_REFERER'))
 
-class ReplyArtworkCommentView(LoginRequiredMixin, View):
+class ReplyCommentView(LoginRequiredMixin, View):
     def post(self, request, pk):
         parent = get_object_or_404(Comment, pk=pk)
         form = ReplyForm(request.POST)
         if form.is_valid():
             reply = form.save(commit=False)
             reply.user = request.user
-            reply.artwork = parent.artwork
             reply.parent = parent
+            reply.artwork = parent.artwork
+            reply.post = parent.post
             reply.save()
-        return redirect('artwork-details', pk=parent.artwork.pk)
+
+        return redirect(request.META.get('HTTP_REFERER'))
 
 class CommentEditView(View):
     def post(self, request, pk):

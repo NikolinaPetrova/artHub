@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <main>
+        <section class="artwork-details">
+
+            <div class="info-container">
+                <div class="details">
+                    <div class="flex-title">
+                        <div class="post-container" style="display: flex; gap: 0.5rem">
+                            <a href="{% url 'profile-details' post.author.pk %}">
+                                {% if post.author.profile.avatar %}
+                                    <img src="{{ post.author.profile.avatar.url }}">
+                                {% else %}
+                                    <img src="{% static 'images/user-default.jpg' %}">
+                                {% endif %}
+                            </a>
+                            <div>
+                                <p>{{ post.author }}</p>
+                                <p>{{ post.created_at|timesince }} ago</p>
+                            </div>
+                        </div>
+                        {% if request.user.is_authenticated and post.author == request.user %}
+                            <div class="buttons">
+                                <a href="#" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="#" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <h1>{{ post.title|capfirst }}</h1>
+                    <p class="description"> {{ post.content }}</p>
+                </div>
+
+                <div class="img-details">
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}">
+                    {% endif %}
+                </div>
+
+                <form method="post" action="{% url 'like' 'post' post.pk %}">
+                    {% csrf_token %}
+                    <span class="likes-count">{{ post.likes.count }}</span>
+                    <button type="submit" class="like-btn {% if user_like %}liked{% endif %}">
+                        <i class="fa-regular fa-thumbs-up" title="Like"></i>
+                    </button>
+                </form>
+
+                {% include 'comment/comment-details.html' with object=post model_type="post" %}
+
+            </div>
+
+        </section>
+    </main>
+
+{% endblock %}

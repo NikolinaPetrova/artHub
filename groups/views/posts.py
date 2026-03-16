@@ -1,9 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, DetailView, ListView
 from groups.forms.post import PostCreateForm
 from groups.models import Post, Group
+from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
 
 
 class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -25,3 +26,38 @@ class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def get_success_url(self):
         return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']}) + "?tab=posts"
+
+class PostDetailsView(DetailView):
+    model = Post
+    template_name = 'groups/post-details.html'
+    context_object_name = 'post'
+
+    def get_queryset(self):
+        group_slug = self.kwargs.get('slug')
+        post_pk = self.kwargs.get('pk')
+        return (Post.objects.filter(group__slug=group_slug, pk=post_pk)
+        .select_related('author', 'group')
+        .prefetch_related(
+            'likes',
+            'comments',
+            'comments__user',
+            'comments__child_replies',
+            'comments__child_replies__user',
+            'comments__likes',
+            'comments__child_replies__likes',
+        ))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.object
+        user = self.request.user
+
+        context['comment_form'] = CreateCommentForm()
+        context['reply_form'] = ReplyForm(initial={'post': post.pk})
+        context['edit_form'] = CommentEditForm()
+        context['user_like'] = post.likes.filter(user=user).exists() if user.is_authenticated else False
+        context['comments'] = post.comments.filter(parent__isnull=True)
+
+        return context
+
+

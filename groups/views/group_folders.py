@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView
+from django.views.generic import CreateView, UpdateView, DetailView, DeleteView
 from artworks.models import Artwork
 from groups.forms import GroupFolderForm
 from groups.models import GroupFolder, Group
@@ -56,12 +56,6 @@ class GroupFolderDetailView(DetailView):
     model = GroupFolder
     template_name = 'groups/group-folder-details.html'
     context_object_name = 'folder'
-
-
-class GroupFolderListView(ListView):
-    model = GroupFolder
-    template_name = 'groups/tabs/group-gallery.html'
-    context_object_name = 'folders'
 
 
 class GroupFolderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

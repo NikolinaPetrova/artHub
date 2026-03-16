@@ -24,6 +24,8 @@ urlpatterns = [
         ])),
 
         path('post/create/', views.PostCreateView.as_view(), name='post-create'),
-
+        path('post/<int:pk>/', include([
+            path('details/', views.PostDetailsView.as_view(), name='post-details'),
+        ]))
     ]))
 ]

@@ -11,7 +11,7 @@
 
             <div class="info-container">
                 <div class="details">
-                    <form method="post" action="{% url 'artwork-like' artwork.pk %}">
+                    <form method="post" action="{% url 'like' 'artwork' artwork.pk %}">
                         {% csrf_token %}
                         <span class="likes-count">{{ artwork.likes.count }}</span>
                         <button type="submit" class="like-btn {% if user_like %}liked{% endif %}">
@@ -42,7 +42,7 @@
                     {% endwith %}
                 </div>
 
-                {% include 'comment/comment-details.html' %}
+                {% include 'comment/comment-details.html' with object=artwork model_type="artwork" %}
 
             </div>
 
