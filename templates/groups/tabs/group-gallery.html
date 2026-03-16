@@ -76,6 +76,12 @@
                     <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}" data-art-id="{{ artwork.id }}">
                         <p class="overlay">More Info</p>
                     </a>
+                    {% if request.user == group.owner %}
+                        <form method="post" class="remove-form" action="{% url 'group-remove-artwork' group.slug artwork.pk %}">
+                            {% csrf_token %}
+                            <button type="submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                        </form>
+                    {% endif %}
                 </div>
             {% endfor %}
         </section>

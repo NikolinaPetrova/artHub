@@ -1,6 +1,10 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, DeleteView
+
+from artworks.models import Artwork
 from groups.choices import RoleChoices, StatusChoices
 from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm
 from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission, Post
@@ -98,3 +102,23 @@ class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('profile-details', kwargs={'pk': self.request.user.pk})
+
+
+class RemoveArtworkFromGroupView(LoginRequiredMixin, UserPassesTestMixin, View):
+    def test_func(self):
+        group = get_object_or_404(Group, slug=self.kwargs['slug'])
+        return group.owner == self.request.user
+
+    def post(self, request, slug, artwork_pk):
+        group = get_object_or_404(Group, slug=slug)
+        artwork = get_object_or_404(Artwork, pk=artwork_pk)
+
+        if artwork in group.artworks.all():
+            group.artworks.remove(artwork)
+
+        folders = group.folders.filter(artworks=artwork)
+        for folder in folders:
+            folder.artworks.remove(artwork)
+
+        return redirect('group-details', slug=group.slug)
+
