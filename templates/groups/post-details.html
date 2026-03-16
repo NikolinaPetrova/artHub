@@ -23,7 +23,7 @@
                         </div>
                         {% if request.user.is_authenticated and post.author == request.user %}
                             <div class="buttons">
-                                <a href="#" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a href="{% url 'post-edit' post.group.slug post.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
                                 <a href="#" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></a>
                             </div>
                         {% endif %}

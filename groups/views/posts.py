@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404
-from django.urls import reverse_lazy
-from django.views.generic import CreateView, DetailView, ListView
-from groups.forms.post import PostCreateForm
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, DetailView, UpdateView
+from groups.forms.post import PostCreateForm, PostUpdateForm
 from groups.models import Post, Group
 from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
 
@@ -59,5 +59,18 @@ class PostDetailsView(DetailView):
         context['comments'] = post.comments.filter(parent__isnull=True)
 
         return context
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Post
+    form_class = PostUpdateForm
+    template_name = 'groups/post-form.html'
+
+    def test_func(self):
+        post = self.get_object()
+        return post.author == self.request.user or self.request.user == post.group.owner
+
+    def get_success_url(self):
+        post = self.get_object()
+        return reverse('post-details', kwargs={'slug': post.group.slug, 'pk': post.pk})
 
 
