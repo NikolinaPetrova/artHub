@@ -394,7 +394,8 @@
 
 .comment-actions .reply-toggle,
 .comment-actions .delete-button,
-.comment-actions .edit-toggle {
+.comment-actions .edit-toggle,
+.comment-actions .like-comment {
     background: none;
     color: #fff;
     border: none;
@@ -427,8 +428,9 @@
     color: gray;
 }
 
-.like-btn.liked {
-    color: red;
+.like-btn.liked,
+.like-comment.liked {
+    color: var(--hover-color);
 }
 
 .tags {

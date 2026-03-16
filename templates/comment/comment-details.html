@@ -1,5 +1,5 @@
 {% load static %}
-
+{% load comment_tags %}
 <div class="comments-section">
     <h3>{{ object.comments.count }} Comments</h3>
 
@@ -38,6 +38,13 @@
                             <button type="submit" class="action-btn delete-button">Delete</button>
                         </form>
                     {% endif %}
+
+                    <form method="post" action="{% url 'like' 'comment' comment.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="action-btn like-comment {% if comment|is_liked:request.user %}liked{% endif %}">
+                            ({{ comment.likes.count }}) Like
+                        </button>
+                    </form>
                     <form
                             method="post"
                             class="inline-form reply-form"

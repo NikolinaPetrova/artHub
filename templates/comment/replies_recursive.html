@@ -1,3 +1,5 @@
+{% load comment_tags %}
+
 {% for reply in comment.child_replies.all %}
 <div class="comment-body" style="margin-left:{{ level|default:0 }}px; margin-top:10px; max-width: calc(100% - {{ level|default:0 }}px - 20px);">
     <div class="comment-header">
@@ -21,6 +23,13 @@
                 <button type="submit" class="action-btn delete-button">Delete</button>
             </form>
         {% endif %}
+
+        <form method="post" action="{% url 'like' 'comment' reply.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="action-btn like-comment {% if reply|is_liked:request.user %}liked{% endif %}" >
+                ({{ reply.likes.count }}) Like
+            </button>
+        </form>
 
         <form method="post" class="inline-form reply-form" style="display:none; margin-top:5px;" action="{% url 'reply-comment' reply.pk %}">
             {% csrf_token %}
