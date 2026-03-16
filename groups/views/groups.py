@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, DeleteView
 from groups.choices import RoleChoices, StatusChoices
-from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm, GroupSubmissionForm
+from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm
 from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission
 
 
