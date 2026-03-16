@@ -54,16 +54,20 @@ class GroupDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['members'] = self.object.members.exclude(user=self.object.owner).select_related('user')
         context['group_artworks'] = self.object.artworks.all()
-        context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
         context['folders'] = self.object.folders.all()
         context['form'] = GroupFolderForm()
         context['group_members'] = GroupMember.objects.filter(group=self.object)
-        context['join_requests'] = GroupJoinRequest.objects.filter(status=StatusChoices.PENDING)
-        context['join_request_pending'] = GroupJoinRequest.objects.filter(
+        context['join_requests'] = GroupJoinRequest.objects.filter(group=self.object, status=StatusChoices.PENDING)
+        if self.request.user.is_authenticated:
+            context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
+            context['join_request_pending'] = GroupJoinRequest.objects.filter(
             group=self.object,
             user=self.request.user,
             status='pending'
-        ).first()
+            ).first()
+        else:
+            context['joined_to_group'] = None
+            context['join_request_pending'] = None
 
         context['group_submissions'] = GroupSubmission.objects.filter(
             group__owner=self.object.owner,

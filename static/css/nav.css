@@ -1,11 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Chewy&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-
 .navigation {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 30px;
-    background: var(--main-color);
+    padding: 5px 30px;
+    background: linear-gradient(
+    90deg,
+    #08101e,
+    #0a0a18,
+    #0a0a18,
+    #122037
+  );
 }
 
 .logo {
@@ -19,7 +23,6 @@
     -webkit-background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
-    font-family: "Chewy", system-ui;
 }
 
 a {
@@ -57,11 +60,10 @@ a {
     position: absolute;
     right: 10px;
     top: 10px;
-    color: #525255;
 }
 
 .search-bar button:hover {
-    color: var(--font-color);
+    color: var(--hover-color);
     transform: translateY(-2px);
 }
 
@@ -105,7 +107,13 @@ a {
     max-width: 150px;
     border-radius: 5px;
     overflow: hidden;
-    box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+    background: linear-gradient(
+    90deg,
+    #08101e,
+    #0a0a18,
+    #0a0a18,
+    #122037
+  );
     transform: translateY(10px);
     transition: opacity 0.3s ease, transform 0.3s ease;
     opacity: 0;
@@ -115,7 +123,7 @@ a {
 .dropdown-menu li a,
 .dropdown-menu li button {
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 15px;
 }
 
 .dropdown-menu li a:hover,
@@ -130,6 +138,12 @@ a {
 }
 
 .dropdown-menu li button {
-    background: none;
+    background: linear-gradient(
+    90deg,
+    #08101e,
+    #0a0a18,
+    #0a0a18,
+    #122037
+  );
     border: none;
 }

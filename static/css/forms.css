@@ -13,9 +13,11 @@
     width: 100%;
     max-width: 500px;
     padding: 3rem;
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 1rem;
-    box-sizing: initial;
+    background: linear-gradient(rgba(255,255,255,0.05), var(--main-color)) padding-box,
+              linear-gradient(145deg, transparent 35%, rgb(34, 100, 211), rgba(232, 28, 255, 0.98)) border-box;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
 }
 
 #edit-page h1,
@@ -46,7 +48,7 @@ select,
 fieldset {
     padding: 0.7rem 0.9rem;
     border-radius: 0.3rem;
-    border: 1px solid #333;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     background-color: transparent;
     color: var(--font-color);
     font-size: 1rem;

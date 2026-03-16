@@ -22,7 +22,7 @@
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
 }
 
-.about-bg {
+.tabs-bg {
     background: var(--main-color);
 }
 
@@ -114,9 +114,8 @@
     border: none;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
-    background: rgba(73, 73, 75, 0.55);
-    backdrop-filter: blur(0.1px);
-    -webkit-backdrop-filter: blur(0.1px);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
     color: #fff;
 }
 
@@ -209,7 +208,13 @@
     justify-content: flex-start;
     font-size: initial;
     padding: 0 1rem;
-    background-color: var(--secondary-color);
+    background: linear-gradient(
+    90deg,
+    #08101e,
+    #0a0a18,
+    #0a0a18,
+    #122037
+  );
 }
 
 .profile-description {
@@ -300,7 +305,8 @@
 .add-comment .avatar {
     width: 40px;
     height: 40px;
-    background: rgba(73, 73, 75, 0.55);;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -315,7 +321,8 @@
     border-radius: 20px;
     border: none;
     outline: none;
-    background: rgba(73, 73, 75, 0.55);;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
     color: #fff;
 }
 
@@ -326,7 +333,8 @@
     padding: 8px 18px;
     border-radius: 8px;
     border: none;
-    background: rgba(73, 73, 75, 0.55);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
     color: #fff;
     cursor: pointer;
 }
@@ -549,7 +557,13 @@
 }
 
 .group-nav {
-    background: var(--secondary-color);
+    background: linear-gradient(
+    90deg,
+    #08101e,
+    #0a0a18,
+    #0a0a18,
+    #122037
+  );
     padding: 1rem 3rem;
 }
 
