@@ -31,6 +31,8 @@ PROJECT_APPS = [
     'common',
     'groups',
     'interactions',
+    'rest_framework',
+    'notifications',
 ]
 
 
