@@ -30,13 +30,22 @@
                         {% endif %}
                     </div>
 
-                    <div class="profile-nav">
-                        <ul class="nav-links">
-                            <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
-                            <li><a href="#" onclick="showTab('albums'); return false;">Albums</a></li>
-                            <li><a href="#" onclick="showTab('groups'); return false;">Groups</a></li>
-                            <li><a href="#" onclick="showTab('about'); return false;">About</a></li>
-                        </ul>
+                    <div class="group-nav">
+                        <div class="nav-container">
+                            <ul class="nav-left">
+                                <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
+                                <li><a href="#" onclick="showTab('albums'); return false;">Albums</a></li>
+                                <li><a href="#" onclick="showTab('groups'); return false;">Groups</a></li>
+                                <li><a href="#" onclick="showTab('about'); return false;">About</a></li>
+                            </ul>
+
+                            <ul class="nav-right">
+                                {% if request.user.pk == user.pk %}
+                                    <li><a href="{% url 'edit-profile' request.user.pk %}" title="Edit Profile"><i class="fa-solid fa-pen-to-square"></i></a></li>
+                                    <li><a href="{% url 'delete-profile' request.user.pk %}" title="Delete Profile"><i class="fa-solid fa-trash-arrow-up"></i></a></li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
                 </div>
 

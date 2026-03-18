@@ -1,5 +1,6 @@
 {% load static %}
 <div class="profile-content">
+    <a href="{% url 'post-create' group.slug %}" class="btn-create" style="width: fit-content">Add New Post</a>
     {% for post in posts %}
         <div class="profile-description">
              <a href="{% url 'profile-details' post.author.pk %}" class="post-container">

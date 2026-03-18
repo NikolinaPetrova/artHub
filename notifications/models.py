@@ -15,7 +15,7 @@ class Notification(models.Model):
         related_name="sent_notifications"
     )
 
-    type = models.CharField(max_length=50, choices=NotificationsChoices.choices)
+    notification_type = models.CharField(max_length=50, choices=NotificationsChoices.choices)
 
     artwork = models.ForeignKey(
         'artworks.Artwork',

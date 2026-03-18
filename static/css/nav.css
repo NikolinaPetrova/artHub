@@ -85,28 +85,43 @@ a {
 
 .nav-links a {
     display: block;
-    padding: 15px 20px;
-    color: #ffffffcc;
+    padding: 15px 17px;
+    color: var(--font-color);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-.nav-links li a:hover {
+.nav-links li a:hover,
+.nav-links .logout-btn:hover {
     color: #1f56b3;
-    border-radius: 0.7rem;
+}
+
+.nav-links .logout-btn {
+    color: var(--font-color);
+    background: none;
+    border: none;
+    padding: 15px 17px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.dropdown {
+    position: relative;
 }
 
 .dropdown-menu {
-    display: none;
     position: absolute;
-    top: 100%;
-    left: 0;
+    top: 45px;
+    right: 0;
+    width: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+    border-radius: 0.3rem;
+    padding: 8px 0;
     list-style: none;
-    padding: 0;
     margin: 0;
-    max-width: 150px;
-    border-radius: 5px;
-    overflow: hidden;
     background: linear-gradient(
     90deg,
     #08101e,
@@ -114,36 +129,51 @@ a {
     #0a0a18,
     #122037
   );
-    transform: translateY(10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    opacity: 0;
     z-index: 1000;
 }
 
-.dropdown-menu li a,
-.dropdown-menu li button {
+.dropdown-menu li {
+    margin: 0;
+}
+
+.dropdown-menu li a {
     padding: 10px 20px;
     font-size: 15px;
+
 }
 
-.dropdown-menu li a:hover,
-.dropdown-menu li button:hover{
-    color: #1f56b3;
+.dropdown-menu li a:hover {
+    color: var(--hover-color);
+    transition: background 0.2s ease;
 }
 
-.dropdown:hover .dropdown-menu{
-    display: block;
-    opacity: 1;
-    transform: translateY(0);
+.dropdown-menu p {
+    padding: 12px;
+    text-align: center;
+    font-size: 14px;
+    color: var(--font-color);
 }
 
-.dropdown-menu li button {
-    background: linear-gradient(
-    90deg,
-    #08101e,
-    #0a0a18,
-    #0a0a18,
-    #122037
-  );
-    border: none;
+#notification-count {
+    position: absolute;
+    top: 20px;
+    right: 8px;
+    color: red;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+}
+
+.notification-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notif-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
 }

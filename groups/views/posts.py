@@ -1,10 +1,12 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from groups.forms.post import PostCreateForm, PostUpdateForm
 from groups.models import Post, Group
 from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
+from notifications.services import NotificationService
 
 
 class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
@@ -17,12 +19,20 @@ class PostCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         group = self.get_group()
-        return group.members.filter(pk=self.request.user.pk).exists()
+        return group.members.filter(user=self.request.user).exists()
+
+    def handle_no_permission(self):
+        if self.request.user.is_authenticated:
+            messages.error(self.request, "You must be a member of this group to create a post.")
+            return redirect('group-details', slug=self.kwargs['slug'])
+        return super().handle_no_permission()
 
     def form_valid(self, form):
         form.instance.group = self.get_group()
         form.instance.author = self.request.user
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        NotificationService.notify_new_post(self.object)
+        return response
 
     def get_success_url(self):
         return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']}) + "?tab=posts"

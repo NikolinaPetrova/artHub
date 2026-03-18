@@ -4,11 +4,11 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import DeleteView
-
 from artworks.models import Artwork
 from groups.models import Post
 from interactions.forms.comment_form import CommentEditForm, CreateCommentForm, ReplyForm
 from interactions.models import Comment
+from notifications.services import NotificationService
 
 
 class AddCommentView(LoginRequiredMixin, View):
@@ -36,6 +36,7 @@ class AddCommentView(LoginRequiredMixin, View):
                 comment.post = obj
 
             comment.save()
+            NotificationService.notify_comment(comment)
 
         return redirect(request.META.get('HTTP_REFERER'))
 
@@ -50,6 +51,7 @@ class ReplyCommentView(LoginRequiredMixin, View):
             reply.artwork = parent.artwork
             reply.post = parent.post
             reply.save()
+            NotificationService.notify_comment(reply)
 
         return redirect(request.META.get('HTTP_REFERER'))
 

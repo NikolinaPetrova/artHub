@@ -11,6 +11,7 @@ urlpatterns = [
     path('album/', include('albums.urls')),
     path('groups/', include('groups.urls')),
     path('interactions/', include('interactions.urls')),
+    path('api/notifications/', include('notifications.urls')),
 ]
 
 if settings.DEBUG:

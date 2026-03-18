@@ -199,24 +199,6 @@
     }
 }
 
-.profile-nav {
-    width: 100%;
-}
-
-.profile-nav .nav-links {
-    display: flex;
-    justify-content: flex-start;
-    font-size: initial;
-    padding: 0 1rem;
-    background: linear-gradient(
-    90deg,
-    #08101e,
-    #0a0a18,
-    #0a0a18,
-    #122037
-  );
-}
-
 .profile-description {
     h3 {
         padding-bottom: 1rem;
@@ -589,6 +571,7 @@
     text-decoration: none;
     color: white;
     font-size: 1rem;
+    transition: color 0.3s ease;
 
     &:hover {
         color: var(--hover-color);

@@ -4,6 +4,7 @@ from django.views import View
 from artworks.models import Artwork
 from groups.models import Post
 from interactions.models import Like, Comment
+from notifications.services import NotificationService
 
 
 class LikeView(LoginRequiredMixin, View):
@@ -30,6 +31,8 @@ class LikeView(LoginRequiredMixin, View):
             like_data['comment'] = obj
 
         like, created = Like.objects.get_or_create(**like_data)
+        if created:
+            NotificationService.notify_like(obj, request.user)
         if not created:
             like.delete()
 
