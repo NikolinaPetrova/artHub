@@ -149,3 +149,47 @@ class NotificationService:
                 post=post,
                 target_url=reverse('post-details', kwargs={'slug': post.group.slug, 'pk': post.pk})
             )
+
+    @classmethod
+    def notify_join_to_public_group(cls, sender, group):
+        if sender != group.owner:
+            cls.create(
+                recipient=group.owner,
+                sender=sender,
+                notification_type=NotificationsChoices.JOIN_PUBLIC_GROUP,
+                message=f"{sender.username} joined to your public group {group.name}",
+                target_url=reverse('group-details', kwargs={'slug': group.slug}) + '?tab=members'
+            )
+
+    @classmethod
+    def notify_join_request(cls, sender, group):
+        if sender != group.owner:
+            cls.create(
+                recipient=group.owner,
+                sender=sender,
+                notification_type=NotificationsChoices.JOIN_REQUEST,
+                message=f"{sender.username} wants to join your private group {group.name}",
+                target_url=reverse('group-details', kwargs={'slug': group.slug}) + '?tab=joinRequests'
+            )
+
+    @classmethod
+    def notify_join_approved(cls, sender, group, recipient):
+        if sender != recipient:
+            cls.create(
+                recipient=recipient,
+                sender=sender,
+                notification_type=NotificationsChoices.JOIN_APPROVED,
+                message=f"{group.owner} approved you to join {group.name}",
+                target_url=reverse('group-details', kwargs={'slug': group.slug})
+            )
+
+    @classmethod
+    def notify_join_rejected(cls, sender, group, recipient):
+        if sender != recipient:
+            cls.create(
+                recipient=recipient,
+                sender=sender,
+                notification_type=NotificationsChoices.JOIN_REJECTED,
+                message=f"{group.owner} rejected you to join {group.name}",
+                target_url=reverse('group-details', kwargs={'slug': group.slug})
+            )

@@ -7,6 +7,7 @@ from django.views.generic import ListView, UpdateView, DeleteView
 from groups.choices import RoleChoices, JoinPolicy, StatusChoices
 from groups.forms import GroupMemberForm
 from groups.models import Group, GroupMember, GroupJoinRequest
+from notifications.services import NotificationService
 
 
 class ToggleGroupMembershipView(LoginRequiredMixin, View):
@@ -23,8 +24,10 @@ class ToggleGroupMembershipView(LoginRequiredMixin, View):
                     messages.error(request, 'You have been rejected from joining the group.')
                 else:
                     GroupJoinRequest.objects.create(group=group, user=request.user)
+                    NotificationService.notify_join_request(request.user, group)
             else:
                 GroupMember.objects.create(group=group, user=request.user)
+                NotificationService.notify_join_to_public_group(request.user, group)
 
         return redirect('group-details', slug=slug)
 

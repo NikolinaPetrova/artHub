@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from groups.models import GroupJoinRequest, GroupMember
+from notifications.services import NotificationService
 
 
 class JoinRequestModerationView(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -25,10 +26,20 @@ class JoinRequestModerationView(LoginRequiredMixin, UserPassesTestMixin, View):
             )
             join_request.reviewed_by = self.request.user
             join_request.delete()
+            NotificationService.notify_join_approved(
+                join_request.group.owner,
+                join_request.group,
+                join_request.user
+            )
 
         elif action == 'reject':
             join_request.status = 'rejected'
             join_request.reviewed_by = self.request.user
             join_request.save()
+            NotificationService.notify_join_rejected(
+                join_request.group.owner,
+                join_request.group,
+                join_request.user
+            )
 
         return redirect(request.META.get('HTTP_REFERER'))
