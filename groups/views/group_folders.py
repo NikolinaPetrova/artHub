@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView
 from artworks.models import Artwork
+from groups.choices import RoleChoices
 from groups.forms import GroupFolderForm
 from groups.models import GroupFolder, Group
 
@@ -16,7 +17,13 @@ class GroupFolderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         return get_object_or_404(Group, slug=self.kwargs['slug'])
 
     def test_func(self):
-        return self.request.user == self.get_group().owner
+        group = self.get_group()
+        membership = group.members.filter(user=self.request.user).first()
+        is_admin_or_moderator = (
+            self.request.user  == group.owner or
+            (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
+        )
+        return is_admin_or_moderator
 
     def form_valid(self, form):
         form.instance.group = self.get_group()
@@ -35,7 +42,13 @@ class GroupFolderEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return get_object_or_404(Group, slug=self.kwargs['slug'])
 
     def test_func(self):
-        return self.request.user == self.get_group().owner
+        group = self.get_group()
+        membership = group.members.filter(user=self.request.user).first()
+        is_admin_or_moderator = (
+                self.request.user == group.owner or
+                (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
+        )
+        return is_admin_or_moderator
 
     def get_success_url(self):
         return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']})

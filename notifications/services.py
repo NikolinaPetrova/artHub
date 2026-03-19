@@ -1,5 +1,6 @@
 from django.urls import reverse
 from artworks.models import Artwork
+from groups.choices import RoleChoices
 from groups.models import Post
 from interactions.models import Comment
 from notifications.choices import NotificationsChoices
@@ -192,4 +193,40 @@ class NotificationService:
                 notification_type=NotificationsChoices.JOIN_REJECTED,
                 message=f"{group.owner} rejected you to join {group.name}",
                 target_url=reverse('group-details', kwargs={'slug': group.slug})
+            )
+
+    @classmethod
+    def notify_submission(cls, sender, group, artwork):
+        admins = group.members.filter(role__in=[RoleChoices.ADMIN, RoleChoices.MODERATOR])
+
+        for member in admins:
+            cls.create(
+                recipient=member.user,
+                sender=sender,
+                notification_type=NotificationsChoices.SUBMISSION,
+                message=f"{sender.username} submitted artwork to {group.name}",
+                artwork=artwork,
+                target_url=reverse('group-details', kwargs={'slug': group.slug}) + '?tab=submissions'
+            )
+
+    @classmethod
+    def notify_submission_approved(cls, reviewed_by, group, recipient, artwork):
+        if reviewed_by != recipient:
+            cls.create(
+                recipient=recipient,
+                sender=reviewed_by,
+                notification_type=NotificationsChoices.SUBMISSION_APPROVED,
+                message=f"Your artwork {artwork} has been approved to group {group.name}",
+                target_url = reverse('group-details', kwargs={'slug': group.slug})
+            )
+
+    @classmethod
+    def notify_submission_rejected(cls, reviewed_by, group, recipient, artwork):
+        if reviewed_by != recipient:
+            cls.create(
+                recipient=recipient,
+                sender=reviewed_by,
+                notification_type=NotificationsChoices.SUBMISSION_REJECTED,
+                message=f"Your artwork {artwork} has been rejected from group {group.name}",
+                target_url = reverse('artwork-details', kwargs={'pk': artwork.pk})
             )

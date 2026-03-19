@@ -64,6 +64,11 @@ class GroupDetailView(DetailView):
         context['group_members'] = GroupMember.objects.filter(group=self.object)
         context['join_requests'] = GroupJoinRequest.objects.filter(group=self.object, status=StatusChoices.PENDING)
         context['posts'] = Post.objects.filter(group=self.object)
+        membership = self.object.members.filter(user=self.request.user).first()
+        context['is_moderator_or_owner'] = (
+                self.request.user == self.object.owner or
+                (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
+        )
 
         if self.request.user.is_authenticated:
             context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
@@ -77,11 +82,14 @@ class GroupDetailView(DetailView):
             context['join_request_pending'] = None
 
         context['group_submissions'] = GroupSubmission.objects.filter(
-            group__owner=self.object.owner,
+            group=self.object,
             status=StatusChoices.PENDING
         )
 
-        context['submissions_pending_count'] = GroupSubmission.objects.filter(status=StatusChoices.PENDING).count()
+        context['submissions_pending_count'] = GroupSubmission.objects.filter(
+            group=self.object,
+            status=StatusChoices.PENDING
+        ).count()
         return context
 
 
@@ -107,7 +115,12 @@ class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 class RemoveArtworkFromGroupView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
         group = get_object_or_404(Group, slug=self.kwargs['slug'])
-        return group.owner == self.request.user
+        membership = group.members.filter(user=self.request.user).first()
+        is_admin_or_moderator = (
+            self.request.user == group.owner or
+            (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
+        )
+        return is_admin_or_moderator
 
     def post(self, request, slug, artwork_pk):
         group = get_object_or_404(Group, slug=slug)

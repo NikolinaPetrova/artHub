@@ -2,7 +2,7 @@
     {% if not group_submissions %}
         <h3>You don’t have any submissions yet.</h3>
     {% endif %}
-    {% for submission in group_submissions.all %}
+    {% for submission in group_submissions %}
         <div class="submissions-container">
             <div class="content">
                 <a href="{% url 'artwork-details' submission.artwork.pk %}"><img src="{{ submission.artwork.image_url }}" alt="{{ submission.artwork.title }}"></a>

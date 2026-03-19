@@ -1,6 +1,6 @@
 <main class="dashboard">
     <div class="folders-container">
-        {% if request.user.pk == group.owner.pk %}
+        {% if is_moderator_or_owner %}
             <div class="albums-list">
                 <div class="album-card">
                     <div class="album-bg fallback">
@@ -50,12 +50,14 @@
 
                     <div class="album-overlay">
                         <a href="{% url 'group-folder-details' group.slug folder.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
-                        {% if request.user.pk == group.owner.pk %}
-                        <a href="{% url 'group-folder-edit' group.slug folder.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form method="post" action="{% url 'group-folder-delete' group.slug folder.pk %}">
-                            {% csrf_token %}
-                            <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
-                        </form>
+                        {% if is_moderator_or_owner %}
+                            <a href="{% url 'group-folder-edit' group.slug folder.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                        {% endif %}
+                        {% if self.request.user == group.owner %}
+                            <form method="post" action="{% url 'group-folder-delete' group.slug folder.pk %}">
+                                {% csrf_token %}
+                                <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                            </form>
                         {% endif %}
                     </div>
                 </div>
@@ -76,7 +78,7 @@
                     <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}" data-art-id="{{ artwork.id }}">
                         <p class="overlay">More Info</p>
                     </a>
-                    {% if request.user == group.owner %}
+                    {% if is_moderator_or_owner %}
                         <form method="post" class="remove-form" action="{% url 'group-remove-artwork' group.slug artwork.pk %}">
                             {% csrf_token %}
                             <button type="submit"><i class="fa-solid fa-trash-arrow-up"></i></button>

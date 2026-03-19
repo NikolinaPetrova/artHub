@@ -30,7 +30,7 @@
                                 <li><a href="#" onclick="showTab('gallery'); return false;">Gallery</a></li>
                                 <li><a href="#" onclick="showTab('posts'); return false;">Posts</a></li>
                                 <li><a href="#" onclick="showTab('members'); return false;">Members</a></li>
-                                {% if request.user.pk == group.owner.pk %}
+                                {% if is_moderator_or_owner %}
                                     <li><a href="#" onclick="showTab('joinRequests'); return false">
                                         Join Requests {% if join_requests %} <strong class="notification">({{ join_requests.count }})</strong> {% endif %}
                                     </a></li>
@@ -146,9 +146,11 @@
             const cancelBtn = document.getElementById('cancel-delete');
             const form = document.querySelector('.delete-group-form');
 
-            deleteBtn.addEventListener('click', () => modal.style.display = 'block');
-            cancelBtn.addEventListener('click', () => modal.style.display = 'none');
-            confirmBtn.addEventListener('click', () => form.submit());
+            if (deleteBtn && modal && confirmBtn && cancelBtn && form) {
+                deleteBtn.addEventListener('click', () => modal.style.display = 'block');
+                cancelBtn.addEventListener('click', () => modal.style.display = 'none');
+                confirmBtn.addEventListener('click', () => form.submit());
+            }
 
             const params = new URLSearchParams(window.location.search);
             const tab = params.get("tab") || "gallery";
