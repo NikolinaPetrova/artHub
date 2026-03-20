@@ -2,6 +2,11 @@
     display: grid;
 }
 
+.dashboard h3 {
+    text-align: center;
+    padding-top: 1rem;
+}
+
 .no-artworks {
     text-align: center;
     margin-bottom: 30rem;

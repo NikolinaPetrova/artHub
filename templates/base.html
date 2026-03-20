@@ -9,51 +9,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header class="navigation">
-            <div class="logo">
-                <a href="{% url 'home' %}">ArtHub</a>
+    <aside class="sidebar collapsed">
+        <ul>
+            <li>
+                <a class="menu-btn"><span class="icon" title="Menu"><i class="fa-solid fa-bars"></i></span> <span class="text">Menu</span></a>
+            </li>
+            <li>
+                <a href="{% url 'home' %}"><span class="icon" title="Home"><i class="fa-regular fa-house"></i></span> <span class="text">Home</span></a>
+            </li>
+            <li>
+                <a href="{% url 'gallery' %}"><span class="icon" title="Gallery"><i class="fa-solid fa-palette"></i></span> <span class="text">Gallery</span></a>
+            </li>
+            <li>
+                <a href="{% url 'create-artwork' %}"><span class="icon" title="Add Artwork"><i class="fa-solid fa-paintbrush"></i></span> <span class="text">Add Artwork</span></a>
+            </li>
+            <li>
+                <a href="{% url 'create-group' %}"><span class="icon" title="Create Group"><i class="fa-solid fa-plus"></i></span> <span class="text">Create Group</span></a>
+            </li>
+            <li>
+                <a href="#"><span class="icon" title="Browse Groups"><i class="fa-solid fa-people-group"></i></span> <span class="text">Browse Groups</span></a>
+            </li>
+        </ul>
+    </aside>
+    <header class="top-nav">
+        <div class="logo-menu">
+            <a href="{% url 'home' %}" class="logo">ArtHub</a>
+        </div>
+
+        <form action="{% url 'gallery' %}" method="get" class="search-form">
+            <div class="search-bar">
+                <input type="search" name="q" placeholder="Search artworks by title or tag..." value="{{ request.GET.q }}">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </div>
+        </form>
 
-            <form action="{% url 'home' %}" method="get" class="search-form">
-                <div class="search-bar">
-                    <input type="search" name="q" placeholder="Search artworks by title or tag..." value="{{ request.GET.q }}">
-                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </div>
-            </form>
+        {% if request.user.is_authenticated %}
+        <ul class="nav-links">
+            <li class="dropdown">
+                <a><i class="fa-regular fa-bell"><span id="notification-count"></span></i></a>
+                <ul class="dropdown-menu" style="display: none">
 
-            {% if request.user.is_authenticated %}
-            <ul class="nav-links">
-                <li><a href="{% url 'gallery' %}">Gallery</a></li>
-                <li><a href="{% url 'create-artwork' %}">Create Art</a></li>
-                <li><a href="{% url 'create-group' %}">Create Group</a></li>
-                <li class="dropdown">
-                    <a><i class="fa-regular fa-bell"><span id="notification-count"></span></i></a>
-                    <ul class="dropdown-menu" style="display: none">
-
-                    </ul>
-                </li>
-                <li><a href="{% url 'profile-details' request.user.pk %}" title="Account"><i class="fa-regular fa-circle-user"></i></a></li>
-                <li>
-                    <form method="post" action="{% url 'logout' %}">
-                        {% csrf_token %}
-                        <button class="logout-btn" title="Log out"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
-                    </form>
-                </li>
-            </ul>
-            {% else %}
-                <ul class="nav-links">
-                    <li><a href="{% url 'login' %}">Login</a></li>
-                    <li><a href="{% url 'register' %}">Register</a></li>
                 </ul>
-            {% endif %}
-        </header>
-    </div>
+            </li>
+            <li><a href="{% url 'profile-details' request.user.pk %}" title="Account"><i class="fa-regular fa-circle-user"></i></a></li>
+            <li>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="logout-btn" title="Log out"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                </form>
+            </li>
+        </ul>
+        {% else %}
+            <ul class="nav-links">
+                <li><a href="{% url 'login' %}">Login</a></li>
+                <li><a href="{% url 'register' %}">Register</a></li>
+            </ul>
+        {% endif %}
+    </header>
 
     {% block content %}
     {% endblock %}
 
-    <footer>
+    <footer class="content">
         <p>©2026 ArtHub Project. All rights reserved.</p>
     </footer>
 
@@ -181,6 +198,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadCount();
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const menuBtn = document.querySelector('.menu-btn');
+    const sidebar = document.querySelector('.sidebar');
+
+    menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle('collapsed');
+    });
+
+    document.addEventListener('click', (e) => {
+        const isClickInsideSidebar = sidebar.contains(e.target);
+        const isClickOnMenuBtn = menuBtn.contains(e.target);
+
+        if (!isClickInsideSidebar && !isClickOnMenuBtn && !sidebar.classList.contains('collapsed')) {
+            sidebar.classList.add('collapsed');
+        }
+    });
+
+    sidebar.addEventListener('click', (e) => {
+        e.stopPropagation();
+    });
+});
+
 </script>
 </body>
 </html>

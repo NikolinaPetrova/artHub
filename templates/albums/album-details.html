@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <main class="album-container">
+    <main class="album-container content">
         <h1>{{ album.name }}</h1>
         <section class="artworks-container">
             {% for artwork in album.artworks.all %}

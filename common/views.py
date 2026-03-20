@@ -1,5 +1,5 @@
 import re
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.views.generic import TemplateView, ListView
 from artworks.models import Artwork
 
@@ -8,22 +8,12 @@ class HomePageView(ListView):
     model = Artwork
     template_name = 'common/home-page.html'
 
-    def get_queryset(self):
-        query = self.request.GET.get('q', '').strip()
-        queryset = Artwork.objects.select_related('user').prefetch_related('tags')
-
-        if not query:
-            return queryset
-
-        search_words = re.findall(r'\w+', query)
-
-        q_object = Q()
-
-        for word in search_words:
-            q_object |= Q(title__icontains=word)
-            q_object |= Q(tags__name__icontains=word)
-
-        return queryset.filter(q_object).distinct()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['top_artworks'] = Artwork.objects.annotate(
+            likes_count=Count('likes', distinct=True)
+        ).order_by('-likes_count')[:5]
+        return context
 
 class Custom404View(TemplateView):
     template_name = '404.html'

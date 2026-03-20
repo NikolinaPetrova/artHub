@@ -1,29 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <main class="dashboard">
-        {% if not artwork_list %}
-            <div class="no-artworks">
-                {% if request.GET.q %}
-                    <h1>No artworks match your search criteria.</h1>
-                {% else %}
-                    <h1>There are currently no artworks available.</h1>
-                {% endif %}
+    <main class="content home-page">
+        <section class="header-container">
+            <h1>Discover Incredible Art & Connect with Artists</h1>
+            <div class="home-buttons buttons">
+                <a href="{% url 'gallery' %}">Explore</a>
+                <a href="{% url 'register' %}">Join Now</a>
             </div>
-        {% else %}
-            {% if request.GET.q %}
-                <h2>Artworks matching...</h2>
-            {% endif %}
-                <section class="artworks-container">
-                    {% for artwork in artwork_list %}
-                        <div class="wrap-image">
-                            <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" alt="" src="{{ artwork.image_url }}">
-                                <p class="overlay">More Info</p>
-                            </a>
+        </section>
+
+        <div class="art-container">
+            <h2>Trending Artworks</h2>
+            <section class="top-artworks">
+                {% for art in top_artworks %}
+                    <div class="album-card">
+                        <div class="album-bg" style="background-image: url('{{ art.image_url }}');"></div>
+
+                        <div class="album-info">
+                            <img class="avatar" src="{{ art.user.profile.avatar.url }}" alt="{{ art.title }}">
+                            <p class="username">{{ art.user.username }}</p>
                         </div>
-                    {% endfor %}
-                </section>
-        {% endif %}
+
+                        <div class="album-overlay">
+                            <a href="{% url 'artwork-details' art.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </section>
+        </div>
+
+        <section class="card-container">
+            <h2>Join Our Creative Community</h2>
+            <p>Connect with thousands of artists, showcase your work and find inspiration</p>
+
+            <div class="inner-container">
+                <a href="{% url 'gallery' %}" class="card">
+                    <i class="fa-solid fa-compass"></i>
+                    <h4>Discover Art</h4>
+                    <p>Explore a world of creativity from artists around the globe. Dive into unique styles, trending pieces, and hidden gems waiting to be found.</p>
+                </a>
+
+                <a href="{% url 'create-artwork' %}" class="card">
+                    <i class="fa-solid fa-arrow-up-from-bracket"></i>
+                    <h4>Share Your Work</h4>
+                    <p>Showcase your creations and let your art speak for itself. Build your audience, get feedback, and grow as an artist.</p>
+                </a>
+
+                <a href="{% url 'gallery' %}" class="card">
+                    <i class="fa-solid fa-lightbulb"></i>
+                    <h4>Get Inspired</h4>
+                    <p>Find inspiration in every corner. Connect with creative minds, discover new ideas, and fuel your next masterpiece.</p>
+                </a>
+            </div>
+        </section>
     </main>
 
 {% endblock %}

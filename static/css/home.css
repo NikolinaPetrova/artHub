@@ -17,13 +17,11 @@ body {
     justify-content: space-between;
     align-items: center;
     min-height: 100vh;
-    background: linear-gradient(
-    140deg,
-    #000000,
-    #0a0a12,
-    #111122,
-    #050505
-  );
+    background-image: url('../images/background.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 body > * {
@@ -33,7 +31,7 @@ body > * {
 
 html, button {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #ffffffcc;
+    color: var(--font-color);
 }
 
 footer {
@@ -59,4 +57,209 @@ footer {
     h2 {
         font-size: 40px;
     }
+}
+.home-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-container {
+    text-align: center;
+    max-width: 440px;
+    padding: 100px 20px;
+}
+
+.header-container h1 {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    letter-spacing: 1px;
+}
+
+.home-buttons a {
+    padding: 12px 24px;
+    margin: 0 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.home-buttons a:first-child {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    color: white;
+}
+
+.home-buttons a:last-child {
+    border: 1px solid #a855f7;
+    color: #a855f7;
+
+    &:hover {
+        color: var(--font-color);
+    }
+}
+
+.art-container {
+    padding: 50px 0;
+}
+
+.top-artworks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    width: 100%;
+    padding-top: 20px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #a855f7;
+}
+
+.username {
+    font-size: 14px;
+}
+
+.view-btn {
+    background: rgba(168, 85, 247, 0.9);
+    padding: 14px;
+    border-radius: 50%;
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+
+.card-container h2 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.card-container p {
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+.card-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 80px 20px;
+}
+
+.inner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.card {
+    background: rgba(20, 20, 28, 0.4);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 400px;
+    margin: 50px auto;
+    color: #fff;
+    box-shadow: 0 8px 32px rgba(168, 85, 247, 0.2);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    border: 1px solid #a855f7;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+}
+
+.card i {
+    font-size: 28px;
+    color: #a855f7;
+    margin-bottom: 15px;
+}
+
+.card h4 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.card p {
+    font-size: 14px;
+    color: #bbb;
+}
+
+.tag-container-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    max-width: 1300px;
+    overflow: hidden;
+    padding-top: 2rem;
+}
+
+.overflow {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    flex-wrap: initial;
+    gap: 1rem;
+    padding: 5px 0;
+    flex: 1;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.overflow a {
+    padding: 0.7rem 1.6rem;
+    font-size: 1rem;
+    border-radius: 0.7rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    background: var(--secondary-color);
+    backdrop-filter: blur(12px);
+    color: var(--font-color);
+    width: auto;
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.overflow a:hover {
+    background-color: var(--hover-color);
+    transform: translateY(-2px);
+    color: var(--font-color);
+}
+
+.overflow::-webkit-scrollbar {
+    display: none;
+}
+
+.scroll-btn {
+    background-color: var(--secondary-color);
+    border: none;
+    padding: 10px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 4px;
+    user-select: none;
+    flex-shrink: 0;
+    margin: 0 1rem;
+    color: var(--font-color);
+}
+
+.scroll-btn:hover {
+    background-color: var(--hover-color);
+    color: var(--font-color);
 }

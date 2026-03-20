@@ -325,7 +325,7 @@
 .reply-form button:hover,
 .save-button:hover,
 .create-album form button:hover {
-    background: #1f56b3;
+    background: var(--hover-color);
 }
 
 .comment {
@@ -387,7 +387,7 @@
 .comment-actions .reply-toggle:hover,
 .comment-actions .delete-button:hover,
 .comment-actions .edit-toggle:hover {
-    color: #1f56b3;
+    color: var(--hover-color);
 }
 
 .reply-form {
@@ -518,7 +518,7 @@
 .album-overlay .btn:hover,
 .album-overlay .btn.edit:hover,
 .btn-create:hover {
-    background-color: #1f56b3;
+    background-color: var(--hover-color);
 }
 
 .album-container h1,
@@ -579,7 +579,7 @@
 }
 
 .join-btn {
-    background-color: #4884e8;
+    background-color: var(--hover-color);
     padding: 0.3rem 1rem;
     border: none;
 }
