@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import ArtHubUserCreationForm, ArtHubUserUpdateForm
+from accounts.tasks import send_welcome_email
 from albums.forms import AlbumCreateForm
 from groups.models import Group
 
@@ -25,6 +26,8 @@ class RegisterView(CreateView):
 
         if response.status_code in [301, 302]:
             login(self.request, self.object)
+
+        send_welcome_email.delay(self.object.email, self.object.username)
 
         return response
 
