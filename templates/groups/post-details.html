@@ -8,7 +8,7 @@
             <div class="info-container">
                 <div class="details">
                     <div class="flex-title">
-                        <div class="post-container" style="display: flex; gap: 0.5rem">
+                        <div class="post-container" style="display: flex; gap: 0.5rem; padding-top: 5rem;">
                             <a href="{% url 'profile-details' post.author.pk %}">
                                 {% if post.author.profile.avatar %}
                                     <img src="{{ post.author.profile.avatar.url }}">
@@ -21,7 +21,7 @@
                                 <p>{{ post.created_at|timesince }} ago</p>
                             </div>
                         </div>
-                        {% if request.user.is_authenticated and post.author == request.user %}
+                        {% if request.user.is_authenticated and post.author == request.user or request.user == post.group.owner %}
                             <div class="buttons">
                                 <a href="{% url 'post-edit' post.group.slug post.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
                                 <form method="post" action="{% url 'post-delete' post.group.slug post.pk %}">
@@ -35,7 +35,7 @@
                     <p class="description"> {{ post.content }}</p>
                 </div>
 
-                <div class="img-details">
+                <div class="{% if post.image %} img-details {% endif %}">
                     {% if post.image %}
                         <img src="{{ post.image.url }}">
                     {% endif %}

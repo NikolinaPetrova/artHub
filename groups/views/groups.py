@@ -3,12 +3,11 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, DeleteView
-
 from artworks.models import Artwork
 from groups.choices import RoleChoices, StatusChoices
 from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm
 from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission, Post
-from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
+
 
 
 class CreateGroupView(LoginRequiredMixin, CreateView):

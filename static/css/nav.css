@@ -135,8 +135,8 @@ a {
 
 #notification-count {
     position: absolute;
-    top: 20px;
-    right: 8px;
+    top: 17px;
+    right: 0;
     color: red;
     font-size: 11px;
     font-weight: bold;

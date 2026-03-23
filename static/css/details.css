@@ -776,3 +776,25 @@
     font-size: 14px;
     color: var(--font-color);
 }
+
+.post-list {
+    gap: 2rem;
+}
+
+.post-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba(20, 20, 28, 0.4);
+    backdrop-filter: blur(15px);
+    padding: 2rem;
+    border-radius: 0.5rem;
+}
+
+.post-info > a {
+    color: var(--font-color);
+}
+
+.post-info > a:hover {
+    color: var(--hover-color);
+}
