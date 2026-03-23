@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="groups-list content">
+    {% for group in group_list %}
+        <div class="group-card">
+
+            {% if group.banner %}
+                <a href="{% url 'group-details' group.slug %}"><div class="group-banner" style="background-image: url('{{ group.banner.url }}');"></div></a>
+            {% else %}
+                <a href="{% url 'group-details' group.slug %}">
+                    <div class="group-banner no-banner">
+                        <i class="fa-regular fa-image"></i>
+                    </div>
+                </a>
+            {% endif %}
+
+            <div class="group-info">
+                <h3 class="group-title">{{ group.name }}</h3>
+                <p class="group-members">{{ group.members.count }} members</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="empty">
+            <h3>There are no groups yet. Be the first to create one!</h3>
+            <a href="{% url 'create-group' %}" class="btn-create">Create a Group</a>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

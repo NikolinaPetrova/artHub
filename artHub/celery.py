@@ -13,6 +13,6 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks()
 
 if __name__ == "__main__":
-    multiprocessing.freeze_support()  # важно за Windows
+    multiprocessing.freeze_support()
     from django.core.management import execute_from_command_line
     execute_from_command_line()

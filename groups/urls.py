@@ -3,6 +3,7 @@ from groups import views
 
 urlpatterns = [
     path('create/', views.CreateGroupView.as_view(), name='create-group'),
+    path('all/', views.GroupListView.as_view(), name='groups-list'),
     path('submission/<int:pk>/moderate/', views.SubmissionModerationView.as_view(), name='submission-moderate'),
     path('<slug:slug>/', include([
         path('join/', views.ToggleGroupMembershipView.as_view(), name='join-group'),

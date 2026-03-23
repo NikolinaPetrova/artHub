@@ -95,11 +95,9 @@ class GroupDetailView(DetailView):
 
 class GroupListView(ListView):
     model = Group
-    template_name = 'profile/tabs/profile-groups.html'
+    template_name = 'groups/groups-list.html'
     context_object_name = 'group_list'
 
-    def get_queryset(self):
-        return self.request.user.groups.all()
 
 class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Group

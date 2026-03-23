@@ -541,13 +541,7 @@
 }
 
 .group-nav {
-    background: linear-gradient(
-    90deg,
-    #08101e,
-    #0a0a18,
-    #0a0a18,
-    #122037
-  );
+    background: rgba(0, 0, 0, 0.8);
     padding: 1rem 3rem;
 }
 
@@ -728,4 +722,57 @@
         max-width: 50px;
         border-radius: 50%;
     }
+}
+
+.groups-list {
+    max-width: 1300px;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+
+.group-card {
+    background: rgba(20, 20, 28, 0.4);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.group-card:hover {
+    transform: translateY(-5px);
+}
+
+.group-banner {
+    width: 100%;
+    height: 230px;
+    background-size: cover;
+    background-position: center;
+}
+
+.group-banner.no-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    color: #9ca3af;
+    font-size: 32px;
+}
+
+.group-info {
+    padding: 15px;
+}
+
+.group-title {
+    margin: 0 0 8px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--font-color);
+}
+
+.group-members {
+    margin: 0;
+    font-size: 14px;
+    color: var(--font-color);
 }

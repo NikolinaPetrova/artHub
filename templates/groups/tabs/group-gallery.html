@@ -52,8 +52,6 @@
                         <a href="{% url 'group-folder-details' group.slug folder.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
                         {% if is_moderator_or_owner %}
                             <a href="{% url 'group-folder-edit' group.slug folder.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                        {% endif %}
-                        {% if self.request.user == group.owner %}
                             <form method="post" action="{% url 'group-folder-delete' group.slug folder.pk %}">
                                 {% csrf_token %}
                                 <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>

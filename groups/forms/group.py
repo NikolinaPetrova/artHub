@@ -8,14 +8,13 @@ class BaseGroupForm(forms.ModelForm):
         model = Group
         exclude = ['owner', 'slug']
 
+
+class CreateGroupForm(BaseGroupForm):
     def clean_name(self):
         if Group.objects.filter(name=self.cleaned_data['name']).exists():
             raise ValidationError('A group with this name already exists')
         return self.cleaned_data['name']
 
-
-class CreateGroupForm(BaseGroupForm):
-    ...
 
 class EditGroupForm(BaseGroupForm):
     ...

@@ -2,7 +2,7 @@
     display: grid;
 }
 
-.dashboard h3 {
+.dashboard ~ h3 {
     text-align: center;
     padding-top: 1rem;
 }
