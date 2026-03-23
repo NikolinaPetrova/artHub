@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="error-page content">
+    <h2>Something went wrong.</h2>
+    <h3>We're experiencing a server error. Please try again later.</h3>
+    <form class="buttons" action="{% url 'home' %}">
+        <button type="submit">Return to Home Page</button>
+    </form>
+</main>
+
+{% endblock %}

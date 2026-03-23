@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="error-page content">
+    <h2>Bad Request.</h2>
+    <h3>Your request could not be processed. Please try again.</h3>
+    <form class="buttons" action="{% url 'home' %}">
+        <button type="submit">Return to Home Page</button>
+    </form>
+</main>
+
+{% endblock %}

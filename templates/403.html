@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<main class="error-page content">
+    <h2>Access Denied.</h2>
+    <h3>You do not have permission to view this page.</h3>
+    <form class="buttons" action="{% url 'home' %}">
+        <button type="submit">Return to Home Page</button>
+    </form>
+</main>
+
+{% endblock %}
