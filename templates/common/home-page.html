@@ -1,12 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 
-    <main class="content home-page">
+    <main class="content-sidebar home-page">
         <section class="header-container">
             <h1>Discover Incredible Art & Connect with Artists</h1>
             <div class="home-buttons buttons">
-                <a href="{% url 'gallery' %}">Explore</a>
-                <a href="{% url 'register' %}">Join Now</a>
+                <a href="{% url 'gallery' %}" class="explore-btn">Explore</a>
+                {% if not request.user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="join-now-btn">Join Now</a>
+                {% endif %}
             </div>
         </section>
 

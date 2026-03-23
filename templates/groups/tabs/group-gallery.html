@@ -1,4 +1,9 @@
-<main class="dashboard">
+{% load static %}
+
+<main class="dashboard"
+        id="dashboard-container"
+        data-move-url="{% url 'group-artwork-move' group.slug %}"
+        data-csrf="{{ csrf_token }}">
     <div class="folders-container">
         {% if is_moderator_or_owner %}
             <div class="albums-list">
@@ -88,72 +93,5 @@
     {% endif %}
 </main>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const addFolderBtn = document.getElementById('add-folder-btn');
-        const modal = document.getElementById('folder-modal');
-        const cancelBtn = document.getElementById('cancel-folder');
-
-        addFolderBtn.addEventListener('click', function (e) {
-            e.preventDefault();
-            modal.style.display = 'block';
-        });
-
-        cancelBtn.addEventListener('click', function () {
-            modal.style.display = 'none';
-        });
-
-        window.addEventListener('click', function (event) {
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        });
-
-    });
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const draggables = document.querySelectorAll('.art-image');
-        const folders = document.querySelectorAll('.album-card');
-
-        draggables.forEach(draggable => {
-            draggable.addEventListener('dragstart', e => {
-                e.dataTransfer.setData('art-id', draggable.dataset.artId);
-            });
-        });
-
-        folders.forEach(folder => {
-            folder.addEventListener('dragover', e => e.preventDefault());
-
-            folder.addEventListener('drop', e => {
-                e.preventDefault();
-                const artId = e.dataTransfer.getData('art-id');
-                const folderId = folder.dataset.folderId;
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = "{% url 'group-artwork-move' group.slug %}";
-
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = 'csrfmiddlewaretoken';
-                csrfInput.value = '{{ csrf_token }}';
-                form.appendChild(csrfInput);
-
-                const artInput = document.createElement('input');
-                artInput.type = 'hidden';
-                artInput.name = 'art_id';
-                artInput.value = artId;
-                form.appendChild(artInput);
-
-                const folderInput = document.createElement('input');
-                folderInput.type = 'hidden';
-                folderInput.name = 'folder_id';
-                folderInput.value = folderId;
-                form.appendChild(folderInput);
-
-                document.body.appendChild(form);
-                form.submit();
-            });
-        });
-    });
-</script>
+<script src="{% static 'js/groups/group-folder-modal.js' %}"></script>
+<script src="{% static 'js/groups/group-drag-art.js' %}"></script>

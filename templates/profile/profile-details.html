@@ -2,7 +2,7 @@
 {% load static %}
 {% block content %}
 
-    <main class="content">
+    <main class="content-sidebar">
         <section class="profile-details">
                 <div class="profile-wrap">
                     <div class="profile-banner">
@@ -69,17 +69,6 @@
                 </div>
         </section>
     </main>
-    <script>
-        function showTab(tabId) {
-            const tabs = document.querySelectorAll(".tab");
-
-            tabs.forEach(tab => {
-                tab.style.display = "none";
-            });
-
-            const activeTab = document.getElementById(tabId);
-            activeTab.style.display = "block";
-        }
-    </script>
+    <script src="{% static 'js/profiles/tabs.js' %}"></script>
 
 {% endblock %}

@@ -87,18 +87,18 @@ footer {
     font-weight: 600;
 }
 
-.home-buttons a:first-child {
-    background: linear-gradient(135deg, #7c3aed, #a855f7);
+.home-buttons .explore-btn {
+    background: var(--hover-color);
     color: white;
 }
 
-.home-buttons a:last-child {
-    border: 1px solid #a855f7;
-    color: #a855f7;
+.home-buttons .join-now-btn {
+    border: 1px solid var(--hover-color);
+    color: var(--hover-color);
+}
 
-    &:hover {
-        color: var(--font-color);
-    }
+.home-buttons .join-now-btn:hover {
+    color: var(--font-color);
 }
 
 .art-container {

@@ -60,6 +60,7 @@ a {
     align-items: center;
     font-size: 20px;
     list-style: none;
+    padding-right: 1.5rem;
 }
 
 .nav-links li {
@@ -68,7 +69,7 @@ a {
 
 .nav-links a {
     display: block;
-    padding: 15px 17px;
+    padding: 15px 10px;
     color: var(--font-color);
     text-decoration: none;
     transition: color 0.3s ease;
@@ -83,7 +84,7 @@ a {
     color: var(--font-color);
     background: none;
     border: none;
-    padding: 15px 17px;
+    padding: 15px 10px;
     font-size: 16px;
     cursor: pointer;
     transition: color 0.3s ease;
@@ -234,14 +235,14 @@ a {
     transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.sidebar.collapsed ~ .content,
+.sidebar.collapsed ~ .content-sidebar,
 .sidebar.collapsed ~ .top-nav {
     margin-left: 60px;
     width: calc(100% - 60px);
     transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
-.content,
+.content-sidebar,
 .top-nav {
     margin-left: 220px;
     width: calc(100% - 220px);

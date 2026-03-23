@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
 
-    <div class="tag-container-wrapper content">
+    <div class="tag-container-wrapper content-sidebar">
         <button class="scroll-btn left">&lt;</button>
         <div class="overflow" id="tag-container">
             {% for tag_name in tags %}
@@ -11,7 +12,7 @@
         <button class="scroll-btn right">&gt;</button>
     </div>
 
-    <main class="dashboard content">
+    <main class="dashboard content-sidebar">
         {% if not artwork_list %}
             <div class="no-artworks">
                 {% if request.GET.q %}
@@ -36,14 +37,6 @@
         {% endif %}
     </main>
 
-    <script>
-    const container = document.getElementById('tag-container');
-    document.querySelector('.scroll-btn.left').addEventListener('click', () => {
-        container.scrollBy({ left: -150, behavior: 'smooth' });
-    });
-    document.querySelector('.scroll-btn.right').addEventListener('click', () => {
-        container.scrollBy({ left: 150, behavior: 'smooth' });
-    });
-    </script>
+    <script src="{% static 'js/tags/tag-scroll.js'%}"></script>
 
 {% endblock %}
