@@ -41,7 +41,7 @@
 
                     <form method="post" action="{% url 'like' 'comment' comment.pk %}">
                         {% csrf_token %}
-                        <button type="submit" class="action-btn like-comment {% if comment|is_liked:request.user %}liked{% endif %}">
+                        <button type="submit" class="action-btn like-comment {% if request.user.is_authenticated and comment|is_liked:request.user %}liked{% endif %}">
                             ({{ comment.likes.count }}) Like
                         </button>
                     </form>
