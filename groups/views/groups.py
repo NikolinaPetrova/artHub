@@ -64,11 +64,6 @@ class GroupDetailView(DetailView):
         context['group_members'] = GroupMember.objects.filter(group=self.object)
         context['join_requests'] = GroupJoinRequest.objects.filter(group=self.object, status=StatusChoices.PENDING)
         context['posts'] = Post.objects.filter(group=self.object)
-        membership = self.object.members.filter(user=self.request.user).first()
-        context['is_moderator_or_owner'] = (
-                self.request.user == self.object.owner or
-                (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
-        )
 
         if self.request.user.is_authenticated:
             context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
@@ -77,9 +72,15 @@ class GroupDetailView(DetailView):
             user=self.request.user,
             status='pending'
             ).first()
+            membership = self.object.members.filter(user=self.request.user).first()
+            context['is_moderator_or_owner'] = (
+                    self.request.user == self.object.owner or
+                    (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
+            )
         else:
             context['joined_to_group'] = None
             context['join_request_pending'] = None
+            context['is_moderator_or_owner'] = None
 
         context['group_submissions'] = GroupSubmission.objects.filter(
             group=self.object,
