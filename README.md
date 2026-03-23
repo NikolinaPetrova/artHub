@@ -1,7 +1,8 @@
 # АrtHub
 
-ArtHub is a web application built with Django that allows users to create accounts, share artworks, organize them into albums, interact through comments and nested replies.
-The platform is designed to support different types of artists and creative content.
+ArtHub is a full-featured web application built with Django that allows artists to share, organize and interact with creative content.
+
+Users can create accounts, share artworks, organize them into albums, join groups, participate in discussions and engage with content through likes, comments, and notifications.
 
 ---
 
@@ -9,13 +10,16 @@ The platform is designed to support different types of artists and creative cont
 
 ### Users
 - User registration and authentication
-- Automatic default album creation on registration (via Django signals)
-- User profile includes:
-    - Username
-    - Email
-    - First name
-    - Last name
-    - Professional artist flag
+- Automatic Profile creation (via Django signals)
+- Automatic default album creation (via Django signals)
+- Email confirmation on registration (Celery shared tasks)
+
+**Profile includes:**
+- Username, Email
+- First and Last name
+- Professional artist flag
+- Description
+- Avatar and Banner
 
 ---
 
@@ -24,14 +28,15 @@ The platform is designed to support different types of artists and creative cont
     - Title
     - Description
     - Image URL
-    - Artwork type (validated with predefined choices)
+    - Artwork type (predefined choices)
     - Tags
-- Assign artworks to one or multiple albums
-- Each artwork can have multiple tags
-- All artworks are displayed on the Home page
-- Search functionality:
-    - Search artworks by title
-    - Search artworks by tags
+- Assign artworks to:
+  - Multiple albums
+  - Multiple groups (via submissions)
+- Features:
+  - Tag system (auto-cleaned input)
+  - Search by title or tags
+  - Displayed in user profile (Gallery tab)
 
 ---
 
@@ -55,50 +60,122 @@ The platform is designed to support different types of artists and creative cont
 
 ---
 
-### Comments and Nested Replies
+### Interactions
 
-- Users can comment on artworks
-- Support for nested replies (reply to a comment or another reply)
-- Comment permissions:
-    - Edit/Delete by comment owner
-    - Artwork owner can delete any comment under their artwork
-- Comments are displayed hierarchically
+**Comments**
+
+- Comment on artwork and group posts
+- Nested replies (infinite depth supported)
+- Permissions:
+  - Owner can edit/delete own comments
+  - Artwork/Post owner can delete comments
 - Ordered by creation time
 
----
+**Likes**
 
-### Likes
-- Users can like/unlike artworks
-- One like per user per artwork (unique constraint)
+- Like/unlike
+  - Artworks
+  - Posts
+  - Comments
+- One like per user per object
 
 ---
 
 ### Gallery
-- Displays all artworks created by the currently logged-in user
-- Overlay button for quick artwork details
+- Displays all artworks
+- Quick preview overlay
+
+---
+
+### Groups
+
+Groups allow users to collaborate, share artworks and interact in communities.
+
+**Core Features**
+- Create and manage groups
+- Join policies:
+  - Open
+  - Approval-based
+- Roles
+  - Admin
+  - Moderator
+  - Member
+
+---
+
+### Group Folders
+- Organize artworks inside groups
+- Each group can have multiple folders
+- Default folder: Featured
+- Users can select a folder when submitting artwork (applied after approval for members)
+- Admins and moderators can manage folders
+
+---
+
+### Artwork Submissions
+- Members submit artwork to groups
+- Admins and moderators can:
+  - Approve - artwork is added to group/folder
+  - Reject
+- Auto-approval for admins/moderators
+
+---
+### Membership System
+
+- Join/leave groups
+- Join requests for private groups
+- Moderation system for approvals
+
+---
+
+### Posts
+- Members can create posts inside groups
+- Posts support:
+  - Images
+  - Comments
+  - Likes
+
+---
+
+### Notifications
+
+Real-time notification system for user interactions:
+- New comments
+- Replies
+- Likes
+- New group posts
+- Join requests (sent/approved/rejected)
+- Artwork submissions updates
+
+**Includes:**
+- REST API endpoints (Django REST Framework)
+- Unread notifications count
+- Mark as read functionality
 
 ---
 
 ## Technologies
-- Python
-- Django
-- PostgreSQL
-- HTML
-- CSS
-- JavaScript for buttons and overlays for comments
+- **Backend:** Python, Django
+- **Database:** PostgreSQL
+- **Frontend:** Server-rendered HTML (Django Templates), CSS, JavaScript
+- **Async Tasks:** Celery
+- **API:** Django REST Framework
 
 ---
 
 ## Project Structure
 ```
-artHub/
-├── accounts/   # Custom user logic, authentication and signals
-├── albums/     # Album management and relations to artworks
-├── artHub/     # Core Django project settings and URL configuration
-├── artworks/   # Artworks, tags, comments, likes
-├── common/     # Shared views (Home page, 404), Search functionality 
-├── static/     # CSS, Images
-└── templates/  # HTML Templates
+artHub/  
+├── accounts/       # Custom user logic, authentication and signals
+├── albums/         # Album management
+├── artHub/         # Core Django project settings and URL configuration
+├── artworks/       # Artworks, tags, search
+├── common/         # Shared views (Home page, 400, 403, 404, 500)
+├── groups/         # Groups, posts, submissions
+├── interactions/   # Comments and likes
+├── notifications/  # Notifications system + API
+├── static/         # CSS, Images
+└── templates/      # HTML Templates
 ```
 
 ---
