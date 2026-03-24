@@ -1,11 +1,12 @@
 from django.contrib.auth import get_user_model, logout, login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import ArtHubUserCreationForm, ArtHubUserUpdateForm
 from accounts.tasks import send_welcome_email
+from accounts.utils import can_delete_user
 from albums.forms import AlbumCreateForm
 from groups.models import Group
 
@@ -37,15 +38,27 @@ class UserDetailView(DetailView):
     template_name = 'profile/profile-details.html'
     context_object_name = 'user'
 
+    def get_queryset(self):
+        return UserModel.objects.prefetch_related(
+            'albums',
+            'artworks',
+            'owned_groups',
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['album_list'] = self.object.albums.all()
+        current_user = self.request.user
+        target_user = self.object
+
+        context['can_delete_user'] = can_delete_user(current_user, target_user)
+        context['album_list'] = target_user.albums.all()
         context['album_form'] = AlbumCreateForm
-        context['artwork_list'] = self.object.artworks.all()
-        context['group_list'] = self.object.owned_groups.all()
+        context['artwork_list'] = target_user.artworks.all()
+        context['group_list'] = target_user.owned_groups.all()
         context['group_member'] = Group.objects.filter(
-            members__user=self.object
-        ).exclude(owner=self.object).distinct()
+            members__user=target_user
+        ).exclude(owner=target_user).distinct()
+
         return context
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
@@ -56,19 +69,34 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self):
         return self.request.user
 
+    def dispatch(self, request, *args, **kwargs):
+        if kwargs.get('pk') != request.user.pk:
+            return redirect('profile-details', pk=request.user.pk)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy('profile-details', kwargs={'pk': self.object.pk})
 
-class UserDeleteView(LoginRequiredMixin, DeleteView):
+class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = UserModel
     template_name = 'profile/delete-profile.html'
+
+    def test_func(self):
+        user = self.request.user
+        target_user = self.get_object()
+
+        return (
+            user == target_user or
+            user.groups.filter(name='Content Moderator').exists()
+        )
 
     def post(self, request, *args, **kwargs):
         choice = request.POST.get('confirm')
         user = self.get_object()
+
         if choice == 'yes':
             logout(request) if request.user == user else None
             user.delete()
             return HttpResponseRedirect(reverse_lazy('home'))
         else:
-            return HttpResponseRedirect(reverse_lazy('profile-details', kwargs={'pk': self.object.pk}))
+            return HttpResponseRedirect(reverse_lazy('profile-details', kwargs={'pk': user.pk}))

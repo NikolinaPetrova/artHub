@@ -7,7 +7,7 @@
             <h1>Are you sure you want to delete your profile?</h1>
             <div class="buttons confirm-btn">
                 <button type="Submit" name="confirm" value="yes">Yes</button>
-                <a href="{% url 'profile-details' user.pk %}">No</a>
+                <a href="{% url 'profile-details' object.pk %}">No</a>
             </div>
         </form>
         </main>

@@ -41,8 +41,10 @@
 
                             <ul class="nav-right">
                                 {% if request.user.pk == user.pk %}
-                                    <li><a href="{% url 'edit-profile' request.user.pk %}" title="Edit Profile"><i class="fa-solid fa-pen-to-square"></i></a></li>
-                                    <li><a href="{% url 'delete-profile' request.user.pk %}" title="Delete Profile"><i class="fa-solid fa-trash-arrow-up"></i></a></li>
+                                    <li><a href="{% url 'edit-profile' user.pk %}" title="Edit Profile"><i class="fa-solid fa-pen-to-square"></i></a></li>
+                                {% endif %}
+                                {% if can_delete_user %}
+                                    <li><a href="{% url 'delete-profile' user.pk %}" title="Delete Profile"><i class="fa-solid fa-trash-arrow-up"></i></a></li>
                                 {% endif %}
                             </ul>
                         </div>
