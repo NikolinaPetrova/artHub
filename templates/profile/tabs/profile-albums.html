@@ -1,3 +1,5 @@
+{% load permission_tags %}
+
 {% if request.user.pk == user.pk %}
         <div class="create-album">
             <form method="post" action="{% url 'album-create' %}">
@@ -10,6 +12,10 @@
 
 <div class="albums-list">
     {% for album in album_list %}
+
+        {% can_do request.user album 'albums.change_album' as can_edit_album %}
+        {% can_do request.user album 'albums.delete_album' as can_delete_album %}
+
         <div class="album-card">
 
             {% if album.artworks.last %}
@@ -27,12 +33,14 @@
 
             <div class="album-overlay">
                 <a href="{% url 'album-details' album.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
-                {% if request.user.pk == user.pk %}
-                <a href="{% url 'edit-album' album.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                <form method="post" action="{% url 'album-delete' album.pk %}">
-                    {% csrf_token %}
-                    <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
-                </form>
+                {% if can_edit_album %}
+                    <a href="{% url 'edit-album' album.pk %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                {% endif %}
+                {% if can_delete_album %}
+                    <form method="post" action="{% url 'album-delete' album.pk %}">
+                        {% csrf_token %}
+                        <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                    </form>
                 {% endif %}
             </div>
 

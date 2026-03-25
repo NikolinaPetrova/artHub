@@ -72,7 +72,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('accounts', '0001_initial'),
-        ('accounts', '0001_initial'),
+        ('artworks', '0001_initial'),
         ('albums', '0001_initial'),
         ('groups', '0001_initial'),
         ('interactions', '0001_initial'),

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
 from django.utils.text import slugify
 
@@ -35,3 +36,32 @@ class CreatedAtMixin(models.Model):
 
     class Meta:
         abstract = True
+
+
+class OwnerOrPermissionsRequiredMixin(UserPassesTestMixin):
+    permission_required = None
+    owner_attr = 'owner'
+
+    def has_elevated_permission(self, user):
+        return (
+            user.is_authenticated and
+            self.permission_required and
+            user.has_perm(self.permission_required)
+        )
+
+    def is_owner(self, user, obj):
+        return user.is_authenticated and user == getattr(obj, self.owner_attr, None)
+
+    def test_func(self):
+        obj = self.get_object()
+        user = self.request.user
+        return self.is_owner(user, obj) or self.has_elevated_permission(user)
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if self.has_elevated_permission(user):
+            return self.model.objects.all()
+
+        lookup = {self.owner_attr: user}
+        return self.model.objects.filter(**lookup)

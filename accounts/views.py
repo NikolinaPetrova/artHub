@@ -6,8 +6,8 @@ from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from accounts.forms import ArtHubUserCreationForm, ArtHubUserUpdateForm
 from accounts.tasks import send_welcome_email
-from accounts.utils import can_delete_user
 from albums.forms import AlbumCreateForm
+from common.permissions import can_manage_user
 from groups.models import Group
 
 UserModel = get_user_model()
@@ -50,9 +50,9 @@ class UserDetailView(DetailView):
         current_user = self.request.user
         target_user = self.object
 
-        context['can_delete_user'] = can_delete_user(current_user, target_user)
+        context['can_delete'] = can_manage_user(current_user, target_user, 'accounts.delete_arthubuser')
         context['album_list'] = target_user.albums.all()
-        context['album_form'] = AlbumCreateForm
+        context['album_form'] = AlbumCreateForm()
         context['artwork_list'] = target_user.artworks.all()
         context['group_list'] = target_user.owned_groups.all()
         context['group_member'] = Group.objects.filter(
@@ -82,13 +82,14 @@ class UserDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     template_name = 'profile/delete-profile.html'
 
     def test_func(self):
-        user = self.request.user
-        target_user = self.get_object()
-
-        return (
-            user == target_user or
-            user.groups.filter(name='Content Moderator').exists()
+        return can_manage_user(
+            self.request.user,
+            self.get_object(),
+            'accounts.delete_arthubuser',
         )
+
+    def handle_no_permission(self):
+        return redirect('home')
 
     def post(self, request, *args, **kwargs):
         choice = request.POST.get('confirm')
