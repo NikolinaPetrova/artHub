@@ -22,12 +22,6 @@ def create_groups(apps, schema_editor):
     editors_permissions = [
         'change_artwork',
         'change_album',
-        'change_groupfolder',
-        'view_groupjoinrequest',
-        'change_groupjoinrequest',
-        'change_groupmember',
-        'view_groupsubmission',
-        'change_groupsubmission',
         'change_comment',
         'change_post'
     ]
@@ -37,10 +31,6 @@ def create_groups(apps, schema_editor):
         'delete_profile',
         'delete_artwork',
         'delete_album',
-        'delete_groupfolder',
-        'delete_groupjoinrequest',
-        'delete_groupmember',
-        'delete_groupsubmission',
         'delete_comment',
         'delete_post'
     ]

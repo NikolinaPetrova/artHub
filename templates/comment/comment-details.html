@@ -23,20 +23,24 @@
 
                 <div class="comment-actions">
                     <button type="button" class="action-btn reply-toggle" data-parent="{{ comment.id }}">Reply</button>
-                    {% if request.user.is_authenticated and comment.user == request.user %}
-                        <form method="post" action="{% url 'edit-comment' comment.pk %}"></form>
-                        <button
-                                type="button"
-                                class="action-btn edit-toggle"
-                                data-comment="{{ comment.id }}"
-                                data-content="{{ comment.content }}">Edit
-                        </button>
+                    {% if request.user.is_authenticated %}
+                        {% if comment.user == request.user or perms.interactions.change_comment %}
+                            <form method="post" action="{% url 'edit-comment' comment.pk %}"></form>
+                            <button
+                                    type="button"
+                                    class="action-btn edit-toggle"
+                                    data-comment="{{ comment.id }}"
+                                    data-content="{{ comment.content }}">Edit
+                            </button>
+                        {% endif %}
                     {% endif %}
-                    {% if request.user.is_authenticated and comment.user == request.user or artwork.user == request.user or comment.post.author == request.user %}
-                        <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="action-btn delete-button">Delete</button>
-                        </form>
+                    {% if request.user.is_authenticated %}
+                        {% if comment.user == request.user or artwork.user == request.user or comment.post.author == request.user or perms.interactions.delete_comment %}
+                            <form method="post" action="{% url 'delete-comment' comment.pk %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="action-btn delete-button">Delete</button>
+                            </form>
+                        {% endif %}
                     {% endif %}
 
                     <form method="post" action="{% url 'like' 'comment' comment.pk %}">

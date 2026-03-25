@@ -59,7 +59,10 @@ class CommentEditView(View):
     def post(self, request, pk):
         comment = get_object_or_404(Comment, pk=pk)
 
-        if comment.user != request.user:
+        if not (
+                comment.user == request.user
+                or request.user.has_perm('interactions.change_comment')
+        ):
             return HttpResponseForbidden('You cannot edit this comment.')
 
         form = CommentEditForm(request.POST, instance=comment)
@@ -79,13 +82,14 @@ class CommentDeleteView(LoginRequiredMixin,UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         comment = self.get_object()
-        if comment.user == self.request.user:
-            return True
-        if comment.artwork and comment.artwork.user == self.request.user:
-            return True
-        if comment.post and comment.post.author == self.request.user:
-            return True
-        return False
+        user = self.request.user
+
+        return (
+            comment.user == user
+            or (comment.artwork and comment.artwork.user == user)
+            or (comment.post and comment.post.author == user)
+            or user.has_perm('interactions.delete_comment')
+        )
 
     def handle_no_permission(self):
         return redirect('home')

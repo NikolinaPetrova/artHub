@@ -9,19 +9,23 @@
     <p>{{ reply.content }}</p>
     <div class="comment-actions">
         <button type="button" class="action-btn reply-toggle" data-parent="{{ reply.id }}">Reply</button>
-        {% if request.user.is_authenticated and reply.user == request.user %}
-                <button
-                    type="button"
-                    class="action-btn edit-toggle"
-                    data-comment="{{ reply.id }}"
-                    data-content="{{ reply.content }}">Edit
-                </button>
+        {% if request.user.is_authenticated %}
+            {% if reply.user == request.user or perms.interactions.change_comment %}
+                    <button
+                        type="button"
+                        class="action-btn edit-toggle"
+                        data-comment="{{ reply.id }}"
+                        data-content="{{ reply.content }}">Edit
+                    </button>
+            {% endif %}
         {% endif %}
-        {% if request.user.is_authenticated and reply.user == request.user or artwork.user == request.user or comment.post.author == request.user %}
-            <form method="post" action="{% url 'delete-comment' reply.pk %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="action-btn delete-button">Delete</button>
-            </form>
+        {% if request.user.is_authenticated %}
+            {% if reply.user == request.user or artwork.user == request.user or reply.post.author == request.user or perms.interactions.delete_comment%}
+                <form method="post" action="{% url 'delete-comment' reply.pk %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="action-btn delete-button">Delete</button>
+                </form>
+            {% endif %}
         {% endif %}
 
         <form method="post" action="{% url 'like' 'comment' reply.pk %}">
@@ -38,14 +42,15 @@
             <input type="hidden" name="comment_id" value="">
             <button type="submit" name="reply_submit">Post</button>
         </form>
-
-        {% if request.user.is_authenticated and reply.user == request.user %}
-        <form method="post" class="inline-form edit-form" style="display:none; margin-top:5px;" action="{% url 'edit-comment' reply.pk %}">
-            {% csrf_token %}
-            <input type="text" name="content" value="{{ reply.content }}">
-            <input type="hidden" name="comment_id" value="{{ reply.id }}">
-            <button type="submit" class="save-button" name="edit_submit">Save</button>
-        </form>
+        {% if request.user.is_authenticated %}
+            {% if reply.user == request.user or perms.interactions.change_comment %}
+                <form method="post" class="inline-form edit-form" style="display:none; margin-top:5px;" action="{% url 'edit-comment' reply.pk %}">
+                    {% csrf_token %}
+                    <input type="text" name="content" value="{{ reply.content }}">
+                    <input type="hidden" name="comment_id" value="{{ reply.id }}">
+                    <button type="submit" class="save-button" name="edit_submit">Save</button>
+                </form>
+            {% endif %}
         {% endif %}
     </div>
 
