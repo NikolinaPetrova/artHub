@@ -4,19 +4,15 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from artworks.forms import CreateArtworkForm, EditArtworkForm, DeleteArtworkForm
 from artworks.models import Artwork
+from common.mixins import OwnerOrPermissionsRequiredMixin, UserInFormKwargsMixin
 from interactions.forms.comment_form import CreateCommentForm, ReplyForm, CommentEditForm
 
 
-class CreateArtworkView(LoginRequiredMixin, CreateView):
+class CreateArtworkView(LoginRequiredMixin, UserInFormKwargsMixin, CreateView):
     model = Artwork
     form_class = CreateArtworkForm
     template_name = 'artwork/create-artwork.html'
     success_url = reverse_lazy('gallery')
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
 
 
 class ArtworkDetailsView(DetailView):
@@ -49,31 +45,22 @@ class ArtworkDetailsView(DetailView):
         context['comments'] = artwork.comments.filter(parent__isnull=True)
         return context
 
-class EditArtworkView(LoginRequiredMixin, UpdateView):
+class EditArtworkView(LoginRequiredMixin, OwnerOrPermissionsRequiredMixin, UserInFormKwargsMixin, UpdateView):
     model = Artwork
     template_name = 'artwork/edit-artwork.html'
     form_class = EditArtworkForm
-
-    def get_form_kwargs(self, form_class=None):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+    permission_required = 'artworks.change_artwork'
+    owner_attr = 'user'
 
     def get_success_url(self):
         return reverse('artwork-details', kwargs={'pk': self.object.pk})
 
-    def get_queryset(self):
-        return Artwork.objects.filter(user=self.request.user)
-
-class DeleteArtworkView(LoginRequiredMixin, DeleteView):
+class DeleteArtworkView(LoginRequiredMixin, OwnerOrPermissionsRequiredMixin, UserInFormKwargsMixin, DeleteView):
     model = Artwork
     form_class = DeleteArtworkForm
     template_name = 'artwork/delete-artwork.html'
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
+    permission_required = 'artworks.delete_artwork'
+    owner_attr = 'user'
 
     def get_form(self, form_class=None):
         if form_class is None:
@@ -86,8 +73,5 @@ class DeleteArtworkView(LoginRequiredMixin, DeleteView):
         if choice == 'yes':
             artwork.delete()
             return HttpResponseRedirect(reverse_lazy('gallery'))
-        else:
-            return HttpResponseRedirect(reverse_lazy('artwork-details', kwargs={'pk': artwork.pk}))
 
-    def get_queryset(self):
-        return Artwork.objects.filter(user=self.request.user)
+        return HttpResponseRedirect(reverse_lazy('artwork-details', kwargs={'pk': artwork.pk}))

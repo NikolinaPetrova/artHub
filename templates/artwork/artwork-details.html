@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load tag_filters %}
+{% load permission_tags %}
 {% block content %}
 
     <main class="content-sidebar">
@@ -20,12 +21,18 @@
                     </form>
                     <div class="flex-title">
                         <h1>{{ artwork.title|capfirst }}</h1>
-                        {% if request.user.is_authenticated and artwork.user == request.user %}
-                            <div class="buttons">
+
+                        {% can_do request.user artwork 'artworks.change_artwork' as can_edit_artwork %}
+                        {% can_do request.user artwork 'artworks.delete_artwork' as can_delete_artwork %}
+
+                        <div class="buttons">
+                            {% if can_edit_artwork %}
                                 <a href="{% url 'edit-artwork' artwork.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                            {% endif %}
+                            {% if can_delete_artwork %}
                                 <a href="{% url 'delete-artwork' artwork.pk %}" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></a>
-                            </div>
-                        {% endif %}
+                            {% endif %}
+                        </div>
                     </div>
                     <a href="{% url 'profile-details' artwork.user.pk %}"><strong>By {{ artwork.user }}</strong></a>
                     <p class="description"><strong>Description:</strong> {{ artwork.description }}</p>

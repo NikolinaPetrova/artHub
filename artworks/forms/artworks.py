@@ -27,13 +27,13 @@ class BaseArtworkForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        if self.user:
-            self.fields['albums'].queryset = Album.objects.filter(owner=self.user)
+        artwork_owner = self.instance.user if self.instance.pk else self.user
 
-        if self.instance.pk and self.user:
-            self.fields['albums'].initial = self.instance.albums.filter(owner=self.user)
+        if artwork_owner:
+            self.fields['albums'].queryset = Album.objects.filter(owner=artwork_owner)
 
         if self.instance.pk:
+            self.fields['albums'].initial = self.instance.albums.filter(owner=artwork_owner)
             self.initial['tags'] = ', '.join(
                 tag.name for tag in self.instance.tags.all()
             )
