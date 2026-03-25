@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import models
+from django.shortcuts import redirect
 from django.utils.text import slugify
 
 
@@ -41,6 +42,9 @@ class CreatedAtMixin(models.Model):
 class OwnerOrPermissionsRequiredMixin(UserPassesTestMixin):
     permission_required = None
     owner_attr = 'owner'
+
+    def handle_no_permission(self):
+        return redirect('home')
 
     def has_elevated_permission(self, user):
         return (

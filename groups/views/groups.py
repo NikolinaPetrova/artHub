@@ -4,8 +4,10 @@ from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, DeleteView
 from artworks.models import Artwork
+from common.mixins import OwnerOrPermissionsRequiredMixin
 from groups.choices import RoleChoices, StatusChoices
 from groups.forms import CreateGroupForm, EditGroupForm, GroupFolderForm
+from groups.mixins import GroupAccessMixin
 from groups.models import Group, GroupMember, GroupFolder, GroupJoinRequest, GroupSubmission, Post
 
 
@@ -34,25 +36,25 @@ class CreateGroupView(LoginRequiredMixin, CreateView):
         )
         return response
 
-class EditGroupView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class EditGroupView(LoginRequiredMixin, OwnerOrPermissionsRequiredMixin, UpdateView):
     model = Group
     template_name = 'groups/group-form.html'
     form_class = EditGroupForm
-
-    def test_func(self):
-        return self.request.user == self.get_object().owner
+    permission_required = 'groups.change_group'
+    owner_attr = 'owner'
 
     def get_success_url(self):
         return reverse('group-details', kwargs={'slug': self.object.slug})
 
-    def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super().form_valid(form)
-
-class GroupDetailView(DetailView):
+class GroupDetailView(GroupAccessMixin, DetailView):
     model = Group
     template_name = 'groups/group-details.html'
     context_object_name = 'group'
+    queryset = Group.objects.select_related('owner').prefetch_related(
+        'artworks',
+        'folders',
+        'members__user',
+    )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -69,27 +71,20 @@ class GroupDetailView(DetailView):
             context['join_request_pending'] = GroupJoinRequest.objects.filter(
             group=self.object,
             user=self.request.user,
-            status='pending'
+            status=StatusChoices.PENDING
             ).first()
-            membership = self.object.members.filter(user=self.request.user).first()
-            context['is_moderator_or_owner'] = (
-                    self.request.user == self.object.owner or
-                    (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
-            )
+            context['is_moderator_or_owner'] = self.user_is_group_staff(self.object, self.request.user)
         else:
-            context['joined_to_group'] = None
+            context['joined_to_group'] = False
             context['join_request_pending'] = None
-            context['is_moderator_or_owner'] = None
+            context['is_moderator_or_owner'] = False
 
         context['group_submissions'] = GroupSubmission.objects.filter(
             group=self.object,
             status=StatusChoices.PENDING
         )
 
-        context['submissions_pending_count'] = GroupSubmission.objects.filter(
-            group=self.object,
-            status=StatusChoices.PENDING
-        ).count()
+        context['submissions_pending_count'] = context['group_submissions'].count()
         return context
 
 
@@ -99,32 +94,26 @@ class GroupListView(ListView):
     context_object_name = 'group_list'
 
 
-class DeleteGroupView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class DeleteGroupView(LoginRequiredMixin, OwnerOrPermissionsRequiredMixin, DeleteView):
     model = Group
-
-    def test_func(self):
-        group = self.get_object()
-        return self.request.user == group.owner or self.request.user.is_staff
+    permission_required = 'groups.delete_group'
+    owner_attr = 'owner'
 
     def get_success_url(self):
         return reverse_lazy('profile-details', kwargs={'pk': self.request.user.pk})
 
+class RemoveArtworkFromGroupView(LoginRequiredMixin, GroupAccessMixin, UserPassesTestMixin, View):
+    def get_group(self):
+        return get_object_or_404(Group, slug=self.kwargs['slug'])
 
-class RemoveArtworkFromGroupView(LoginRequiredMixin, UserPassesTestMixin, View):
     def test_func(self):
-        group = get_object_or_404(Group, slug=self.kwargs['slug'])
-        membership = group.members.filter(user=self.request.user).first()
-        is_admin_or_moderator = (
-            self.request.user == group.owner or
-            (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
-        )
-        return is_admin_or_moderator
+        return self.user_is_group_staff(self.get_group(), self.request.user)
 
     def post(self, request, slug, artwork_pk):
-        group = get_object_or_404(Group, slug=slug)
+        group = self.get_group()
         artwork = get_object_or_404(Artwork, pk=artwork_pk)
 
-        if artwork in group.artworks.all():
+        if group.artworks.filter(pk=artwork.pk).exists():
             group.artworks.remove(artwork)
 
         folders = group.folders.filter(artworks=artwork)

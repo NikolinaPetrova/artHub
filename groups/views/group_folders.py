@@ -4,11 +4,11 @@ from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, UpdateView, DetailView, DeleteView
 from artworks.models import Artwork
-from groups.choices import RoleChoices
 from groups.forms import GroupFolderForm
+from groups.mixins import GroupAccessMixin
 from groups.models import GroupFolder, Group
 
-class GroupFolderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+class GroupFolderCreateView(LoginRequiredMixin, GroupAccessMixin, UserPassesTestMixin, CreateView):
     model = GroupFolder
     form_class = GroupFolderForm
     template_name = 'groups/tabs/group-gallery.html'
@@ -17,13 +17,7 @@ class GroupFolderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         return get_object_or_404(Group, slug=self.kwargs['slug'])
 
     def test_func(self):
-        group = self.get_group()
-        membership = group.members.filter(user=self.request.user).first()
-        is_admin_or_moderator = (
-            self.request.user  == group.owner or
-            (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
-        )
-        return is_admin_or_moderator
+        return self.user_is_group_staff(self.get_group(), self.request.user)
 
     def form_valid(self, form):
         form.instance.group = self.get_group()
@@ -32,7 +26,7 @@ class GroupFolderCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView)
     def get_success_url(self):
         return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']})
 
-class GroupFolderEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class GroupFolderEditView(LoginRequiredMixin, GroupAccessMixin, UserPassesTestMixin, UpdateView):
     model = GroupFolder
     form_class = GroupFolderForm
     template_name = 'groups/group-folder-edit.html'
@@ -42,13 +36,10 @@ class GroupFolderEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return get_object_or_404(Group, slug=self.kwargs['slug'])
 
     def test_func(self):
-        group = self.get_group()
-        membership = group.members.filter(user=self.request.user).first()
-        is_admin_or_moderator = (
-                self.request.user == group.owner or
-                (membership and membership.role in [RoleChoices.ADMIN, RoleChoices.MODERATOR])
-        )
-        return is_admin_or_moderator
+        return self.user_is_group_staff(self.get_group(), self.request.user)
+
+    def get_queryset(self):
+        return GroupFolder.objects.filter(group=self.get_group())
 
     def get_success_url(self):
         return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']})
@@ -70,6 +61,10 @@ class GroupFolderDetailView(DetailView):
     template_name = 'groups/group-folder-details.html'
     context_object_name = 'folder'
 
+    def get_queryset(self):
+        group = get_object_or_404(Group, slug=self.kwargs['slug'])
+        return GroupFolder.objects.filter(group=group)
+
 
 class GroupFolderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = GroupFolder
@@ -80,13 +75,16 @@ class GroupFolderDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
     def test_func(self):
         return self.request.user == self.get_group().owner
 
+    def get_queryset(self):
+        return GroupFolder.objects.filter(group=self.get_group())
+
     def get_success_url(self):
         return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']})
 
-class MoveArtworkToFolderView(LoginRequiredMixin, UserPassesTestMixin, View):
+class MoveArtworkToFolderView(LoginRequiredMixin, GroupAccessMixin, UserPassesTestMixin, View):
     def test_func(self):
         group = get_object_or_404(Group, slug=self.kwargs['slug'])
-        return self.request.user == group.owner or self.request.user.is_staff
+        return self.user_is_group_staff(group, self.request.user)
 
     def post(self, request, *args, **kwargs):
         group = get_object_or_404(Group, slug=self.kwargs['slug'])

@@ -38,7 +38,7 @@
             </td>
 
             <td>{{ member.role }}</td>
-            {% if request.user.pk == group.owner.pk %}
+            {% if request.user.pk == group.owner.pk and member.user.pk != group.owner.pk %}
             <td class="actions-cell">
                 <div class="dropdown">
                     <i class="fa-solid fa-ellipsis-vertical dropdown-toggle"></i>

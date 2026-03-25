@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load permission_tags %}
 {% block content %}
 
     <main class="content-sidebar">
@@ -48,11 +49,17 @@
                                     </li>
                                 {% endif %}
 
-                                {% if group.owner.pk == request.user.pk %}
+                                {% can_do request.user group 'groups.change_group' as can_change_group %}
+                                {% can_do request.user group 'groups.delete_group' as can_delete_group %}
+
+                                {% if can_change_group %}
                                     <li><a href="{% url 'group-edit' group.slug %}" title="Edit Group"><i class="fa-solid fa-pen-to-square"></i></a></li>
+                                {% endif %}
+                                {% if can_delete_group %}
                                     <button type="button" id="delete-btn" title="Delete Group">
                                         <i class="fa-solid fa-trash-arrow-up"></i>
                                     </button>
+
 
                                     <form method="post" action="{% url 'group-delete' group.slug %}" class="delete-group-form" style="display:none;">
                                         {% csrf_token %}
@@ -66,8 +73,8 @@
                                             <button id="cancel-delete" class="btn btn-secondary">Cancel</button>
                                         </div>
                                     </div>
-
                                 {% endif %}
+
                                 {% if group.owner.pk != request.user.pk %}
                                     <form method="post" action="{% url 'join-group' group.slug %}">
                                         {% csrf_token %}
