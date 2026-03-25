@@ -4,9 +4,28 @@ ArtHub is a full-featured web application built with Django that allows artists 
 
 Users can create accounts, share artworks, organize them into albums, join groups, participate in discussions and engage with content through likes, comments, and notifications.
 
+## Key Highlights
+- Role-based permission system (Owner / Admin / Moderator / Member)
+- Secure object-level access control using custom mixins
+- Queryset scoping to prevent unauthorized access
+- Asynchronous processing with Celery
+- Real-time notifications system (Django REST Framework)
+
 ---
 
 ## Features
+
+### Authorization
+- Role-based moderation using Django auth Groups
+- Predefined staff groups:
+  - Content Editor
+  - Content Moderator
+- Group permissions are assigned with data migration
+- Editors can edit selected content types
+- Moderators can delete selected content types
+- Permissions are managed through Django's built-in Group and Permission models
+
+---
 
 ### Users
 - User registration and authentication
@@ -101,6 +120,18 @@ Groups allow users to collaborate, share artworks and interact in communities.
   - Moderator
   - Member
 
+---
+
+### Group Permissions
+- Owner:
+  - Full control over group, members and roles
+- Admin:
+  - Manage members and content
+  - Approve/reject submissions
+- Moderator:
+  - Moderate content and submissions
+- Member:
+  - Submit artworks and create posts
 ---
 
 ### Group Folders
