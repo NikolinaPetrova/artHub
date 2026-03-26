@@ -22,8 +22,8 @@
                     <div class="flex-title">
                         <h1>{{ artwork.title|capfirst }}</h1>
 
-                        {% can_do request.user artwork 'artworks.change_artwork' as can_edit_artwork %}
-                        {% can_do request.user artwork 'artworks.delete_artwork' as can_delete_artwork %}
+                        {% can_do request.user artwork 'artworks.change_artwork' 'user' as can_edit_artwork %}
+                        {% can_do request.user artwork 'artworks.delete_artwork' 'user' as can_delete_artwork %}
 
                         <div class="buttons">
                             {% if can_edit_artwork %}
