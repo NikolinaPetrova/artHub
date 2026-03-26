@@ -1,6 +1,5 @@
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.shortcuts import redirect
-
 from groups.choices import RoleChoices
 from groups.models import Post
 
