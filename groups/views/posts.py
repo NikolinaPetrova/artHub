@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 from groups.forms.post import PostCreateForm, PostUpdateForm
+from groups.mixins import PostPermissionMixin
 from groups.models import Post, Group
 from interactions.forms import CreateCommentForm, ReplyForm, CommentEditForm
 from notifications.services import NotificationService
@@ -70,28 +71,21 @@ class PostDetailsView(DetailView):
 
         return context
 
-class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class PostUpdateView(LoginRequiredMixin, PostPermissionMixin, UpdateView):
     model = Post
     form_class = PostUpdateForm
     template_name = 'groups/post-form.html'
-
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user or self.request.user == post.group.owner
+    permission_required = 'groups.change_post'
 
     def get_success_url(self):
-        post = self.get_object()
-        return reverse('post-details', kwargs={'slug': post.group.slug, 'pk': post.pk})
+        return reverse('post-details', kwargs={'slug': self.object.group.slug, 'pk': self.object.pk})
 
-class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+class PostDeleteView(LoginRequiredMixin, PostPermissionMixin, DeleteView):
     model = Post
-
-    def test_func(self):
-        post = self.get_object()
-        return post.author == self.request.user or self.request.user == post.group.owner
+    permission_required = 'groups.delete_post'
 
     def get_success_url(self):
-        return reverse_lazy('group-details', kwargs={'slug': self.kwargs['slug']})
+        return reverse_lazy('group-details', kwargs={'slug': self.object.group.slug}) + '?tab=posts'
 
 
 

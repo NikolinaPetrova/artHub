@@ -21,13 +21,17 @@
                                 <p>{{ post.created_at|timesince }} ago</p>
                             </div>
                         </div>
-                        {% if request.user.is_authenticated and post.author == request.user or request.user == post.group.owner %}
+                        {% if request.user.is_authenticated %}
                             <div class="buttons">
+                            {% if post.author == request.user or request.user == post.group.owner or perms.groups.change_post %}
                                 <a href="{% url 'post-edit' post.group.slug post.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
+                            {% endif %}
+                            {% if post.author == request.user or request.user == post.group.owner or perms.groups.delete_post %}
                                 <form method="post" action="{% url 'post-delete' post.group.slug post.pk %}">
                                     {% csrf_token %}
                                     <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
                                 </form>
+                            {% endif %}
                             </div>
                         {% endif %}
                     </div>
