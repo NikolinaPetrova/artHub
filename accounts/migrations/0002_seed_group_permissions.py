@@ -9,16 +9,6 @@ def create_groups(apps, schema_editor):
     moderators_group, _ = Group.objects.get_or_create(name='Content Moderator')
     editors_group, _ = Group.objects.get_or_create(name='Content Editor')
 
-    change_group_perm = Permission.objects.get(
-        codename='change_group',
-        content_type__app_label='groups'
-    )
-
-    delete_group_perm = Permission.objects.get(
-        codename='delete_group',
-        content_type__app_label='groups'
-    )
-
     editors_permissions = [
         'change_artwork',
         'change_album',
@@ -41,17 +31,23 @@ def create_groups(apps, schema_editor):
             editors_group.permissions.add(perm)
         except Permission.DoesNotExist:
             pass
+    try:
+        change_group_perm = Permission.objects.get(
+            codename='change_group',
+            content_type__app_label='groups'
+        )
+        editors_group.permissions.add(change_group_perm)
+    except Permission.DoesNotExist:
+        pass
 
-    editors_group.permissions.add(change_group_perm)
-
-    for codename in moderators_permissions:
-        try:
-            perm = Permission.objects.get(codename=codename)
-            moderators_group.permissions.add(perm)
-        except Permission.DoesNotExist:
-            pass
-
-    moderators_group.permissions.add(delete_group_perm)
+    try:
+        delete_group_perm = Permission.objects.get(
+            codename='delete_group',
+            content_type__app_label='groups'
+        )
+        moderators_group.permissions.add(delete_group_perm)
+    except Permission.DoesNotExist:
+        pass
 
 def remove_groups(apps, schema_editor):
     Group = apps.get_model('auth', 'Group')
