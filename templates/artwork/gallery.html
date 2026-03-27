@@ -20,9 +20,9 @@
         {% if not artwork_list %}
             <div class="no-artworks">
                 {% if request.GET.q %}
-                    <h1>No artworks match your search criteria.</h1>
+                    <h2>No artworks match your search criteria.</h2>
                 {% else %}
-                    <h1>There are currently no artworks available.</h1>
+                    <h2>There are currently no artworks available.</h2>
                 {% endif %}
             </div>
         {% else %}

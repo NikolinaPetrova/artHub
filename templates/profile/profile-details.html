@@ -46,6 +46,9 @@
                                 {% if can_delete %}
                                     <li><a href="{% url 'delete-profile' user.pk %}" title="Delete Profile"><i class="fa-solid fa-trash-arrow-up"></i></a></li>
                                 {% endif %}
+                                {% if request.user.pk == user.pk %}
+                                    <li><a href="{% url 'password_change' %}"><i class="fa-solid fa-key"></i></a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </div>

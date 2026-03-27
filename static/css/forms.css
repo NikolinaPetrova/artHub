@@ -255,3 +255,17 @@ select option {
 .folder-form-edit {
     min-height: initial;
 }
+
+.password-change-done {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    text-align: center;
+    width: 100%;
+    flex: 1;
+}
+
+.password-change-done h2 {
+    margin-bottom: 20px;
+}
