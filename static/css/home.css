@@ -107,7 +107,7 @@ footer {
 
 .top-artworks {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 16px;
     width: 100%;
     padding-top: 20px;
@@ -206,7 +206,12 @@ footer {
     align-items: center;
     max-width: 1300px;
     overflow: hidden;
-    padding-top: 2rem;
+    margin-top: 2rem;
+    padding: 0.5rem;
+    border-radius: 14px;
+    background: rgba(18, 19, 26, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
 }
 
 .overflow {
@@ -223,32 +228,35 @@ footer {
 
 .overflow a {
     padding: 0.7rem 1.6rem;
-    font-size: 1rem;
-    border-radius: 0.7rem;
-    border: none;
+    font-size: 16px;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    background: var(--secondary-color);
-    backdrop-filter: blur(12px);
-    color: var(--font-color);
+    color: #a7afc3;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
     width: auto;
     display: inline-block;
     white-space: nowrap;
 }
 
 .overflow a:hover {
-    background-color: var(--hover-color);
-    transform: translateY(-2px);
-    color: var(--font-color);
+    color: white;
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.4);
 }
 
 .overflow::-webkit-scrollbar {
     display: none;
 }
 
+.tag {
+    backdrop-filter: blur(6px);
+}
+
 .scroll-btn {
-    background-color: var(--secondary-color);
-    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: 10px 10px;
     cursor: pointer;
     font-size: 18px;
@@ -260,6 +268,19 @@ footer {
 }
 
 .scroll-btn:hover {
-    background-color: var(--hover-color);
+    background: rgba(124, 58, 237, 0.2);
+    color: white;
+}
+
+.gallery-header {
+    max-width: 1300px;
+    margin-top: 2rem;
+}
+
+.gallery-header h2 {
+    font-size: 36px;
+    font-weight: 600;
     color: var(--font-color);
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
 }
