@@ -1,8 +1,13 @@
 import re
 from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.core.validators import MinLengthValidator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
+from accounts.tasks import send_password_reset_email
 from accounts.models import ArtHubUser
 
 UserModel = get_user_model()
@@ -116,3 +121,45 @@ class BaseArtHubUserForm(forms.ModelForm):
 
 class ArtHubUserUpdateForm(BaseArtHubUserForm):
     ...
+
+class CeleryPasswordResetForm(PasswordResetForm):
+    def save(
+            self,
+            domain_override=None,
+            subject_template_name='registration/password_reset_subject.txt',
+            email_template_name='registration/password_reset_email.html',
+            use_https=False,
+            token_generator=default_token_generator,
+            from_email=None,
+            request=None,
+            html_email_template_name=None,
+            extra_email_context=None,
+    ):
+        email = self.cleaned_data['email']
+
+        for user in self.get_users(email):
+            if domain_override:
+                domain = site_name = domain_override
+            else:
+                current_site = get_current_site(request)
+                domain = current_site.domain
+                site_name = current_site.name
+            context = {
+                'email': user.email,
+                'domain': domain,
+                'site_name': site_name,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': user,
+                'token': token_generator.make_token(user),
+                'protocol': 'https' if use_https else 'http',
+                **(extra_email_context or {}),
+            }
+
+            send_password_reset_email.delay(
+                subject_template_name=subject_template_name,
+                email_template_name=email_template_name,
+                context=context,
+                from_email=from_email,
+                to_email=user.email,
+                html_email_template_name=html_email_template_name,
+            )
