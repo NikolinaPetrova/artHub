@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
@@ -8,6 +9,7 @@ from artworks.models import Artwork
 from groups.models import Post
 from interactions.forms.comment_form import CommentEditForm, CreateCommentForm, ReplyForm
 from interactions.models import Comment
+from groups.utils import is_group_member
 from notifications.services import NotificationService
 
 
@@ -24,6 +26,11 @@ class AddCommentView(LoginRequiredMixin, View):
             return redirect('home')
 
         obj = get_object_or_404(model, pk=pk)
+
+        if model_type == 'post' and not is_group_member(request.user, obj.group):
+            messages.error(request, 'You must be a group member to comment on posts.')
+            return redirect('group-details', slug=obj.group.slug)
+
         form = CreateCommentForm(request.POST)
 
         if form.is_valid():
@@ -43,6 +50,11 @@ class AddCommentView(LoginRequiredMixin, View):
 class ReplyCommentView(LoginRequiredMixin, View):
     def post(self, request, pk):
         parent = get_object_or_404(Comment, pk=pk)
+
+        if parent.post and not is_group_member(request.user, parent.post.group):
+            messages.error(request, 'You must be a group member to reply to comments.')
+            return redirect('group-details', slug=parent.post.group.slug)
+
         form = ReplyForm(request.POST)
         if form.is_valid():
             reply = form.save(commit=False)

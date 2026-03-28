@@ -1,9 +1,11 @@
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from artworks.models import Artwork
 from groups.models import Post
 from interactions.models import Like, Comment
+from groups.utils import is_group_member
 from notifications.services import NotificationService
 
 
@@ -21,6 +23,15 @@ class LikeView(LoginRequiredMixin, View):
             return redirect('home')
 
         obj = get_object_or_404(model, pk=pk)
+
+        if model_type == 'post' and not is_group_member(request.user, obj.group):
+            messages.error(request, 'You must be a group member to like posts.')
+            return redirect('group-details', slug=obj.group.slug)
+
+        if model_type == 'comment' and obj.post and not is_group_member(request.user, obj.post.group):
+            messages.error(request, 'You must be a group member like comments on posts.')
+            return redirect('group-details', slug=obj.post.group.slug)
+
         like_data = {'user': request.user}
 
         if model_type == 'artwork':
