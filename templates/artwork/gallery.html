@@ -29,18 +29,24 @@
             {% if request.GET.q %}
                 <h3>Artworks matching...</h3>
             {% endif %}
-                <section class="artworks-container">
-                    {% for artwork in artwork_list %}
-                        <div class="wrap-image">
-                            <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" alt="" src="{{ artwork.image_url }}">
-                                <p class="overlay">More Info</p>
-                            </a>
-                        </div>
-                    {% endfor %}
+                <section class="artworks-container" id="artworks-container">
+                    {% include 'artwork/artwork_items.html' with artwork_list=artwork_list %}
                 </section>
+
+                {%  if page_obj.has_next %}
+                    <div class="load-more-wrapper">
+                        <button
+                                id="load-more-btn"
+                                class="load-more-btn"
+                                data-page="{{ page_obj.next_page_number }}">
+                            Load more
+                        </button>
+                    </div>
+                {% endif %}
         {% endif %}
     </main>
 
     <script src="{% static 'js/tags/tag-scroll.js'%}"></script>
+    <script src="{% static 'js/artworks/load-more.js' %}"></script>
 
 {% endblock %}
