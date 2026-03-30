@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('.delete-group-form');
 
     if (deleteBtn && modal && confirmBtn && cancelBtn && form) {
-        deleteBtn.addEventListener('click', () => modal.style.display = 'block');
+        deleteBtn.addEventListener('click', () => modal.style.display = 'flex');
         cancelBtn.addEventListener('click', () => modal.style.display = 'none');
         confirmBtn.addEventListener('click', () => form.submit());
     }

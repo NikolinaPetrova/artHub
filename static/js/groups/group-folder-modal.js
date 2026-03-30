@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     addFolderBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        modal.style.display = 'block';
+        modal.style.display = 'flex';
     });
 
     cancelBtn.addEventListener('click', function () {
