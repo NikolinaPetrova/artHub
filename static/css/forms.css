@@ -225,6 +225,14 @@ select option {
     cursor:pointer;
 }
 
+#confirm-post-delete {
+    background: red;
+}
+
+#cancel-post-delete:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
 #delete-btn {
     background: none;
     border: none;

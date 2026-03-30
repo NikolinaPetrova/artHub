@@ -27,10 +27,19 @@
                                 <a href="{% url 'post-edit' post.group.slug post.pk %}" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
                             {% endif %}
                             {% if post.author == request.user or request.user == post.group.owner or perms.groups.delete_post %}
-                                <form method="post" action="{% url 'post-delete' post.group.slug post.pk %}">
+                                <form method="post" id="post-delete-form" action="{% url 'post-delete' post.group.slug post.pk %}">
                                     {% csrf_token %}
-                                    <button class="btn edit" type="Submit" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                                    <button class="btn edit" id="post-delete-btn" type="button" title="Delete"><i class="fa-solid fa-trash-arrow-up"></i></button>
                                 </form>
+
+                                <div id="post-delete-modal" class="modal" style="display: none">
+                                    <div class="modal-content">
+                                        <h2>Delete post {{ post.title }}</h2>
+                                        <p>This action cannot be undone.</p>
+                                        <button id="confirm-post-delete" class="btn btn-danger">Delete</button>
+                                        <button id="cancel-post-delete" class="btn btn-secondary">Cancel</button>
+                                    </div>
+                                </div>
                             {% endif %}
                             </div>
                         {% endif %}
@@ -59,5 +68,7 @@
 
         </section>
     </main>
+
+    <script src="{% static 'js/groups/post-delete-modal.js' %}"></script>
 
 {% endblock %}
