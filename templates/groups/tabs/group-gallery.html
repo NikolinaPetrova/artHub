@@ -98,17 +98,38 @@
                         <p class="overlay">More Info</p>
                     </a>
                     {% if is_moderator_or_owner %}
-                        <form method="post" class="remove-form" action="{% url 'group-remove-artwork' group.slug artwork.pk %}">
+                        <form
+                                method="post"
+                                class="artwork-delete-form remove-form"
+                                action="{% url 'group-remove-artwork' group.slug artwork.pk %}">
                             {% csrf_token %}
-                            <button type="submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
+                            <button
+                                    type="button"
+                                    class="artwork-delete-btn">
+                                <i class="fa-solid fa-trash-arrow-up"></i>
+                            </button>
                         </form>
                     {% endif %}
                 </div>
             {% endfor %}
+
+            <div id="artwork-delete-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h2>Are you sure you want to remove this artwork?</h2>
+                    <p>This action cannot be undone.</p>
+                    <button id="confirm-artwork-delete" class="btn btn-danger">
+                        Remove
+                    </button>
+                    <button id="cancel-artwork-delete" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+            </div>
         </section>
     {% endif %}
 </main>
 
 <script src="{% static 'js/groups/group-folder-delete-modal.js' %}"></script>
+<script src="{% static 'js/groups/group-artwork-delete-modal.js' %}"></script>
 <script src="{% static 'js/groups/group-folder-modal.js' %}"></script>
 <script src="{% static 'js/groups/group-drag-art.js' %}"></script>
