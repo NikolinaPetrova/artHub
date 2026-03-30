@@ -37,13 +37,6 @@
 
                     <div class="album-overlay">
                         <a href="{% url 'group-details' group.slug %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
-                        {% if request.user.pk == group.owner.pk %}
-                        <a href="{% url 'group-edit' group.slug %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form method="post" action="#">
-                            {% csrf_token %}
-                            <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
-                        </form>
-                        {% endif %}
                     </div>
                 </div>
                 {% empty %}
@@ -71,13 +64,6 @@
 
                     <div class="album-overlay">
                         <a href="{% url 'group-details' group.slug %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
-                        {% if request.user.pk == group.owner.pk %}
-                        <a href="{% url 'group-edit' group.slug %}" class="btn edit" title="Edit"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <form method="post" action="#">
-                            {% csrf_token %}
-                            <button class="btn edit" type="Submit"><i class="fa-solid fa-trash-arrow-up"></i></button>
-                        </form>
-                        {% endif %}
                     </div>
                 </div>
                 {% empty %}
