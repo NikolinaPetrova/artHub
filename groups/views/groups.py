@@ -92,7 +92,7 @@ class GroupDetailView(GroupAccessMixin, DetailView):
             context['joined_to_group'] = False
             context['join_request_pending'] = None
             context['is_moderator_or_owner'] = False
-            context['group_submissions'] = False
+            context['group_submissions'] = None
         return context
 
 

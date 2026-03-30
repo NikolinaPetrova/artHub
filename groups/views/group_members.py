@@ -84,11 +84,17 @@ class GroupMemberDeleteView(LoginRequiredMixin, GroupAccessMixin, UserPassesTest
         group = self.object.group
         user = self.object.user
 
-        user_artworks_in_group = group.artworks.filter(user=user)
-        for folder in group.folders.filter(artworks__in=user_artworks_in_group).distinct():
-            folder.artworks.remove(*user_artworks_in_group)
+        submitted_artworks = list(
+            group.artworks.filter(
+                group_submissions__group=group,
+                group_submissions__submitted_by=user,
+                group_submissions__status=StatusChoices.APPROVED,
+            ).distinct()
+        )
+        for folder in group.folders.filter(artworks__in=submitted_artworks).distinct():
+            folder.artworks.remove(*submitted_artworks)
 
-        group.artworks.remove(*user_artworks_in_group)
+        group.artworks.remove(*submitted_artworks)
 
         return super().post(request, *args, **kwargs)
 
