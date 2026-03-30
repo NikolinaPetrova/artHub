@@ -155,6 +155,12 @@ select option {
     margin: 1rem;
 }
 
+.submissions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 .submissions-container {
     display: flex;
     justify-content: space-between;

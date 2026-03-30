@@ -56,6 +56,14 @@ class GroupDetailView(GroupAccessMixin, DetailView):
         'members__user',
     )
 
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        tab = request.GET.get('tab')
+
+        if tab in ['joinRequests', 'submissions'] and not self.user_is_group_staff(self.object, self.request.user):
+            return redirect('group-details', slug=self.object.slug)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['members'] = self.object.members.exclude(user=self.object.owner).select_related('user')
@@ -63,28 +71,28 @@ class GroupDetailView(GroupAccessMixin, DetailView):
         context['folders'] = self.object.folders.all()
         context['form'] = GroupFolderForm()
         context['group_members'] = GroupMember.objects.filter(group=self.object)
-        context['join_requests'] = GroupJoinRequest.objects.filter(group=self.object, status=StatusChoices.PENDING)
         context['posts'] = Post.objects.filter(group=self.object)
 
         if self.request.user.is_authenticated:
-            context['joined_to_group'] = self.object.members.filter(user=self.request.user.pk).exists()
+            context['joined_to_group'] = self.object.members.filter(user=self.request.user).exists()
             context['join_request_pending'] = GroupJoinRequest.objects.filter(
-            group=self.object,
-            user=self.request.user,
-            status=StatusChoices.PENDING
+                group=self.object,
+                user=self.request.user,
+                status=StatusChoices.PENDING
             ).first()
+            if self.user_is_group_staff(self.object, self.request.user):
+                context['join_requests'] = GroupJoinRequest.objects.filter(group=self.object, status=StatusChoices.PENDING)
+                context['group_submissions'] = GroupSubmission.objects.filter(
+                    group=self.object,
+                    status=StatusChoices.PENDING
+                )
+                context['submissions_pending_count'] = context['group_submissions'].count()
             context['is_moderator_or_owner'] = self.user_is_group_staff(self.object, self.request.user)
         else:
             context['joined_to_group'] = False
             context['join_request_pending'] = None
             context['is_moderator_or_owner'] = False
-
-        context['group_submissions'] = GroupSubmission.objects.filter(
-            group=self.object,
-            status=StatusChoices.PENDING
-        )
-
-        context['submissions_pending_count'] = context['group_submissions'].count()
+            context['group_submissions'] = False
         return context
 
 

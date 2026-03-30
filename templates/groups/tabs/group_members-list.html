@@ -44,9 +44,13 @@
                     <i class="fa-solid fa-ellipsis-vertical dropdown-toggle"></i>
 
                     <div class="dropdown-menu-members">
-                        <a href="{% url 'change-member-role' group.slug member.pk %}">
-                            <button type="submit" name="action" value="change">Change Role</button>
-                        </a>
+                        <button
+                                type="submit"
+                                name="action"
+                                value="change"
+                                onclick="window.location.href='{% url 'change-member-role' group.slug member.pk %}'">
+                            Change Role
+                        </button>
                         <form method="post" action="{% url 'group-member-delete' group.slug member.pk %}">
                             {% csrf_token %}
                             <button type="submit" name="action" value="remove">Remove</button>
