@@ -51,9 +51,12 @@
                                 onclick="window.location.href='{% url 'change-member-role' group.slug member.pk %}'">
                             Change Role
                         </button>
-                        <form method="post" action="{% url 'group-member-delete' group.slug member.pk %}">
+                        <form
+                                method="post"
+                                class="member-remove-form"
+                                action="{% url 'group-member-delete' group.slug member.pk %}">
                             {% csrf_token %}
-                            <button type="submit" name="action" value="remove">Remove</button>
+                            <button type="button" class="member-remove-btn" name="action" value="remove">Remove</button>
                         </form>
                     </div>
                 </div>
@@ -61,7 +64,17 @@
             {% endif %}
         </tr>
         {% endfor %}
+
+        <div id="member-remove-modal" class="modal" style="display: none">
+            <div class="modal-content">
+                <h2>Remove member</h2>
+                <p>Are you sure you want to remove this member?</p>
+                <button id="confirm-member-remove" class="btn btn-danger">Remove</button>
+                <button id="cancel-member-remove" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
     </tbody>
 </table>
 
+<script src="{% static 'js/groups/group-member-remove-modal.js' %}"></script>
 <script src="{% static 'js/groups/dropdown-members-list.js' %}"></script>
