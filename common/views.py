@@ -1,5 +1,4 @@
-import re
-from django.db.models import Q, Count
+from django.db.models import Count
 from django.views.generic import TemplateView, ListView
 from artworks.models import Artwork
 
