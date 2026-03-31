@@ -9,13 +9,15 @@ Users can create accounts, share artworks, organize them into albums, join group
 - Secure object-level access control using custom mixins
 - Queryset scoping to prevent unauthorized access
 - Asynchronous processing with Celery
-- Real-time notifications system (Django REST Framework)
+- In-app notification system powered by Django REST Framework
 
 ---
 
 ## Features
 
 ### Authorization
+
+**Django Permissions**
 - Role-based moderation using Django auth Groups
 - Predefined staff groups:
   - Content Editor
@@ -23,15 +25,25 @@ Users can create accounts, share artworks, organize them into albums, join group
 - Group permissions are assigned with data migration
 - Editors can edit selected content types
 - Moderators can delete selected content types
-- Permissions are managed through Django's built-in Group and Permission models
 
+**Object-Level Access Control**
+- Custom mixins enforce ownership and permission checks
+- Queryset scoping prevents unauthorized access to objects
+
+**Group Role System**
+- Each group has role-based permissions:
+  - Owner
+  - Admin
+  - Moderator
+  - Member
 ---
 
 ### Users
 - User registration and authentication
 - Automatic Profile creation (via Django signals)
 - Automatic default album creation (via Django signals)
-- Email confirmation on registration (Celery shared tasks)
+- Welcome email sent on registration (Celery shared tasks)
+- Password reset email sent asynchronously with Celery
 
 **Profile includes:**
 - Username, Email
@@ -53,19 +65,23 @@ Users can create accounts, share artworks, organize them into albums, join group
   - Multiple albums
   - Multiple groups (via submissions)
 - Features:
-  - Tag system (auto-cleaned input)
+  - Tag system with automatic cleaning and validation
   - Search by title or tags
+  - Gallery pagination
   - Displayed in user profile (Gallery tab)
+  - Users can assign artworks only to their own albums
 
 ---
 
 ### Albums
 - Each user can create multiple albums
+- Album names must be unique per user
 - An album can contain multiple artworks
 - An artwork can belong to multiple albums
 - Albums are displayed in the user profile
 - Only the owner can edit or delete an album
 - Default album is automatically created upon registration
+- Artworks can be removed from albums during editing
 
 ---
 
@@ -75,6 +91,7 @@ Users can create accounts, share artworks, organize them into albums, join group
 - Automatic:
     - Duplicate removal
     - Whitespace trimming
+- Tags support letters/numbers and multi-word names with spaces or hyphens
 - One tag can be associated with multiple artworks
 
 ---
@@ -87,7 +104,7 @@ Users can create accounts, share artworks, organize them into albums, join group
 - Nested replies (infinite depth supported)
 - Permissions:
   - Owner can edit/delete own comments
-  - Artwork/Post owner can delete comments
+  - Artwork owners and post authors can delete related comments
 - Ordered by creation time
 
 **Likes**
@@ -97,13 +114,28 @@ Users can create accounts, share artworks, organize them into albums, join group
   - Posts
   - Comments
 - One like per user per object
+- Database constraints ensure each like targets exactly one object
+
+**Access Rules**
+- Group membership is required for commenting and liking group post content
 
 ---
 
-### Gallery
-- Displays all artworks
-- Quick preview overlay
+### Core Pages
 
+**Home Page**
+- Displays featured artworks
+- Highlights the most liked artworks on the platform
+
+**Gallery**
+- Displays all artworks from the platform
+- Search artworks by title or tags
+- Tag-based navigation for quick filtering
+- Dynamic loading of additional artworks via AJAX pagination
+
+**Error Handling**
+- Custom error pages (400, 403, 404, 500)
+- User-friendly error pages
 ---
 
 ### Groups
@@ -112,14 +144,18 @@ Groups allow users to collaborate, share artworks and interact in communities.
 
 **Core Features**
 - Create and manage groups
-- Join policies:
-  - Open
-  - Approval-based
-- Roles
-  - Admin
-  - Moderator
-  - Member
+- Automatic creation of a default **Featured** folder
+- Group owner is automatically assigned an **Admin** role
 
+**Join Policies**
+- Open groups (instant membership)
+- Approval-based groups with join requests
+
+**Roles**
+- Owner
+- Admin
+- Moderator
+- Member
 ---
 
 ### Group Permissions
@@ -149,13 +185,14 @@ Groups allow users to collaborate, share artworks and interact in communities.
   - Approve - artwork is added to group/folder
   - Reject
 - Auto-approval for admins/moderators
+- Approved artworks are automatically added to the group and selected folder
 
 ---
 ### Membership System
 
 - Join/leave groups
-- Join requests for private groups
-- Moderation system for approvals
+- Join requests for approval-based groups
+- Role management for members
 
 ---
 
@@ -170,18 +207,27 @@ Groups allow users to collaborate, share artworks and interact in communities.
 
 ### Notifications
 
-Real-time notification system for user interactions:
-- New comments
-- Replies
-- Likes
+In-app notification system for user interactions and group activity.
+
+**Triggers**
+- New comments on artworks and posts
+- Replies to comments
+- Likes on artworks, posts and comments
 - New group posts
+- Public group joins
 - Join requests (sent/approved/rejected)
 - Artwork submissions updates
 
-**Includes:**
-- REST API endpoints (Django REST Framework)
-- Unread notifications count
-- Mark as read functionality
+**System Features**
+- Centralized notification service
+- Self-notifications are prevented automatically
+- Notifications include target URLs for related content
+
+**API**
+- Built with Django REST Framework
+- Fetch unread notifications
+- Mark notifications as read
+- Retrieve unread notifications count
 
 ---
 
@@ -201,11 +247,11 @@ artHub/
 ├── albums/         # Album management
 ├── artHub/         # Core Django project settings and URL configuration
 ├── artworks/       # Artworks, tags, search
-├── common/         # Shared views (Home page, 400, 403, 404, 500)
+├── common/         # Shared views and error pages
 ├── groups/         # Groups, posts, submissions
 ├── interactions/   # Comments and likes
 ├── notifications/  # Notifications system + API
-├── static/         # CSS, Images
+├── static/         # CSS, Images, JavaScript
 └── templates/      # HTML Templates
 ```
 
@@ -258,7 +304,23 @@ venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Apply migrations
+### 4. Start local services (Redis + MailHog)
+The project uses Docker Compose for development services.
+```bash
+docker-compose up -d
+```
+
+This starts:
+- Redis (used by Celery)
+- RedisInsight (Redis UI)
+- MailHog (local email testing server)
+
+MailHog interface:
+```bash
+http://127.0.0.1:8025
+```
+
+### 5. Apply migrations
 ```bash
 python manage.py migrate
 ```
@@ -287,7 +349,18 @@ Use the following accounts to log in locally:
 - **Username:** alice | **Password:** 123pass123
 - **Username:** dave | **Password:** 123pass123
 
-### 5. Run the development server
+### 6. Run Celery worker
+Linux / macOS
+```bash
+celery -A artHub worker -l info
+```
+
+Windows
+```bash
+celery -A artHub worker --loglevel=info --pool=solo
+```
+
+### 7. Run the development server
 ```bash
 python manage.py runserver
 ```
