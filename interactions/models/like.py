@@ -35,7 +35,32 @@ class Like(CreatedAtMixin):
     )
 
     class Meta:
-        unique_together = ('artwork', 'user')
+        constraints = [
+
+            models.UniqueConstraint(
+                fields=['user', 'artwork'],
+                name='unique_user_artwork_like'
+            ),
+
+            models.UniqueConstraint(
+                fields=['user', 'post'],
+                name='unique_user_post_like'
+            ),
+
+            models.UniqueConstraint(
+                fields=['user', 'comment'],
+                name='unique_user_comment_like'
+            ),
+
+            models.CheckConstraint(
+                condition=(
+                        models.Q(artwork__isnull=False, post__isnull=True, comment__isnull=True) |
+                        models.Q(artwork__isnull=True, post__isnull=False, comment__isnull=True) |
+                        models.Q(artwork__isnull=True, post__isnull=True, comment__isnull=False)
+                ),
+                name='like_target_constraint'
+            ),
+        ]
 
     def __str__(self):
         return f"{self.artwork} liked by {self.user}"

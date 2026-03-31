@@ -29,7 +29,7 @@ class LikeView(LoginRequiredMixin, View):
             return redirect('group-details', slug=obj.group.slug)
 
         if model_type == 'comment' and obj.post and not is_group_member(request.user, obj.post.group):
-            messages.error(request, 'You must be a group member like comments on posts.')
+            messages.error(request, 'You must be a group member to like comments on posts.')
             return redirect('group-details', slug=obj.post.group.slug)
 
         like_data = {'user': request.user}
