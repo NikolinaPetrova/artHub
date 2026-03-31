@@ -17,6 +17,10 @@ class BasePostForm(forms.ModelForm):
             'content': '',
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['content'].required = False
+
     def clean_title(self):
         title = self.cleaned_data['title'].strip()
         if len(title) < 3:
