@@ -305,6 +305,7 @@ User uploaded images are stored using Cloudinary.
 
 If Cloudinary credentials are not provided, image upload features will be disabled.
 The application can still be explored using the demo data included in the project.
+
 ---
 
 ## Installation
