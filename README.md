@@ -340,6 +340,12 @@ http://127.0.0.1:8025
 python manage.py migrate
 ```
 
+### 6. Collect static files
+```bash
+python manage.py collectstatic
+```
+**This step prepares static files for production using WhiteNoise**
+
 ## Demo Data
 
 The project includes a fully populated demo database for easy testing and exploration.

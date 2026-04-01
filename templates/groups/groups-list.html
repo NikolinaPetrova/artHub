@@ -10,9 +10,7 @@
                 <a href="{% url 'group-details' group.slug %}"><div class="group-banner" style="background-image: url('{{ group.banner.url }}');"></div></a>
             {% else %}
                 <a href="{% url 'group-details' group.slug %}">
-                    <div class="group-banner no-banner">
-                        <i class="fa-regular fa-image"></i>
-                    </div>
+                    <div class="group-banner no-banner" style="background-image: url('{% static 'images/default-banner.jpg' %}');"></div>
                 </a>
             {% endif %}
 
