@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from common.mixins import SlugMixin
 from groups.choices import JoinPolicy
@@ -12,8 +13,8 @@ class Group(SlugMixin):
         related_name='owned_groups',
     )
 
-    avatar = models.ImageField(upload_to='group_avatars/', blank=True, null=True)
-    banner = models.ImageField(upload_to="group_banners/", blank=True, null=True)
+    avatar = CloudinaryField('image', blank=True, null=True)
+    banner = CloudinaryField('image', blank=True, null=True)
     join_policy = models.CharField(
         max_length=20,
         choices=JoinPolicy.choices,

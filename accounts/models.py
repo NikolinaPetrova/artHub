@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
@@ -37,15 +38,7 @@ class Profile(models.Model):
         default=False,
     )
 
-    avatar = models.ImageField(
-        upload_to='user-avatars/',
-        blank=True,
-        null=True,
-    )
+    avatar = CloudinaryField('image', blank=True, null=True)
 
-    banner = models.ImageField(
-        upload_to='user-banners/',
-        blank=True,
-        null=True,
-    )
+    banner = CloudinaryField('image', blank=True, null=True)
 

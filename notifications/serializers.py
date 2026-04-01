@@ -26,6 +26,11 @@ class NotificationSerializer(serializers.ModelSerializer):
         read_only_fields = ['id', 'message', 'target_url', 'created_at']
 
     def get_sender_avatar(self, obj):
-        if obj.sender.profile.avatar:
-            return obj.sender.profile.avatar.url
-        return None
+        avatar = obj.sender.profile.avatar
+        if not avatar:
+            return None
+
+        if hasattr(avatar, "url"):
+            return avatar.url
+
+        return avatar

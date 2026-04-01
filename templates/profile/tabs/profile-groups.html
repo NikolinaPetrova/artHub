@@ -1,3 +1,5 @@
+{% load static %}
+
 <h3>Group Owned</h3>
 <div class="albums-list">
     {% for group in group_list %}
@@ -7,7 +9,7 @@
                 <div class="album-bg" style="background-image: url('{{ group.banner.url }}');"></div>
             {% else %}
                 <div class="album-bg fallback">
-                    <i class="fa-regular fa-image"></i>
+                    <div class="group-banner no-banner" style="background-image: url('{% static 'images/default-banner.jpg' %}');"></div>
                 </div>
             {% endif %}
 

@@ -1,3 +1,4 @@
+from cloudinary.models import CloudinaryField
 from django.db import models
 from artHub import settings
 from common.mixins import CreatedAtMixin
@@ -18,11 +19,7 @@ class Post(CreatedAtMixin):
 
     title = models.CharField(max_length=100)
     content = models.TextField()
-    image = models.ImageField(
-        upload_to='post_images',
-        blank=True,
-        null=True
-    )
+    image = CloudinaryField('image', blank=True, null=True)
 
     class Meta:
         ordering = ['-created_at']

@@ -39,7 +39,7 @@ class NotificationSerializerTests(TestCase):
         self.assertIsNone(serializer.data['sender_avatar'])
 
     def test_serializer_returns_sender_avatar_when_exists(self):
-        self.sender.profile.avatar = 'avatar.jpg'
+        self.sender.profile.avatar = 'https://example.com/avatar.jpg'
         self.sender.profile.save()
 
         serializer = NotificationSerializer(self.notification)

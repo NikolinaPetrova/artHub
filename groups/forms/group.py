@@ -4,6 +4,8 @@ from groups.models import Group
 
 
 class BaseGroupForm(forms.ModelForm):
+    avatar = forms.ImageField(required=False)
+    banner = forms.ImageField(required=False)
     class Meta:
         model = Group
         exclude = ['owner', 'slug']

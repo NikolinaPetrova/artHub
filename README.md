@@ -235,7 +235,9 @@ In-app notification system for user interactions and group activity.
 - **Backend:** Python, Django
 - **Database:** PostgreSQL
 - **Frontend:** Server-rendered HTML (Django Templates), CSS, JavaScript
-- **Async Tasks:** Celery
+- **Media Storage**: Cloudinary (image hosting and delivery)
+- **Async Tasks:** Celery (background task processing)
+- **Message Broker:** Redis
 - **API:** Django REST Framework
 
 ---
@@ -289,10 +291,20 @@ CSRF_TRUSTED_ORIGINS=
 EMAIL_HOST_USER=
 EMAIL_HOST_PASSWORD=
 DEFAULT_FROM_EMAIL=
+
+# Cloudinary media storage
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
-**if SMTP credentials are not provided, emails can be tested locally using MailHog.**
+If SMTP credentials are not provided, emails can be tested locally using MailHog.
 
+### Media Storage
+User uploaded images are stored using Cloudinary.
+
+If Cloudinary credentials are not provided, image upload features will be disabled.
+The application can still be explored using the demo data included in the project.
 ---
 
 ## Installation
@@ -348,29 +360,30 @@ python manage.py collectstatic
 
 ## Demo Data
 
-The project includes a fully populated demo database for easy testing and exploration.
-It contains:
-- Pre-created users
+The project includes demo data generated through data migrations for easier testing and exploration.
+
+After running:
+```bash
+python manage.py migrate
+```
+The database will be automatically populated with:
+- Demo users
 - Albums
 - Artworks
 - Tags
 - Comments
 - Likes
 
-After running:
-```bash
-python manage.py migrate
-```
-All demo data will be available immediately.
+This allows the application to be explored immediately without creating content manually.
 
 ---
 
 ## Demo Users
-Use the following accounts to log in locally:
-- **Username:** alice | **Password:** 123pass123
-- **Username:** dave | **Password:** 123pass123
+The following demo accounts can be used to explore the platform:
+- **Username:** alice | **Password:** 123pass123 - member of **Content Editor** and **Content Moderator** groups
+- **Username:** dave | **Password:** 123pass123 - member of **Content Editor** group
 
-### 6. Run Celery worker
+### 7. Run Celery worker
 Linux / macOS
 ```bash
 celery -A artHub worker -l info
@@ -381,7 +394,7 @@ Windows
 celery -A artHub worker --loglevel=info --pool=solo
 ```
 
-### 7. Run the development server
+### 8. Run the development server
 ```bash
 python manage.py runserver
 ```
