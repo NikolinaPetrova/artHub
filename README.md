@@ -100,7 +100,7 @@ Users can create accounts, share artworks, organize them into albums, join group
 
 **Comments**
 
-- Comment on artwork and group posts
+- Comment on artworks and group posts
 - Nested replies (infinite depth supported)
 - Permissions:
   - Owner can edit/delete own comments
@@ -272,12 +272,27 @@ copy .env.example .env  #Windows
 2. Edit .env if needed. Example demo values:
 ```env
 SECRET_KEY=local_secret_key
+
+# Database
 DB_NAME=arthub_demo
 DB_USER=demo_user
 DB_PASS=demo123
 DB_PORT=5432
 DB_HOST=127.0.0.1
+
+# Django settings
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+CSRF_TRUSTED_ORIGINS=
+
+# Optional SMTP configuration
+EMAIL_HOST_USER=
+EMAIL_HOST_PASSWORD=
+DEFAULT_FROM_EMAIL=
 ```
+
+**if SMTP credentials are not provided, emails can be tested locally using MailHog.**
+
 ---
 
 ## Installation
