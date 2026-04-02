@@ -171,7 +171,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = Path("/home/site/wwwroot/staticfiles")
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv('CLOUDINARY_CLOUD_NAME'),
