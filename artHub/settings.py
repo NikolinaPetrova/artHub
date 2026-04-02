@@ -150,10 +150,18 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 
-CELERY_BROKER_URL = os.getenv('AZURE_REDIS_CONNECTIONSTRING', 'redis://localhost:6379/0')
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
+CELERY_BROKER_URL = os.getenv(
+    "AZURE_REDIS_CONNECTIONSTRING",
+    "redis://localhost:6379/0"
+)
 CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+
+if CELERY_BROKER_URL.startswith("rediss://"):
+    CELERY_BROKER_USE_SSL = {"ssl_cert_reqs": "none"}
+    CELERY_REDIS_BACKEND_USE_SSL = {"ssl_cert_reqs": "none"}
 
 
 # Static files (CSS, JavaScript, Images)
