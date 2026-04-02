@@ -4,6 +4,26 @@ ArtHub is a full-featured web application built with Django that allows artists 
 
 Users can create accounts, share artworks, organize them into albums, join groups, participate in discussions and engage with content through likes, comments, and notifications.
 
+---
+
+## Live Demo
+The project is deployed and can be accessed here:
+
+**https://arthub-behze2a0fbhsd5at.italynorth-01.azurewebsites.net/**
+
+The application can be explored directly in the browser without local setup.
+
+### What can be tested
+- user registration and login
+- profile management
+- artwork creation and gallery
+- groups and posts
+- comments and likes
+- notifications
+- password reset functionality
+
+---
+
 ## Key Highlights
 - Role-based permission system (Owner / Admin / Moderator / Member)
 - Secure object-level access control using custom mixins
