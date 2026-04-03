@@ -70,6 +70,9 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
         return self.request.user
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
         if kwargs.get('pk') != request.user.pk:
             return redirect('profile-details', pk=request.user.pk)
         return super().dispatch(request, *args, **kwargs)
