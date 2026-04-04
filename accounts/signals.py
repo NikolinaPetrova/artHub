@@ -24,9 +24,6 @@ def create_profile(sender, instance, created, **kwargs):
 
 @receiver(post_migrate)
 def assign_permissions_to_content_groups(sender, **kwargs):
-    if sender.name != 'accounts':
-        return
-
     moderators_group, _ = Group.objects.get_or_create(name='Content Moderator')
     editors_group, _ = Group.objects.get_or_create(name='Content Editor')
 
