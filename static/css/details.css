@@ -798,3 +798,17 @@
 .post-info > a:hover {
     color: var(--hover-color);
 }
+
+.empty-text {
+    grid-column: 1 / -1;
+    text-align: start;
+    margin-left: -16px;
+}
+
+.empty-text > a {
+    color: var(--font-color);
+}
+
+.empty-text > a:hover {
+    color: var(--hover-color);
+}

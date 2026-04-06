@@ -14,6 +14,8 @@
         <h3>Description</h3>
         {% if user.profile.description %}
             <p>{{ user.profile.description }}</p>
+        {% else %}
+            <p>No description provided.</p>
         {% endif %}
     </div>
 
@@ -40,12 +42,15 @@
                     </div>
                 </div>
                 {% empty %}
+                    <div class="empty-text">
+                        <p>This user hasn't created any groups yet.</p>
+                    </div>
             {% endfor %}
         </div>
     </div>
 
     <div class="group-member">
-        <h3>Group Member</h3>
+        <h3>Group Memberships</h3>
         <div class="albums-list">
             {% for group in group_member %}
                 <div class="album-card">
@@ -67,6 +72,9 @@
                     </div>
                 </div>
                 {% empty %}
+                <div class="empty-text">
+                    <p>This user hasn't joined any groups yet.</p>
+                </div>
             {% endfor %}
         </div>
     </div>

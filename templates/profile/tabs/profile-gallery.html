@@ -1,8 +1,12 @@
 <main class="dashboard">
     {% if not artwork_list %}
         <div class="no-artworks">
-            <h1>Bring your gallery to life</h1>
-            <a href="{% url 'create-artwork' %}" class="btn-create">Create Artwork</a>
+            {% if request.user == user %}
+                <h2>Bring your gallery to life</h2>
+                <a href="{% url 'create-artwork' %}" class="btn-create">Create Artwork</a>
+            {% else %}
+                <h3>This user hasn't shared any artworks yet.</h3>
+            {% endif %}
         </div>
     {% else %}
         <section class="artworks-container">

@@ -3,13 +3,17 @@
 
     <main class="album-container content-sidebar">
         <h1>{{ folder.name }}</h1>
-        <p>{{ folder.description }}</p>
+        <p>{{ folder.description|default:"No description provided." }}</p>
         <section class="artworks-container">
             {% for artwork in folder.artworks.all %}
                 <div class="wrap-image">
                     <a href="{% url 'artwork-details' artwork.pk %}"><img class="art-image" src="{{ artwork.image_url }}">
                         <p class="overlay">More Info</p>
                     </a>
+                </div>
+            {% empty %}
+                <div class="empty-text" style="text-align: center">
+                    <h3>No artworks have been added to this folder.</h3>
                 </div>
             {% endfor %}
         </section>

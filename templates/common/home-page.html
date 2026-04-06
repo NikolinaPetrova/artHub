@@ -33,6 +33,10 @@
                             <a href="{% url 'artwork-details' art.pk %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
                         </div>
                     </div>
+                    {% empty %}
+                        <div class="empty-text">
+                            <p>Trending artworks will appear here soon.</p>
+                        </div>
                 {% endfor %}
             </section>
         </div>

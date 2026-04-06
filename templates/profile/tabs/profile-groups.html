@@ -23,10 +23,16 @@
             </div>
         </div>
         {% empty %}
-        <div class="empty">
-            <h3>Add some groups</h3>
-            <a href="{% url 'create-group' %}" class="btn-create">Create a Group</a>
-        </div>
+            {% if request.user == user %}
+                <div class="empty">
+                    <h3>Create your first group</h3>
+                    <a href="{% url 'create-group' %}" class="btn-create">Create a Group</a>
+                </div>
+            {% else %}
+               <div class="empty-text" style="padding-bottom: 1rem;">
+                    <p>This user hasn't created any groups yet.</p>
+               </div>
+            {% endif %}
     {% endfor %}
 </div>
 
@@ -51,6 +57,15 @@
             <div class="album-overlay">
                 <a href="{% url 'group-details' group.slug %}" class="btn" title="View"><i class="fa-solid fa-magnifying-glass"></i></a>
             </div>
+        </div>
+        {% empty %}
+        <div class="empty-text">
+            {% if request.user == user %}
+                <p>You haven't joined any groups yet.</p>
+                <a href="{% url 'groups-list' %}">Explore groups</a>
+            {% else %}
+                <p>This user hasn't joined any groups yet.</p>
+            {% endif %}
         </div>
     {% endfor %}
 </div>

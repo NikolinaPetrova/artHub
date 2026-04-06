@@ -20,7 +20,7 @@
                 </div>
             </div>
 
-            <div id="folder-modal" class="modal"">
+            <div id="folder-modal" class="modal">
                 <div class="modal-content create-folder-container">
                     <h2>Create Folder</h2>
 
@@ -88,7 +88,9 @@
     {% if not group_artworks %}
         <div class="no-artworks">
             <h2>Nothing here yet. Start the group’s creative journey!</h2>
-            <a href="{% url 'group-artwork-submit' group.slug %}" class="btn-create">Upload</a>
+            {% if joined_to_group %}
+                <a href="{% url 'group-artwork-submit' group.slug %}" class="btn-create">Upload</a>
+            {% endif %}
         </div>
     {% else %}
         <section class="artworks-container">

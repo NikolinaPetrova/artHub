@@ -16,7 +16,7 @@
             <a href="{% url 'post-details' group.slug post.pk %}" class="post-details-btn">See Details..</a>
         </div>
     {% empty %}
-        <div style="text-align: center">
+        <div>
             <h3 style="margin-bottom: 1.5rem;">This group doesn’t have any posts yet. Be the first to share something!</h3>
         </div>
     {% endfor %}

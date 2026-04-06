@@ -10,6 +10,10 @@
                         <p class="overlay">More Info</p>
                     </a>
                 </div>
+            {% empty %}
+                <div class="empty-text" style="text-align: center">
+                    <h3>No artworks have been added to this album.</h3>
+                </div>
             {% endfor %}
         </section>
     </main>

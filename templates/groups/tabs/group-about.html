@@ -29,6 +29,10 @@
                 {% endif %}
                 <p>{{ member.user.username }}</p>
             </a>
+        {% empty %}
+            <div class="empty-text" style="margin-left: 0;">
+                <p style="padding-top: 20px;">No members yet.</p>
+            </div>
         {% endfor %}
         </div>
     </div>

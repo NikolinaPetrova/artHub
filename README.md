@@ -30,6 +30,7 @@ The application can be explored directly in the browser without local setup.
 - Queryset scoping to prevent unauthorized access
 - Asynchronous processing with Celery
 - In-app notification system powered by Django REST Framework
+- Drag-and-drop interface for adding artworks to group folders
 
 ---
 
@@ -196,6 +197,7 @@ Groups allow users to collaborate, share artworks and interact in communities.
 - Default folder: Featured
 - Users can select a folder when submitting artwork (applied after approval for members)
 - Admins and moderators can manage folders
+- Artworks can be added to folders using drag-and-drop
 
 ---
 
